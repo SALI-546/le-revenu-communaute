@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "title": "Le Revenu Community",
+    "description": "Ask questions and talk with Le Revenu readers about stocks, savings and real estate."
+  },
+  "layout": {
+    "skipToContent": "Skip to content",
+    "pressBar": {
+      "site": "Le Revenu website",
+      "magazine": "The magazine"
+    },
+    "header": {
+      "home": "Le Revenu Community, home",
+      "section": "Community",
+      "nav": "Community navigation",
+      "discussions": "Discussions",
+      "publish": "Publish",
+      "login": "Log in"
+    },
+    "footer": {
+      "tagline": "The community of Le Revenu readers."
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "The readers’ community",
+      "title": "Let’s talk about your money, among informed readers.",
+      "description": "Ask your questions, share your experience and talk with the Le Revenu newsroom."
+    }
+  }
+}

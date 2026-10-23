@@ -7,3 +7,6 @@ backend/types/generated/
 backend/public/
 backend/.strapi-updater.json
 backend/src/extensions/documentation/
+frontend/.next/
+frontend/next-env.d.ts
+frontend/tsconfig.tsbuildinfo

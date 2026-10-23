@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "title": "Communauté Le Revenu",
+    "description": "Posez vos questions et échangez avec les lecteurs du Revenu sur la bourse, l’épargne et l’immobilier."
+  },
+  "layout": {
+    "skipToContent": "Aller au contenu",
+    "pressBar": {
+      "site": "Le site Le Revenu",
+      "magazine": "Le magazine"
+    },
+    "header": {
+      "home": "Le Revenu Communauté, accueil",
+      "section": "Communauté",
+      "nav": "Navigation de la communauté",
+      "discussions": "Discussions",
+      "publish": "Publier",
+      "login": "Se connecter"
+    },
+    "footer": {
+      "tagline": "La communauté des lecteurs du Revenu."
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "La communauté des lecteurs",
+      "title": "Parlons de votre argent, entre lecteurs éclairés.",
+      "description": "Posez vos questions, partagez vos expériences et échangez avec la rédaction du Revenu."
+    }
+  }
+}
