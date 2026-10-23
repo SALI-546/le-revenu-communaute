@@ -1,20 +1,23 @@
-// import type { Core } from '@strapi/strapi';
+import type { Core } from '@strapi/strapi';
+import { syncRolePermissions } from './bootstrap/permissions';
+import { seedDemoData } from './bootstrap/seed';
 
 export default {
-  /**
-   * An asynchronous register function that runs before
-   * your application is initialized.
-   *
-   * This gives you an opportunity to extend code.
-   */
-  register(/* { strapi }: { strapi: Core.Strapi } */) {},
+  register() {},
 
-  /**
-   * An asynchronous bootstrap function that runs before
-   * your application gets started.
-   *
-   * This gives you an opportunity to set up your data model,
-   * run jobs, or perform some special logic.
-   */
-  bootstrap(/* { strapi }: { strapi: Core.Strapi } */) {},
+  async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    await syncRolePermissions(strapi);
+
+    if (process.env.SEED_DEMO_DATA !== 'true') {
+      return;
+    }
+    const password = process.env.SEED_USER_PASSWORD;
+    if (!password) {
+      throw new Error(
+        'SEED_USER_PASSWORD is required when SEED_DEMO_DATA=true',
+      );
+    }
+    await seedDemoData(strapi, password);
+    strapi.log.info('Demo data seeded');
+  },
 };
