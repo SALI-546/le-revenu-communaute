@@ -1,13 +1,11 @@
 import Link from 'next/link';
-import {
-  Add01Icon,
-  News01Icon,
-  UserCircleIcon,
-} from '@hugeicons/core-free-icons';
+import { Suspense } from 'react';
+import { Add01Icon, News01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { buttonStyles } from '@/components/ui/buttonStyles';
 import { getDictionary, getLocale } from '@/dictionaries';
 import { localizedHref } from '@/dictionaries/config';
+import { AccountMenu } from './AccountMenu';
 import { Logo } from './Logo';
 
 export async function SiteHeader() {
@@ -51,22 +49,13 @@ export async function SiteHeader() {
             </span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
-            <Link
-              href={localizedHref(locale, '/login')}
-              className={buttonStyles({
-                variant: 'ghost',
-                className: 'max-lg:w-11 max-lg:px-0',
-              })}
+            <Suspense
+              fallback={
+                <span className="size-11 rounded-[10px] bg-surface-2 lg:w-32" />
+              }
             >
-              <HugeiconsIcon
-                icon={UserCircleIcon}
-                size={20}
-                color="currentColor"
-                aria-hidden="true"
-                className="lg:hidden"
-              />
-              <span className="max-lg:sr-only">{layout.header.login}</span>
-            </Link>
+              <AccountMenu />
+            </Suspense>
             <Link
               href={localizedHref(locale, '/discussions/new')}
               className={buttonStyles({ className: 'max-sm:w-11 max-sm:px-0' })}

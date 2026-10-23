@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import { lang } from 'next/root-params';
-import { SiteFooter } from '@/components/layout/SiteFooter';
-import { SiteHeader } from '@/components/layout/SiteHeader';
 import { getDictionary } from '@/dictionaries';
 import { locales } from '@/dictionaries/config';
 import '@/styles/globals.css';
@@ -37,9 +35,7 @@ export default async function RootLayout({ children }: LayoutProps<'/[lang]'>) {
         >
           {layout.skipToContent}
         </a>
-        <SiteHeader />
-        <div className="flex-1">{children}</div>
-        <SiteFooter />
+        {children}
       </body>
     </html>
   );

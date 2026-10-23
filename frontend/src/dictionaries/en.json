@@ -15,7 +15,8 @@
       "nav": "Community navigation",
       "discussions": "Discussions",
       "publish": "Publish",
-      "login": "Log in"
+      "login": "Log in",
+      "logout": "Log out"
     },
     "footer": {
       "tagline": "The community of Le Revenu readers."
@@ -26,6 +27,29 @@
       "eyebrow": "The readers’ community",
       "title": "Let’s talk about your money, among informed readers.",
       "description": "Ask your questions, share your experience and talk with the Le Revenu newsroom."
+    }
+  },
+  "auth": {
+    "login": {
+      "story": {
+        "eyebrow": "Your discussion space",
+        "title": "Good decisions start with good questions.",
+        "description": "Join the readers who share their experience and help each other every day.",
+        "quote": "“A demanding, caring community, run by the Le Revenu newsroom.”"
+      },
+      "close": "Close and go back to discussions",
+      "title": "Welcome back",
+      "description": "Log in with your community account.",
+      "email": "Email address",
+      "password": "Password",
+      "submit": "Log in",
+      "submitting": "Logging in…",
+      "errors": {
+        "invalidEmail": "Enter a valid email address.",
+        "required": "This field is required.",
+        "invalidCredentials": "Incorrect email or password.",
+        "unavailable": "Unable to log in right now. Please try again in a moment."
+      }
     }
   }
 }

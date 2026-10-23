@@ -15,7 +15,8 @@
       "nav": "Navigation de la communauté",
       "discussions": "Discussions",
       "publish": "Publier",
-      "login": "Se connecter"
+      "login": "Se connecter",
+      "logout": "Se déconnecter"
     },
     "footer": {
       "tagline": "La communauté des lecteurs du Revenu."
@@ -26,6 +27,29 @@
       "eyebrow": "La communauté des lecteurs",
       "title": "Parlons de votre argent, entre lecteurs éclairés.",
       "description": "Posez vos questions, partagez vos expériences et échangez avec la rédaction du Revenu."
+    }
+  },
+  "auth": {
+    "login": {
+      "story": {
+        "eyebrow": "Votre espace d’échange",
+        "title": "Les bonnes décisions commencent par les bonnes questions.",
+        "description": "Rejoignez les lecteurs qui partagent leurs expériences et s’entraident au quotidien.",
+        "quote": "« Une communauté exigeante, bienveillante et animée par la rédaction du Revenu. »"
+      },
+      "close": "Fermer et revenir aux discussions",
+      "title": "Bon retour parmi nous",
+      "description": "Connectez-vous avec votre compte de la communauté.",
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "submitting": "Connexion…",
+      "errors": {
+        "invalidEmail": "Saisissez une adresse e-mail valide.",
+        "required": "Ce champ est obligatoire.",
+        "invalidCredentials": "Adresse e-mail ou mot de passe incorrect.",
+        "unavailable": "Connexion impossible pour le moment. Réessayez dans un instant."
+      }
     }
   }
 }
