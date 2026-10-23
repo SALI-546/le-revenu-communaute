@@ -1,4 +1,5 @@
 import type { Core } from '@strapi/strapi';
+import { mutateDocumentation } from '../src/documentation/openapi';
 
 const allowedMediaTypes = [
   'image/*',
@@ -31,6 +32,14 @@ const config = ({
       jwtManagement: 'refresh',
       sessions: {
         httpOnly: true,
+      },
+    },
+  },
+  documentation: {
+    config: {
+      'x-strapi-config': {
+        plugins: ['users-permissions'],
+        mutateDocumentation,
       },
     },
   },

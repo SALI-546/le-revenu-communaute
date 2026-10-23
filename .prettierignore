@@ -6,3 +6,4 @@ backend/.strapi/
 backend/types/generated/
 backend/public/
 backend/.strapi-updater.json
+backend/src/extensions/documentation/
