@@ -29,10 +29,8 @@ const config = ({
 }: Core.Config.Shared.ConfigParams): Core.Config.Plugin => ({
   'users-permissions': {
     config: {
-      jwtManagement: 'refresh',
-      sessions: {
-        httpOnly: true,
-      },
+      jwtManagement: 'legacy-support',
+      jwt: { expiresIn: '7d' },
     },
   },
   documentation: {
