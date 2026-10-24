@@ -1,0 +1,304 @@
+# Communauté Le Revenu
+
+Espace communautaire où les lecteurs du Revenu posent des questions et échangent sur leurs placements. Le projet transforme une partie de la maquette HTML en application : un frontend **Next.js** et un backend **Strapi 5** sur **PostgreSQL**.
+
+Fonctionnalités livrées :
+
+- liste des discussions issue de Strapi, avec auteur, catégorie, nombre de réponses et date ; filtre par catégorie, tri par date et pagination côté serveur ;
+- détail d'une discussion sur une URL propre (`/fr/discussions/<slug>`) avec ses réponses, et publication d'une réponse ;
+- création d'une discussion (titre de 10 caractères minimum, contenu, catégorie, type) avec erreurs de validation et redirection ;
+- connexion avec les utilisateurs de démonstration, publication interdite aux visiteurs, auteur toujours imposé par le serveur ;
+- interface en français et en anglais, responsive de 375 à 1440 px, mode sombre ;
+- documentation Swagger de l'API, tests d'API et tests end-to-end.
+
+## Sommaire
+
+1. [Stack](#stack)
+2. [Installation et lancement](#installation-et-lancement)
+3. [Comptes de démonstration](#comptes-de-démonstration)
+4. [Tests](#tests)
+5. [Documentation de l'API](#documentation-de-lapi)
+6. [Architecture du backend](#architecture-du-backend)
+7. [Architecture du frontend](#architecture-du-frontend)
+8. [Bibliothèques ajoutées](#bibliothèques-ajoutées)
+9. [Limites et évolutions](#limites-et-évolutions)
+
+## Stack
+
+| Couche          | Technologie                                                                           |
+| --------------- | ------------------------------------------------------------------------------------- |
+| Frontend        | Next.js 16.4 (App Router, Cache Components), React 19.3, TypeScript, Tailwind CSS 4.3 |
+| Backend         | Strapi 5.59 (TypeScript), API REST, plugin Users & Permissions                        |
+| Base de données | PostgreSQL 17 (Docker)                                                                |
+| Tests           | `node:test` pour l'API, Playwright pour les parcours e2e                              |
+| Qualité         | ESLint, Prettier, commitlint et husky                                                 |
+
+Les projets ont été créés avec les CLI officielles (`create-next-app`, `create-strapi`). Les versions sont celles qu'elles installent.
+
+## Installation et lancement
+
+### Prérequis
+
+- **Node.js 22** (LTS supportée par Strapi). Un fichier `.nvmrc` est fourni : `nvm use`.
+- **Docker** pour PostgreSQL.
+
+### 1. Dépendances
+
+```bash
+npm install                 # outillage du dépôt (commitlint, husky, Prettier)
+npm install --prefix backend
+npm install --prefix frontend
+```
+
+### 2. Variables d'environnement
+
+Chaque `.env.example` liste les variables sans secrets. Copiez-les puis remplacez les valeurs `change-me` et `tobemodified` :
+
+```bash
+cp .env.example .env                       # PostgreSQL (Docker)
+cp backend/.env.example backend/.env       # Strapi
+cp frontend/.env.example frontend/.env.local
+```
+
+- `DATABASE_PASSWORD` dans `backend/.env` doit être identique à `POSTGRES_PASSWORD` dans `.env`.
+- Les secrets de Strapi (`APP_KEYS`, `JWT_SECRET`, etc.) se génèrent avec `openssl rand -base64 32`. `APP_KEYS` attend plusieurs valeurs séparées par des virgules.
+- `SEED_USER_PASSWORD` est le mot de passe donné aux comptes de démonstration.
+- PostgreSQL est exposé sur le port **5433**, pour ne pas entrer en conflit avec une installation locale sur 5432. Le port se change avec `POSTGRES_PORT` et `DATABASE_PORT`.
+
+### 3. Base de données
+
+```bash
+docker compose up -d --wait postgres
+```
+
+### 4. Strapi
+
+```bash
+cd backend
+npm run develop
+```
+
+Au premier démarrage, Strapi crée le schéma, configure les permissions des rôles et, si `SEED_DEMO_DATA=true`, insère les données de démonstration. Le seed est relançable : il ne crée que ce qui manque.
+
+- API : http://localhost:1337/api
+- Swagger : http://localhost:1337/documentation/v1.0.0
+- Administration : http://localhost:1337/admin (compte administrateur à créer au premier accès)
+
+### 5. Next.js
+
+```bash
+cd frontend
+npm run dev                 # ou : npm run build && npm run start
+```
+
+L'application est servie sur http://localhost:3000. La racine redirige vers `/fr` ou `/en` selon la langue du navigateur.
+
+## Comptes de démonstration
+
+Le seed crée 6 catégories, 5 discussions, 4 réponses et ces utilisateurs. Leur mot de passe est la valeur de `SEED_USER_PASSWORD` :
+
+| Utilisateur | E-mail                       |
+| ----------- | ---------------------------- |
+| Thomas      | `thomas@demo.lerevenu.test`  |
+| Hugo        | `hugo@demo.lerevenu.test`    |
+| Vincent     | `vincent@demo.lerevenu.test` |
+| Camille     | `camille@demo.lerevenu.test` |
+
+## Tests
+
+### API (backend)
+
+```bash
+cd backend
+npm test
+```
+
+Les 12 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
+
+| Exigence                          | Tests                                                                                                                                                                   |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Validation d'une discussion       | titre de moins de 10 caractères refusé (400), titre de 10 caractères accepté, contenu vide refusé, catégorie inconnue refusée                                           |
+| Publication sans authentification | création d'une discussion et d'une réponse refusées (401 ou 403)                                                                                                        |
+| Usurpation d'auteur               | un `author` envoyé par le client est ignoré : l'auteur est vérifié **en base**, pour une discussion et pour une réponse ; modifier la discussion d'un autre renvoie 403 |
+| Affichage des discussions         | titre, auteur, catégorie, nombre de réponses, date, tri ; filtre par catégorie ; aucune adresse e-mail exposée                                                          |
+
+### Parcours end-to-end (frontend)
+
+```bash
+cd frontend
+npm run test:e2e
+```
+
+Playwright démarre Strapi et Next s'ils ne tournent pas déjà, puis exécute 6 parcours sur desktop et sur mobile : liste, filtre, détail, redirection d'un visiteur vers la connexion, création avec erreurs de validation puis publication, et réponse. Il utilise le Google Chrome installé sur la machine (`channel: 'chrome'`). Les tests écrivent dans la base de développement des contenus suffixés `[e2e]`.
+
+### Qualité
+
+```bash
+npx prettier --check .
+npm run lint --prefix frontend
+npm run typecheck --prefix frontend
+npm run typecheck --prefix backend
+```
+
+Les messages de commit sont vérifiés par commitlint (`feat:` ou `fix:`, 40 caractères maximum).
+
+## Documentation de l'API
+
+Le plugin officiel `@strapi/plugin-documentation` publie une interface Swagger sur http://localhost:1337/documentation/v1.0.0. Pour tester une route protégée : appeler `POST /auth/local` avec un compte de démonstration, copier le `jwt`, cliquer sur **Authorize**, puis appeler `POST /discussions`.
+
+La spécification générée automatiquement ne reflétait pas le vrai contrat : elle exigeait `slug`, proposait `author` et omettait la route par slug. Elle est corrigée dans `backend/src/documentation/openapi.ts` (hook `mutateDocumentation`), qui décrit les corps de requête réels, les paramètres de liste supportés et la forme exacte des réponses.
+
+Routes principales :
+
+| Méthode     | Route                         | Accès                                                                                                                             |
+| ----------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| GET         | `/api/discussions`            | public : filtre `filters[category][slug][$eq]`, tri `publishedAt:desc` ou `publishedAt:asc`, pagination de 50 éléments au maximum |
+| GET         | `/api/discussions/slug/:slug` | public : discussion avec ses réponses                                                                                             |
+| POST        | `/api/discussions`            | connecté                                                                                                                          |
+| PUT, DELETE | `/api/discussions/:id`        | auteur uniquement                                                                                                                 |
+| POST        | `/api/replies`                | connecté                                                                                                                          |
+| PUT, DELETE | `/api/replies/:id`            | auteur uniquement                                                                                                                 |
+| GET         | `/api/categories`             | public                                                                                                                            |
+
+## Architecture du backend
+
+```
+backend/src/
+  api/{category,discussion,reply}/
+    content-types/   schémas
+    controllers/     validation et assainissement de l'entrée et de la sortie, puis appel du service
+    services/        logique métier via le Document Service
+    routes/          routes core et route personnalisée par slug
+  policies/          is-authenticated, is-owner (globales)
+  bootstrap/         permissions des rôles et seed
+  documentation/     contrat OpenAPI
+  utils/             exposition publique de l'auteur
+backend/tests/       tests d'API
+```
+
+### Modèle de données
+
+| Type       | Champs                                                                                                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Category   | `name` (unique), `slug` (UID unique), `description`, `discussions`                                                                                                     |
+| Discussion | `title` (10 à 150 caractères), `content` (requis), `type` (`question` ou `discussion`), `slug` (UID unique), `author` → User, `category` → Category, `replies` → Reply |
+| Reply      | `content` (requis), `author` → User, `discussion` → Discussion                                                                                                         |
+
+- **`draftAndPublish` est désactivé** : un message de la communauté est publié immédiatement. De plus, Draft & Publish n'applique pas l'unicité aux brouillons.
+- **Index et contraintes.** `name` et les deux `slug` ont un index **UNIQUE en base** grâce à l'option `column: { unique: true }`. L'attribut `unique` seul n'est vérifié que par Strapi. Les relations passent par des tables de liaison que Strapi indexe sur les deux clés étrangères.
+- **Pas d'index dédié sur `published_at`.** Strapi l'inclut seulement dans un index composite `(document_id, locale, published_at)`. Ajouter un index par migration n'est pas fiable : les migrations s'exécutent avant la synchronisation du schéma, et cette synchronisation supprime les objets qu'elle ne connaît pas. Au volume d'une démonstration, le tri reste rapide. En production, on l'ajouterait côté base, hors de la synchronisation de Strapi.
+- `author` est une relation **unidirectionnelle** vers l'utilisateur du plugin, ce qui évite de modifier son schéma.
+
+### Contrôleurs, services et policies
+
+- **Contrôleurs fins.** Ils valident la requête (`validateQuery`), assainissent l'entrée (`sanitizeInput`) et la sortie (`sanitizeOutput`), puis délèguent au service.
+- **Services.** Toute la logique passe par le **Document Service**, avec des `populate` ciblés : seuls les champs utiles de l'auteur et de la catégorie sont chargés.
+- **Auteur imposé.** À la création, le service ne lit que les champs autorisés et fixe `author` à partir de `ctx.state.user`. Tout `author` envoyé par le client est ignoré. Le service de mise à jour ne lit pas non plus `author` ni `slug`.
+- **Validation métier côté Strapi.** Le Document Service n'applique **pas** les contraintes `minLength` et `required` du schéma : un titre trop court était enregistré. Les services valident donc explicitement le titre (10 à 150 caractères), le contenu non vide, le type, l'existence de la catégorie et celle de la discussion.
+- **Slug.** Le Document Service ne génère pas les UID. Le service construit le slug à partir du titre, avec un suffixe aléatoire, et l'index unique protège contre les collisions.
+- **Policies.** `is-authenticated` protège les créations. `is-owner` protège les modifications et suppressions : 404 si le document n'existe pas, 403 si l'utilisateur n'en est pas l'auteur.
+- **Erreurs HTTP.** 400 pour une validation, 401 pour un utilisateur non connecté, 403 pour un accès interdit, 404 pour une ressource introuvable. Un visiteur reçoit 403 avant même la policy, parce que le rôle Public n'a pas la permission de créer. La policy reste une défense en profondeur.
+- **Pagination.** 10 éléments par défaut et 50 au maximum (`config/api.ts`). Le tri est limité à `publishedAt` : toute autre valeur renvoie 400.
+
+### Comptage des réponses
+
+La liste affiche le nombre de réponses de chaque discussion. Il est obtenu avec `populate: { replies: { count: true } }`, qui exécute **une seule requête `COUNT` groupée** pour toute la page, sans N+1. Cette option n'apparaît pas dans la documentation de Strapi, mais elle est implémentée dans `@strapi/database` et utilisée par l'administration. Les alternatives documentées chargeaient tous les identifiants des réponses, ou faisaient une requête par discussion.
+
+### Permissions et exposition des données
+
+- Les permissions des rôles Public (lecture) et Authenticated (lecture et écriture) sont **synchronisées à chaque démarrage** dans `src/bootstrap/permissions.ts`, avec le même mécanisme que le plugin Users & Permissions. La configuration est donc reproductible et ne dépend jamais du frontend.
+- `sanitizeOutput` retire une relation quand le rôle n'a pas le droit `find` sur le type ciblé. Accorder `users.find` au public rendrait `/api/users` accessible, **avec les e-mails**. Les contrôleurs n'exposent donc que le `username` de l'auteur, déjà sélectionné explicitement. Un test vérifie qu'aucune adresse e-mail ne sort de l'API.
+- **Sessions JWT.** Le mode `refresh` de Strapi, avec ses jetons d'accès de 10 minutes, obligerait Next à réécrire le cookie pendant le rendu, ce qui n'est pas permis. Strapi est donc configuré en `legacy-support` avec des JWT de 7 jours.
+
+## Architecture du frontend
+
+```
+frontend/src/
+  app/[lang]/
+    (community)/       accueil, discussions/[slug], discussions/new, 404, chargement, erreur
+    (auth)/login/
+  features/
+    discussions/       queries.ts (lectures), actions.ts (mutations), schemas.ts (Zod), components/
+    replies/           même découpage
+    auth/
+  lib/strapi/client.ts fetch typé unique vers Strapi
+  lib/auth/            session (cookie), DAL
+  components/          layout (header, pied de page), ui (composants génériques)
+  dictionaries/        fr.json, en.json
+  proxy.ts             langue et redirection optimiste
+  styles/globals.css   tokens du design system
+```
+
+### Rendu et récupération des données
+
+- **Server Components par défaut.** Seuls les éléments interactifs sont des Client Components : les formulaires (connexion, création, réponse), le sélecteur de tri et le sélecteur de langue.
+- **Next ne parle qu'à Strapi**, via `lib/strapi/client.ts`, marqué `server-only`. Il n'accède jamais à PostgreSQL directement.
+- **Lire et écrire sont séparés.** Les lectures sont des fonctions `'use cache'` dans `queries.ts`, appelées par des Server Components. Les mutations sont des Server Actions dans `actions.ts`.
+- **Cache Components et Partial Prerendering.** Le contenu stable (en-tête, hero, titres) fait partie du shell statique. Ce qui dépend de la requête (paramètres d'URL, session) est streamé sous `<Suspense>`, avec un skeleton. Toutes les pages sont donc partiellement prérendues, et **le build ne dépend pas de Strapi**.
+- **Tri, filtre et pagination** passent par l'URL (`?category=…&sort=…&page=…`). Les paramètres sont validés par Zod, puis transmis à Strapi. Ils servent aussi de clé de cache. Aucun tri n'est fait en JavaScript.
+
+### Actualisation après une écriture
+
+Les lectures sont étiquetées `cacheTag('discussions')` et durent quelques minutes (`cacheLife('minutes')`). Chaque action suit le même ordre :
+
+1. `verifySession()`, qui revérifie la session auprès de Strapi ;
+2. validation Zod ;
+3. appel de Strapi avec le JWT ;
+4. `updateTag('discussions')`, qui expire immédiatement la liste et les détails ;
+5. pour une réponse, `refresh()`, qui met à jour la page courante sans redirection ; pour une discussion, `redirect()` vers la page créée.
+
+L'utilisateur voit donc sa publication immédiatement, et le compteur de réponses de la liste est à jour.
+
+### Authentification
+
+- Le JWT Strapi est stocké dans le cookie `lr_session` (`httpOnly`, `secure`, `sameSite: 'lax'`, 7 jours), posé par une Server Action. JavaScript ne peut pas le lire.
+- La DAL (`lib/auth/dal.ts`) fournit `getCurrentUser()`, mis en cache par rendu avec `cache` de React, qui appelle `/users/me` et ne renvoie que `{ id, username }`. Elle fournit aussi `verifySession()`, qui redirige vers la connexion.
+- Le **proxy** ne fait aucun appel réseau. Il choisit la langue (`negotiator`, `@formatjs/intl-localematcher`) et redirige un visiteur sans cookie de `/discussions/new` vers la connexion, avec `redirectTo`. La vraie vérification reste dans la page et dans l'action.
+- La lecture de session est isolée sous `<Suspense>` dans le header et la zone de réponse, comme le recommande le guide « Authentication with Cache Components ».
+- La redirection après connexion n'accepte que des chemins internes, pour éviter les redirections ouvertes.
+
+### États de chargement, d'erreur et vides
+
+Chaque route a son `loading.tsx` (skeleton). Le groupe `(community)` a un `error.tsx` avec un bouton « Réessayer » (`retry()`), un `not-found.tsx` traduit, et une route attrape-tout pour les URL inconnues. La liste vide et une discussion introuvable ont leur propre écran. Si Strapi est injoignable, l'en-tête reste affiché et seule la zone de contenu montre l'erreur.
+
+### Traductions
+
+- Les routes sont sous `app/[lang]`, avec le français par défaut et l'anglais. La langue est lue avec `next/root-params`, sans la passer de composant en composant.
+- `fr.json` et `en.json` ont les mêmes clés. Le type du dictionnaire vient de `fr.json`, donc une clé absente de `en.json` provoque une erreur de compilation.
+- Aucun texte n'est écrit en dur dans les composants, `aria-label` et messages d'erreur compris. Les Server Actions renvoient des codes d'erreur, que l'interface traduit.
+- Le contenu venant de Strapi n'est pas traduit.
+
+### Design system
+
+- Les tokens du Figma (couleurs claires et sombres, ombres, polices, breakpoints de la maquette) sont déclarés une seule fois dans `globals.css`, avec `@theme`.
+- **La palette par défaut de Tailwind est désactivée** (`--color-*: initial`). Seuls les tokens existent, ce qui rend impossible une couleur écrite en dur.
+- Les polices passent par `next/font` : Playfair Display pour les titres, Inter pour le texte. Les icônes viennent uniquement de Hugeicons.
+- Le design est pensé mobile d'abord. Il est vérifié à 375, 768, 1024, 1280 et 1440 px, sans défilement horizontal, avec des zones tactiles de 44 px, un focus visible et le respect de `prefers-reduced-motion`.
+
+## Bibliothèques ajoutées
+
+En plus de ce qu'installent les CLI officielles :
+
+| Paquet                                           | Où             | Pourquoi                                                                                                                                                                                                       |
+| ------------------------------------------------ | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@strapi/utils`                                  | backend        | Classes d'erreurs (`ValidationError`, `NotFoundError`…) qui produisent les bons codes HTTP. Le paquet était déjà présent en dépendance transitive de Strapi : il est déclaré explicitement, à la même version. |
+| `@strapi/plugin-documentation`                   | backend        | Swagger officiel de Strapi, pour tester les routes et partager le contrat avec l'équipe front.                                                                                                                 |
+| `@types/pg`                                      | backend (dev)  | Types du driver `pg` déjà utilisé par Strapi, pour que les tests recréent la base de test.                                                                                                                     |
+| `zod`                                            | frontend       | Validation des formulaires dans les Server Actions et des paramètres d'URL, avec des types dérivés des schémas.                                                                                                |
+| `server-only`                                    | frontend       | Empêche d'importer par erreur le client Strapi ou la DAL dans un composant client.                                                                                                                             |
+| `negotiator`, `@formatjs/intl-localematcher`     | frontend       | Choix de la langue selon `Accept-Language`, comme dans le guide i18n de Next.js.                                                                                                                               |
+| `@hugeicons/react`, `@hugeicons/core-free-icons` | frontend       | Icônes du design (style Stroke Rounded).                                                                                                                                                                       |
+| `clsx`                                           | frontend       | Composition des classes des variantes de composants.                                                                                                                                                           |
+| `@playwright/test`                               | frontend (dev) | Tests end-to-end dans un navigateur réel.                                                                                                                                                                      |
+| `commitlint`, `husky`, `prettier`                | racine (dev)   | Convention de commits et formatage commun aux deux projets.                                                                                                                                                    |
+
+Les tests d'API utilisent le lanceur intégré à Node.js (`node:test`) et `fetch`, sans bibliothèque de test supplémentaire.
+
+## Limites et évolutions
+
+- **Hors périmètre volontairement** : la recherche, les votes « Utile », la meilleure réponse, les vues et les statistiques de la maquette. Le modèle et l'architecture permettent de les ajouter.
+- **Modification et suppression** sont protégées côté API (`is-owner`) mais n'ont pas encore d'interface.
+- Le changement de langue conserve la page courante, mais pas les paramètres de filtre.
+- **Sessions** : il n'y a pas de révocation côté serveur avant l'expiration du JWT. Le passage au mode `refresh` de Strapi demanderait un Route Handler chargé de renouveler le cookie.
+- **Swagger** est public en local. En production, il faut activer « Restricted Access » dans l'administration. La documentation de Strapi signale aussi que ce plugin est peu maintenu, mais il fonctionne en 5.59.
+- **Production** : servir l'application en HTTPS (cookie `secure`), ajouter un index sur `published_at`, et utiliser un cache partagé (`'use cache: remote'`) si l'application tourne sur plusieurs instances.
