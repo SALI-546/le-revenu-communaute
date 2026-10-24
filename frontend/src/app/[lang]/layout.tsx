@@ -17,7 +17,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const { meta } = await getDictionary();
-  return { title: meta.title, description: meta.description };
+  return {
+    title: { default: meta.title, template: `%s · ${meta.title}` },
+    description: meta.description,
+  };
 }
 
 export default async function RootLayout({ children }: LayoutProps<'/[lang]'>) {

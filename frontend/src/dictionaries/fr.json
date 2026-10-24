@@ -93,6 +93,25 @@
     "types": {
       "question": "Question",
       "discussion": "Discussion"
+    },
+    "detail": {
+      "breadcrumb": "Fil d’Ariane",
+      "home": "Accueil",
+      "publishedOn": "Publié le",
+      "repliesEmpty": "Aucune réponse pour le moment. Soyez le premier à partager votre expérience.",
+      "rail": {
+        "title": "Cette discussion",
+        "replies": "Réponses",
+        "category": "Catégorie",
+        "seeAll": "Voir toutes les discussions",
+        "guidelinesTitle": "Avant de répondre",
+        "guidelines": "Partagez votre expérience, sans conseil personnalisé ni sollicitation."
+      },
+      "notFound": {
+        "title": "Cette discussion n’existe plus",
+        "description": "Elle a peut-être été supprimée ou déplacée par la modération.",
+        "back": "Retour aux discussions"
+      }
     }
   },
   "pagination": {
@@ -100,5 +119,27 @@
     "previous": "Page précédente",
     "next": "Page suivante",
     "page": "Page"
+  },
+  "replies": {
+    "form": {
+      "replyingAs": "Répondre en tant que",
+      "label": "Votre réponse",
+      "placeholder": "Partagez votre expérience…",
+      "hint": "Soyez précis, bienveillant et évitez tout conseil personnalisé.",
+      "submit": "Publier ma réponse",
+      "submitting": "Publication…",
+      "success": "Votre réponse a bien été publiée.",
+      "errors": {
+        "required": "Votre réponse ne peut pas être vide.",
+        "tooLong": "Votre réponse ne doit pas dépasser 5 000 caractères.",
+        "discussionNotFound": "Cette discussion n’existe plus.",
+        "unavailable": "Publication impossible pour le moment. Réessayez dans un instant."
+      }
+    },
+    "login": {
+      "title": "Vous avez une expérience à partager ?",
+      "description": "Connectez-vous avec votre compte de la communauté pour répondre.",
+      "cta": "Se connecter pour répondre"
+    }
   }
 }

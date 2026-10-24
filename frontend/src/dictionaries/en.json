@@ -93,6 +93,25 @@
     "types": {
       "question": "Question",
       "discussion": "Discussion"
+    },
+    "detail": {
+      "breadcrumb": "Breadcrumb",
+      "home": "Home",
+      "publishedOn": "Published on",
+      "repliesEmpty": "No replies yet. Be the first to share your experience.",
+      "rail": {
+        "title": "This discussion",
+        "replies": "Replies",
+        "category": "Category",
+        "seeAll": "See all discussions",
+        "guidelinesTitle": "Before you reply",
+        "guidelines": "Share your experience, without personal advice or solicitation."
+      },
+      "notFound": {
+        "title": "This discussion no longer exists",
+        "description": "It may have been deleted or moved by moderators.",
+        "back": "Back to discussions"
+      }
     }
   },
   "pagination": {
@@ -100,5 +119,27 @@
     "previous": "Previous page",
     "next": "Next page",
     "page": "Page"
+  },
+  "replies": {
+    "form": {
+      "replyingAs": "Replying as",
+      "label": "Your reply",
+      "placeholder": "Share your experience…",
+      "hint": "Be precise, kind and avoid personal advice.",
+      "submit": "Post my reply",
+      "submitting": "Posting…",
+      "success": "Your reply has been posted.",
+      "errors": {
+        "required": "Your reply cannot be empty.",
+        "tooLong": "Your reply must not exceed 5,000 characters.",
+        "discussionNotFound": "This discussion no longer exists.",
+        "unavailable": "Unable to post right now. Please try again in a moment."
+      }
+    },
+    "login": {
+      "title": "Have an experience to share?",
+      "description": "Log in with your community account to reply.",
+      "cta": "Log in to reply"
+    }
   }
 }

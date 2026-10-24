@@ -30,3 +30,14 @@ export type Pagination = {
 };
 
 export type StrapiList<T> = { data: T[]; meta: { pagination: Pagination } };
+
+export type Reply = {
+  documentId: string;
+  content: string;
+  publishedAt: string;
+  author: Author;
+};
+
+export type DiscussionDetail = Omit<DiscussionSummary, 'replies'> & {
+  replies: Reply[];
+};

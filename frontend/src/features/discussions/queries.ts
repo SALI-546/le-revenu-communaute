@@ -1,8 +1,13 @@
 import 'server-only';
 import { cacheLife, cacheTag } from 'next/cache';
-import { strapiFetch } from '@/lib/strapi/client';
+import { StrapiError, strapiFetch } from '@/lib/strapi/client';
 import type { ListFilters } from './schemas';
-import type { Category, DiscussionSummary, StrapiList } from './types';
+import type {
+  Category,
+  DiscussionDetail,
+  DiscussionSummary,
+  StrapiList,
+} from './types';
 
 export const DISCUSSIONS_TAG = 'discussions';
 const CATEGORIES_TAG = 'categories';
@@ -37,4 +42,22 @@ export async function getCategories() {
     query,
   });
   return data;
+}
+
+export async function getDiscussion(slug: string) {
+  'use cache';
+  cacheTag(DISCUSSIONS_TAG);
+  cacheLife('minutes');
+
+  try {
+    const { data } = await strapiFetch<{ data: DiscussionDetail }>(
+      `/discussions/slug/${encodeURIComponent(slug)}`,
+    );
+    return data;
+  } catch (error) {
+    if (error instanceof StrapiError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 }
