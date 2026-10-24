@@ -13,11 +13,15 @@ type CommunityIntroProps = {
 export async function CommunityIntro({ searchParams }: CommunityIntroProps) {
   await connection();
   const { category: slug } = listSearchParamsSchema.parse(await searchParams);
-  const [categories, { home, discussions, layout }, locale] = await Promise.all(
-    [getCategories(), getDictionary(), getLocale()],
-  );
+  const [categories, scopedStats, { home, discussions, layout }, locale] =
+    await Promise.all([
+      getCategories(),
+      getCommunityStats(slug),
+      getDictionary(),
+      getLocale(),
+    ]);
   const category = categories.find((space) => space.slug === slug);
-  const stats = await getCommunityStats(category?.slug);
+  const stats = slug && !category ? await getCommunityStats() : scopedStats;
 
   return (
     <div className="grid gap-6">

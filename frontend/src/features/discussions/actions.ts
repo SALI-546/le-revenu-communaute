@@ -6,7 +6,7 @@ import * as z from 'zod';
 import { defaultLocale, hasLocale } from '@/dictionaries/config';
 import { verifySession } from '@/lib/auth/dal';
 import { StrapiError, strapiFetch } from '@/lib/strapi/client';
-import { DISCUSSIONS_TAG } from './queries';
+import { CATEGORIES_TAG, DISCUSSIONS_TAG } from './queries';
 import { discussionSchema, documentIdSchema } from './schemas';
 import type { DiscussionFormState } from './types';
 
@@ -51,6 +51,7 @@ export async function createDiscussion(
   }
 
   updateTag(DISCUSSIONS_TAG);
+  updateTag(CATEGORIES_TAG);
   const locale = String(formData.get('locale') ?? '');
   redirect(
     `/${hasLocale(locale) ? locale : defaultLocale}/discussions/${slug}`,
@@ -62,11 +63,27 @@ export async function chooseBestReply(
   replyId: string | null,
 ) {
   const { token } = await verifySession();
-  const reply = replyId === null ? null : documentIdSchema.parse(replyId);
-  await strapiFetch(
-    `/discussions/${documentIdSchema.parse(discussionId)}/best-reply`,
-    { method: 'PUT', token, body: { data: { reply } } },
-  );
+  const ids = z
+    .object({
+      discussionId: documentIdSchema,
+      replyId: documentIdSchema.nullable(),
+    })
+    .safeParse({ discussionId, replyId });
+  if (!ids.success) {
+    return;
+  }
+  try {
+    await strapiFetch(`/discussions/${ids.data.discussionId}/best-reply`, {
+      method: 'PUT',
+      token,
+      body: { data: { reply: ids.data.replyId } },
+    });
+  } catch (error) {
+    // A refused change (deleted reply, not the author) only refreshes the page to its real state.
+    if (!(error instanceof StrapiError)) {
+      throw error;
+    }
+  }
   updateTag(DISCUSSIONS_TAG);
   refresh();
 }

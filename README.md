@@ -237,6 +237,7 @@ backend/tests/       tests d'API
 - **Erreurs HTTP.** 400 pour une validation, 401 pour un utilisateur non connecté, 403 pour un accès interdit, 404 pour une ressource introuvable. Un visiteur reçoit 403 avant même la policy, parce que le rôle Public n'a pas la permission de créer. La policy reste une défense en profondeur.
 - **Votes « Utile ».** Chaque vote est un document `Vote`, ce qui permet de savoir qui a voté et de refuser un second vote. Le total est recompté avec `count()` et copié dans `Reply.helpfulCount` : la liste et le détail lisent un simple entier, sans exposer les votants ni charger les votes. Strapi ne sait pas déclarer un index unique sur deux colonnes : l'unicité du couple (réponse, votant) est vérifiée par le service. Supprimer une réponse supprime ses votes.
 - **Meilleure réponse.** `PUT /discussions/:id/best-reply` passe par `is-owner`, comme la modification. Le service vérifie que la réponse appartient à la discussion.
+- **Query Engine pour deux écritures.** Sans Draft & Publish, chaque `update()` du Document Service remet `publishedAt` à la date du jour (`statusToData` dans `@strapi/core`). Un vote déplacerait la réponse, et le choix d'une meilleure réponse ferait remonter la discussion en tête de liste. Ces deux écritures (`helpfulCount` et `bestReply`) passent donc par `strapi.db.query().update()`, qui ne touche que les colonnes demandées. C'est le cas que la documentation réserve au Query Engine. Un test d'API vérifie que les dates ne bougent pas.
 - **Pagination.** 10 éléments par défaut et 50 au maximum (`config/api.ts`). Le tri est limité à `publishedAt` : toute autre valeur renvoie 400.
 
 ### Comptage des réponses
@@ -345,6 +346,7 @@ Les tests d'API utilisent le lanceur intégré à Node.js (`node:test`) et `fetc
 
 - **Hors périmètre volontairement** : les vues, « Suivre », « Signaler », le classement et les événements de la maquette, faute de données réelles derrière. Le nombre de membres n'est pas affiché pour ne pas ouvrir la route `users/count` aux visiteurs.
 - **Modification et suppression** sont protégées côté API (`is-owner`) mais n'ont pas encore d'interface.
+- **Cache.** Toute écriture invalide le tag `discussions`, donc toutes les listes et tous les détails en cache. C'est simple et sans risque à cette échelle. Avec beaucoup de trafic, on ajouterait un tag par discussion pour n'invalider que la page concernée.
 - Le détail charge toutes les réponses d'une discussion. Pour de très longs fils, il faudrait les paginer.
 - Une page au-delà de la dernière (`?page=99`) affiche l'état vide plutôt qu'une redirection.
 - Le changement de langue conserve la page courante, mais pas les paramètres de filtre.

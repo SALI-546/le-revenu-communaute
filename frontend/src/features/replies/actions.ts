@@ -49,8 +49,21 @@ export async function createReply(
 
 export async function toggleHelpful(replyId: string) {
   const { token } = await verifySession();
-  const id = documentIdSchema.parse(replyId);
-  await strapiFetch(`/replies/${id}/helpful`, { method: 'POST', token });
+  const id = documentIdSchema.safeParse(replyId);
+  if (!id.success) {
+    return;
+  }
+  try {
+    await strapiFetch(`/replies/${id.data}/helpful`, {
+      method: 'POST',
+      token,
+    });
+  } catch (error) {
+    // A refused vote (deleted reply, own reply) only refreshes the page to its real state.
+    if (!(error instanceof StrapiError)) {
+      throw error;
+    }
+  }
   updateTag(DISCUSSIONS_TAG);
   refresh();
 }

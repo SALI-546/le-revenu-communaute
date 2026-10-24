@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { connection } from 'next/server';
+import { DashboardSquare01Icon } from '@hugeicons/core-free-icons';
+import { StateCard } from '@/components/ui/StateCard';
 import { getDictionary, getLocale } from '@/dictionaries';
 import { pluralize } from '@/lib/plural';
 import { listHref } from '../listHref';
@@ -13,6 +15,16 @@ export async function SpacesGrid() {
     getDictionary(),
     getLocale(),
   ]);
+
+  if (categories.length === 0) {
+    return (
+      <StateCard
+        icon={DashboardSquare01Icon}
+        title={spaces.empty.title}
+        description={spaces.empty.description}
+      />
+    );
+  }
 
   return (
     <ul className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">

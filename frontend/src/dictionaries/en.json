@@ -356,6 +356,10 @@
     "count": {
       "one": "discussion",
       "other": "discussions"
+    },
+    "empty": {
+      "title": "No spaces yet",
+      "description": "Topic spaces will appear here as soon as they are created."
     }
   },
   "charter": {

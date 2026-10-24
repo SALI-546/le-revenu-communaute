@@ -356,6 +356,10 @@
     "count": {
       "one": "discussion",
       "other": "discussions"
+    },
+    "empty": {
+      "title": "Aucun espace pour le moment",
+      "description": "Les espaces thématiques apparaîtront ici dès leur création."
     }
   },
   "charter": {

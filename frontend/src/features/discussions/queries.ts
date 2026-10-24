@@ -11,7 +11,7 @@ import type {
 } from './types';
 
 export const DISCUSSIONS_TAG = 'discussions';
-const CATEGORIES_TAG = 'categories';
+export const CATEGORIES_TAG = 'categories';
 const PAGE_SIZE = 10;
 
 const WITHOUT_REPLY = 'filters[replies][id][$null]';
