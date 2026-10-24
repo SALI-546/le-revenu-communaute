@@ -2,12 +2,17 @@ import * as z from 'zod';
 
 export const SORT_ORDERS = ['newest', 'oldest'] as const;
 
+export const LIST_TABS = ['recent', 'unanswered'] as const;
+
+const slugSchema = z
+  .string()
+  .regex(/^[a-z0-9-]+$/)
+  .optional()
+  .catch(undefined);
+
 export const listSearchParamsSchema = z.object({
-  category: z
-    .string()
-    .regex(/^[a-z0-9-]+$/)
-    .optional()
-    .catch(undefined),
+  category: slugSchema,
+  tab: z.enum(LIST_TABS).catch('recent'),
   sort: z.enum(SORT_ORDERS).catch('newest'),
   page: z.coerce.number().int().min(1).catch(1),
   q: z
@@ -22,6 +27,14 @@ export const listSearchParamsSchema = z.object({
 export type ListFilters = z.infer<typeof listSearchParamsSchema>;
 
 export const DISCUSSION_TYPES = ['question', 'discussion'] as const;
+
+export const discussionPrefillSchema = z.object({
+  title: z.string().trim().max(150).optional().catch(undefined),
+  type: z.enum(DISCUSSION_TYPES).optional().catch(undefined),
+  category: slugSchema,
+});
+
+export type DiscussionPrefill = z.infer<typeof discussionPrefillSchema>;
 
 export const discussionSchema = z.object({
   type: z.enum(DISCUSSION_TYPES, { error: 'typeInvalid' }),

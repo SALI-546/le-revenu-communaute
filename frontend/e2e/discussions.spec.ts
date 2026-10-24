@@ -38,14 +38,28 @@ test.describe('discussion list', () => {
     await search.press('Enter');
 
     await expect(page).toHaveURL(/\/fr\?q=pea$/);
-    await expect(page.getByText('Résultats pour')).toBeVisible();
-    await expect(page.getByRole('link', { name: PEA_TITLE })).toBeVisible();
+    const feed = page.getByRole('region', { name: 'Fil des discussions' });
+    await expect(feed.getByText('Résultats pour')).toBeVisible();
+    await expect(feed.getByRole('link', { name: PEA_TITLE })).toBeVisible();
     await expect(
-      page.getByRole('link', { name: /Crédit immobilier/ }),
+      feed.getByRole('link', { name: /Crédit immobilier/ }),
     ).toHaveCount(0);
 
     await page.getByRole('link', { name: 'Effacer la recherche' }).click();
     await expect(page).toHaveURL(/\/fr$/);
+  });
+
+  test('lists the discussions waiting for a reply', async ({ page }) => {
+    await page.goto('/fr');
+    await page.getByRole('link', { name: /^Sans réponse/ }).click();
+
+    await expect(page).toHaveURL(/\/fr\?tab=unanswered$/);
+    const feed = page.getByRole('region', { name: 'Fil des discussions' });
+    const cards = await feed.getByRole('article').all();
+    expect(cards.length).toBeGreaterThan(0);
+    for (const card of cards) {
+      await expect(card.locator('strong').first()).toHaveText('0');
+    }
   });
 
   test('opens a discussion on its own URL with its replies', async ({
@@ -71,6 +85,33 @@ test.describe('publishing', () => {
     await expect(page).toHaveURL(
       /\/fr\/login\?redirectTo=%2Ffr%2Fdiscussions%2Fnew/,
     );
+  });
+
+  test('keeps a quick question through the login redirect', async ({
+    page,
+  }) => {
+    await page.goto('/fr/discussions/new?title=Bonjour&category=bourse');
+
+    await expect(page).toHaveURL(
+      /redirectTo=%2Ffr%2Fdiscussions%2Fnew%3Ftitle%3DBonjour%26category%3Dbourse/,
+    );
+  });
+
+  test('prefills the form from the quick question field', async ({ page }) => {
+    await login(page, 'thomas@demo.lerevenu.test');
+    await page.goto('/fr?category=bourse');
+    const question = 'Faut-il renforcer son PEA maintenant ?';
+    await page.getByLabel('Votre question pour la communauté').fill(question);
+    await page.getByRole('button', { name: 'Continuer' }).click();
+
+    await expect(page).toHaveURL(/\/fr\/discussions\/new\?/);
+    await expect(page.getByLabel('Titre de la publication')).toHaveValue(
+      question,
+    );
+    await expect(
+      page.getByLabel('Catégorie').locator('option:checked'),
+    ).toHaveText('Bourse & actions');
+    await expect(page.getByRole('radio', { name: /^Question/ })).toBeChecked();
   });
 
   test('shows validation errors, then publishes a discussion', async ({

@@ -13,6 +13,7 @@ import {
   Wallet01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { SPACE_COLORS } from '../spaceColors';
 import type { SpaceColor, SpaceIconName } from '../types';
 
 const ICONS = {
@@ -28,20 +29,6 @@ const ICONS = {
   wallet: Wallet01Icon,
   coffee: Coffee01Icon,
 } satisfies Record<SpaceIconName, unknown>;
-
-const COLORS: Record<SpaceColor, string> = {
-  blue: 'bg-space-blue',
-  slate: 'bg-space-slate',
-  green: 'bg-space-green',
-  teal: 'bg-space-teal',
-  orange: 'bg-space-orange',
-  indigo: 'bg-space-indigo',
-  rose: 'bg-space-rose',
-  purple: 'bg-space-purple',
-  cyan: 'bg-space-cyan',
-  gray: 'bg-space-gray',
-  sand: 'bg-space-sand',
-};
 
 const SIZES = {
   sm: { box: 'size-[26px] rounded-[7px]', icon: 15 },
@@ -61,7 +48,7 @@ export function SpaceIcon({ icon, color, size = 'sm' }: SpaceIconProps) {
       aria-hidden="true"
       className={clsx(
         'inline-grid flex-none place-items-center text-on-brand shadow-sm',
-        COLORS[color],
+        SPACE_COLORS[color],
         SIZES[size].box,
       )}
     >

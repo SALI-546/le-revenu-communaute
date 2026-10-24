@@ -11,7 +11,9 @@ export async function generateMetadata() {
   return { title: discussions.create.title };
 }
 
-export default async function NewDiscussionPage() {
+export default async function NewDiscussionPage({
+  searchParams,
+}: PageProps<'/[lang]/discussions/new'>) {
   const [{ discussions }, locale] = await Promise.all([
     getDictionary(),
     getLocale(),
@@ -46,7 +48,7 @@ export default async function NewDiscussionPage() {
           <div className="h-[42rem] animate-pulse rounded-xl bg-surface-2" />
         }
       >
-        <NewDiscussionSection />
+        <NewDiscussionSection searchParams={searchParams} />
       </Suspense>
     </main>
   );

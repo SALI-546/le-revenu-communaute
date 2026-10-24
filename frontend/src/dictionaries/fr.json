@@ -72,7 +72,68 @@
     "hero": {
       "eyebrow": "La communauté des lecteurs",
       "title": "Parlons de votre argent, entre lecteurs éclairés.",
-      "description": "Posez vos questions, partagez vos expériences et échangez avec la rédaction du Revenu."
+      "description": "Posez vos questions, partagez vos expériences et échangez avec la rédaction du Revenu.",
+      "ask": "Poser une question",
+      "explore": "Explorer les espaces",
+      "stats": {
+        "label": "La communauté en chiffres",
+        "answered": "des questions ont reçu une réponse",
+        "spaces": {
+          "one": "espace thématique",
+          "other": "espaces thématiques"
+        }
+      }
+    },
+    "quickAsk": {
+      "label": "Votre question pour la communauté",
+      "placeholder": "Posez votre question à la communauté…",
+      "placeholderSpace": "Posez votre question dans « {space} »…",
+      "typeLabel": "Type de publication",
+      "submit": "Continuer"
+    },
+    "tabs": {
+      "label": "Afficher",
+      "recent": "Récentes",
+      "unanswered": "Sans réponse"
+    },
+    "space": {
+      "back": "Tous les espaces",
+      "publish": "Publier ici",
+      "siteLink": "Toute la rubrique « {section} » sur lerevenu.com",
+      "answered": "questions résolues"
+    },
+    "aside": {
+      "label": "Autour de la communauté",
+      "join": {
+        "title": "Rejoignez la communauté",
+        "description": "Avec votre compte lerevenu.com, gratuitement.",
+        "benefits": [
+          "Posez vos questions d’argent aux autres lecteurs",
+          "Partagez votre expérience et aidez les débutants",
+          "Échangez avec la rédaction du Revenu"
+        ],
+        "cta": "Se connecter"
+      },
+      "welcome": {
+        "title": "Bonjour {name}",
+        "description": "Une question d’argent ? Les lecteurs et la rédaction vous répondent.",
+        "cta": "Publier une discussion"
+      },
+      "awaiting": {
+        "title": "À vous de répondre",
+        "description": "Ces lecteurs attendent encore un premier avis.",
+        "all": "Toutes les discussions sans réponse",
+        "empty": "Toutes les questions ont reçu une réponse. Merci à vous !"
+      },
+      "charter": {
+        "title": "La charte en bref",
+        "points": [
+          "On débat des idées, jamais des personnes",
+          "On partage une expérience, pas un conseil personnalisé",
+          "Aucune donnée personnelle ou bancaire"
+        ],
+        "link": "Lire la charte"
+      }
     }
   },
   "auth": {
@@ -100,8 +161,7 @@
   },
   "discussions": {
     "list": {
-      "label": "Tous les sujets",
-      "title": "Discussions récentes",
+      "title": "Fil des discussions",
       "publish": "Publier une discussion",
       "categories": {
         "nav": "Catégories",
@@ -141,6 +201,10 @@
         "emptyDescription": "Essayez avec d’autres mots-clés ou une autre catégorie.",
         "quoteOpen": "« ",
         "quoteClose": " »"
+      },
+      "unansweredEmpty": {
+        "title": "Tout le monde a eu une réponse",
+        "description": "Aucune discussion n’attend de réponse ici pour le moment."
       }
     },
     "types": {

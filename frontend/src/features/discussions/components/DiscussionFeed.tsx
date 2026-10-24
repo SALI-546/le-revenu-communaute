@@ -1,16 +1,23 @@
 import Link from 'next/link';
-import { Add01Icon, MessageMultiple01Icon } from '@hugeicons/core-free-icons';
+import {
+  Add01Icon,
+  CheckmarkCircle02Icon,
+  MessageMultiple01Icon,
+} from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { SearchForm } from '@/components/layout/SearchForm';
 import { buttonStyles } from '@/components/ui/buttonStyles';
 import { Pagination } from '@/components/ui/Pagination';
 import { StateCard } from '@/components/ui/StateCard';
 import { getDictionary, getLocale } from '@/dictionaries';
-import { getCategories, getDiscussions } from '../queries';
+import { localizedHref } from '@/dictionaries/config';
+import { pluralize } from '@/lib/plural';
 import { listHref } from '../listHref';
+import { getCategories, getCommunityStats, getDiscussions } from '../queries';
 import { listSearchParamsSchema } from '../schemas';
 import { CategoryNav } from './CategoryNav';
 import { DiscussionCard } from './DiscussionCard';
+import { FeedTabs } from './FeedTabs';
 import { SortSelect } from './SortSelect';
 
 type DiscussionFeedProps = {
@@ -19,15 +26,24 @@ type DiscussionFeedProps = {
 
 export async function DiscussionFeed({ searchParams }: DiscussionFeedProps) {
   const filters = listSearchParamsSchema.parse(await searchParams);
-  const [{ data: discussions, meta }, categories, dict, locale] =
+  const [{ data: discussions, meta }, categories, stats, dict, locale] =
     await Promise.all([
       getDiscussions(filters),
       getCategories(),
+      getCommunityStats(filters.category),
       getDictionary(),
       getLocale(),
     ]);
   const { list } = dict.discussions;
   const { total } = meta.pagination;
+  const empty = filters.q
+    ? {
+        title: list.search.emptyTitle,
+        description: list.search.emptyDescription,
+      }
+    : filters.tab === 'unanswered'
+      ? list.unansweredEmpty
+      : list.empty;
 
   return (
     <div className="grid gap-5">
@@ -46,47 +62,53 @@ export async function DiscussionFeed({ searchParams }: DiscussionFeedProps) {
         />
       </div>
       <section aria-labelledby="feed-title" className="min-w-0">
-        {filters.q && (
-          <p className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-2">
-            <span>
-              {list.search.results}{' '}
-              <strong className="text-ink">
-                {list.search.quoteOpen}
-                {filters.q}
-                {list.search.quoteClose}
-              </strong>
-            </span>
-            <Link
-              href={listHref(locale, { ...filters, q: undefined, page: 1 })}
-              className="inline-flex min-h-8 items-center text-xs font-bold text-brand-text"
-            >
-              {list.search.clear}
-            </Link>
-          </p>
-        )}
-        <div className="flex min-h-12 items-center justify-between gap-3 border-b border-line">
-          <p className="text-xs text-ink-3">
-            {total}{' '}
-            {
-              list.count[
-                new Intl.PluralRules(locale).select(total) === 'one'
-                  ? 'one'
-                  : 'other'
-              ]
-            }
-          </p>
+        <h2 id="feed-title" className="sr-only">
+          {list.title}
+        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <FeedTabs
+            filters={filters}
+            locale={locale}
+            labels={dict.home.tabs}
+            unanswered={filters.q ? undefined : stats.unanswered}
+          />
           <SortSelect filters={filters} locale={locale} labels={list.sort} />
         </div>
+        <p className="mt-3 mb-3 flex min-h-8 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-3">
+          <span>
+            {total} {pluralize(locale, total, list.count)}
+          </span>
+          {filters.q && (
+            <>
+              <span className="text-ink-2">
+                {list.search.results}{' '}
+                <strong className="text-ink">
+                  {list.search.quoteOpen}
+                  {filters.q}
+                  {list.search.quoteClose}
+                </strong>
+              </span>
+              <Link
+                href={listHref(locale, { ...filters, q: undefined, page: 1 })}
+                className="inline-flex min-h-8 items-center font-bold text-brand-text"
+              >
+                {list.search.clear}
+              </Link>
+            </>
+          )}
+        </p>
         {discussions.length === 0 ? (
           <StateCard
-            icon={MessageMultiple01Icon}
-            title={filters.q ? list.search.emptyTitle : list.empty.title}
-            description={
-              filters.q ? list.search.emptyDescription : list.empty.description
+            icon={
+              filters.tab === 'unanswered' && !filters.q
+                ? CheckmarkCircle02Icon
+                : MessageMultiple01Icon
             }
+            title={empty.title}
+            description={empty.description}
             action={
               <Link
-                href={`/${locale}/discussions/new`}
+                href={localizedHref(locale, '/discussions/new')}
                 className={buttonStyles()}
               >
                 <HugeiconsIcon

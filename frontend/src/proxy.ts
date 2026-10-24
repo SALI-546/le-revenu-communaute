@@ -34,7 +34,9 @@ export function proxy(request: NextRequest) {
   if (PROTECTED_PATHS.includes(path) && !request.cookies.has(SESSION_COOKIE)) {
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}/login`;
-    url.search = new URLSearchParams({ redirectTo: pathname }).toString();
+    url.search = new URLSearchParams({
+      redirectTo: `${pathname}${request.nextUrl.search}`,
+    }).toString();
     return NextResponse.redirect(url);
   }
 

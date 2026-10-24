@@ -16,3 +16,15 @@ export const SITE_BAR_SECTIONS = [
   ...SITE_SECTIONS,
   { key: 'viePratique', path: '/vie-pratique/' },
 ] as const;
+
+type SiteSectionKey = (typeof SITE_BAR_SECTIONS)[number]['key'];
+
+export const SPACE_SECTIONS: Partial<Record<string, SiteSectionKey>> = {
+  bourse: 'bourse',
+  epargne: 'placements',
+  'assurance-vie': 'placements',
+  immobilier: 'immobilier',
+  impots: 'impots',
+  transmission: 'succession',
+  budget: 'viePratique',
+};

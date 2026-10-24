@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { connection } from 'next/server';
 import { getDictionary, getLocale } from '@/dictionaries';
+import { pluralize } from '@/lib/plural';
 import { listHref } from '../listHref';
 import { getCategories } from '../queries';
 import { SpaceIcon } from './SpaceIcon';
@@ -12,7 +13,6 @@ export async function SpacesGrid() {
     getDictionary(),
     getLocale(),
   ]);
-  const plural = new Intl.PluralRules(locale);
 
   return (
     <ul className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
@@ -32,11 +32,7 @@ export async function SpacesGrid() {
               <span className="flex-1 text-sm text-ink-2">{description}</span>
               <span className="text-xs text-ink-3">
                 {discussions.count}{' '}
-                {
-                  spaces.count[
-                    plural.select(discussions.count) === 'one' ? 'one' : 'other'
-                  ]
-                }
+                {pluralize(locale, discussions.count, spaces.count)}
               </span>
             </Link>
           </li>

@@ -5,8 +5,6 @@ import { useActionState, useState } from 'react';
 import {
   Alert02Icon,
   ArrowDown01Icon,
-  HelpCircleIcon,
-  Message01Icon,
   SecurityCheckIcon,
   SentIcon,
   Tick02Icon,
@@ -19,30 +17,32 @@ import type { Dictionary } from '@/dictionaries';
 import type { Locale } from '@/dictionaries/config';
 import { createDiscussion } from '../actions';
 import { DISCUSSION_TYPES } from '../schemas';
-import type { Category, DiscussionFormState } from '../types';
+import { TYPE_ICONS } from '../typeIcons';
+import type { Category, DiscussionFormState, DiscussionType } from '../types';
 
 type DiscussionFormProps = {
   categories: Category[];
   locale: Locale;
   dict: Dictionary['discussions']['create']['form'];
+  initial: { title?: string; type?: DiscussionType; category?: string };
 };
 
 type ErrorCode = keyof Dictionary['discussions']['create']['form']['errors'];
-
-const TYPE_ICONS = { question: HelpCircleIcon, discussion: Message01Icon };
 
 export function DiscussionForm({
   categories,
   locale,
   dict,
+  initial,
 }: DiscussionFormProps) {
   const [state, formAction, pending] = useActionState<
     DiscussionFormState,
     FormData
   >(createDiscussion, {});
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(initial.title ?? '');
   const [content, setContent] = useState('');
-  const selectedType = state.values?.type ?? DISCUSSION_TYPES[0];
+  const selectedType =
+    state.values?.type ?? initial.type ?? DISCUSSION_TYPES[0];
   // Remount the uncontrolled fields so React's post-action form reset restores the submitted values.
   const valuesKey = JSON.stringify(state.values ?? {});
   const errorFor = (
@@ -171,7 +171,7 @@ export function DiscussionForm({
             id={idOf('category')}
             name="category"
             key={valuesKey}
-            defaultValue={state.values?.category ?? ''}
+            defaultValue={state.values?.category ?? initial.category ?? ''}
             required
             aria-invalid={Boolean(errors.category)}
             aria-describedby={describedBy('category')}

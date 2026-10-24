@@ -41,6 +41,14 @@ export type Category = CategorySummary & {
   discussions: { count: number };
 };
 
+export type CommunityStats = {
+  discussions: number;
+  replies: number;
+  questions: number;
+  answeredQuestions: number;
+  unanswered: number;
+};
+
 export type DiscussionSummary = {
   documentId: string;
   title: string;

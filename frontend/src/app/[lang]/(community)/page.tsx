@@ -1,56 +1,27 @@
-import Link from 'next/link';
 import { Suspense } from 'react';
-import { PencilEdit02Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { buttonStyles } from '@/components/ui/buttonStyles';
-import { getDictionary, getLocale } from '@/dictionaries';
-import { localizedHref } from '@/dictionaries/config';
-import { CommunityHero } from '@/features/discussions/components/CommunityHero';
+import { CommunityAside } from '@/features/discussions/components/CommunityAside';
+import { CommunityIntro } from '@/features/discussions/components/CommunityIntro';
+import { CommunityIntroSkeleton } from '@/features/discussions/components/CommunityIntroSkeleton';
 import { DiscussionFeed } from '@/features/discussions/components/DiscussionFeed';
 import { DiscussionFeedSkeleton } from '@/features/discussions/components/DiscussionFeedSkeleton';
 
-export default async function CommunityHomePage({
+export default function CommunityHomePage({
   searchParams,
 }: PageProps<'/[lang]'>) {
-  const [{ home, discussions }, locale] = await Promise.all([
-    getDictionary(),
-    getLocale(),
-  ]);
-  const { list } = discussions;
-
   return (
-    <main id="content" className="pt-6 pb-20 lg:pt-8">
-      <CommunityHero hero={home.hero} />
-      <div className="pt-8">
-        <div className="mb-6 flex items-end justify-between gap-5">
-          <div>
-            <p className="mb-2 text-[10px] font-bold tracking-[0.12em] text-brand-text uppercase">
-              {list.label}
-            </p>
-            <h2
-              id="feed-title"
-              className="font-display text-[25px] leading-tight font-bold text-heading sm:text-[31px]"
-            >
-              {list.title}
-            </h2>
-          </div>
-          <Link
-            href={localizedHref(locale, '/discussions/new')}
-            className={buttonStyles({ className: 'max-sm:w-11 max-sm:px-0' })}
-          >
-            <HugeiconsIcon
-              icon={PencilEdit02Icon}
-              size={17}
-              color="currentColor"
-              aria-hidden="true"
-            />
-            <span className="max-sm:sr-only">{list.publish}</span>
-          </Link>
-        </div>
+    <main
+      id="content"
+      className="grid gap-8 pt-6 pb-20 lg:pt-8 xl:grid-cols-[minmax(0,1fr)_18rem]"
+    >
+      <div className="grid min-w-0 content-start gap-8">
+        <Suspense fallback={<CommunityIntroSkeleton />}>
+          <CommunityIntro searchParams={searchParams} />
+        </Suspense>
         <Suspense fallback={<DiscussionFeedSkeleton />}>
           <DiscussionFeed searchParams={searchParams} />
         </Suspense>
       </div>
+      <CommunityAside />
     </main>
   );
 }

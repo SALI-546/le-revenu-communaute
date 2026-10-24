@@ -13,6 +13,7 @@ import { localizedHref } from '@/dictionaries/config';
 import { ReplyComposer } from '@/features/replies/components/ReplyComposer';
 import { ReplyItem } from '@/features/replies/components/ReplyItem';
 import { formatDate } from '@/lib/formatDate';
+import { pluralize } from '@/lib/plural';
 import { listHref } from '../listHref';
 import { getDiscussion } from '../queries';
 
@@ -34,10 +35,6 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
   const { list, detail, types } = dict.discussions;
   const { title, content, type, publishedAt, author, category, replies } =
     discussion;
-  const plural =
-    new Intl.PluralRules(locale).select(replies.length) === 'one'
-      ? 'one'
-      : 'other';
   const published = detail.publishedAt
     .replace(
       '{date}',
@@ -121,7 +118,7 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
             id="replies-title"
             className="mb-1 font-display text-[23px] font-bold text-heading"
           >
-            {replies.length} {list.replies[plural]}
+            {replies.length} {pluralize(locale, replies.length, list.replies)}
           </h2>
           {replies.length === 0 && (
             <p className="text-sm text-ink-3">{detail.repliesEmpty}</p>

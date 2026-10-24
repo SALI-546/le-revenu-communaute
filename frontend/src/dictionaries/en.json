@@ -72,7 +72,68 @@
     "hero": {
       "eyebrow": "The readers’ community",
       "title": "Let’s talk about your money, among informed readers.",
-      "description": "Ask your questions, share your experience and talk with the Le Revenu newsroom."
+      "description": "Ask your questions, share your experience and talk with the Le Revenu newsroom.",
+      "ask": "Ask a question",
+      "explore": "Explore the spaces",
+      "stats": {
+        "label": "The community in numbers",
+        "answered": "of questions have been answered",
+        "spaces": {
+          "one": "topic space",
+          "other": "topic spaces"
+        }
+      }
+    },
+    "quickAsk": {
+      "label": "Your question for the community",
+      "placeholder": "Ask the community a question…",
+      "placeholderSpace": "Ask a question in “{space}”…",
+      "typeLabel": "Post type",
+      "submit": "Continue"
+    },
+    "tabs": {
+      "label": "Show",
+      "recent": "Recent",
+      "unanswered": "Unanswered"
+    },
+    "space": {
+      "back": "All spaces",
+      "publish": "Post here",
+      "siteLink": "The whole “{section}” section on lerevenu.com",
+      "answered": "questions solved"
+    },
+    "aside": {
+      "label": "Around the community",
+      "join": {
+        "title": "Join the community",
+        "description": "With your lerevenu.com account, for free.",
+        "benefits": [
+          "Ask other readers your money questions",
+          "Share your experience and help beginners",
+          "Talk with the Le Revenu newsroom"
+        ],
+        "cta": "Log in"
+      },
+      "welcome": {
+        "title": "Hello {name}",
+        "description": "A money question? Readers and the newsroom will answer.",
+        "cta": "Start a discussion"
+      },
+      "awaiting": {
+        "title": "Your turn to answer",
+        "description": "These readers are still waiting for a first opinion.",
+        "all": "All unanswered discussions",
+        "empty": "Every question has been answered. Thank you!"
+      },
+      "charter": {
+        "title": "The charter in brief",
+        "points": [
+          "Debate ideas, never people",
+          "Share experience, not personal advice",
+          "No personal or banking details"
+        ],
+        "link": "Read the charter"
+      }
     }
   },
   "auth": {
@@ -100,8 +161,7 @@
   },
   "discussions": {
     "list": {
-      "label": "All topics",
-      "title": "Latest discussions",
+      "title": "Discussion feed",
       "publish": "Start a discussion",
       "categories": {
         "nav": "Categories",
@@ -141,6 +201,10 @@
         "emptyDescription": "Try other keywords or another category.",
         "quoteOpen": "“",
         "quoteClose": "”"
+      },
+      "unansweredEmpty": {
+        "title": "Everyone got an answer",
+        "description": "No discussion is waiting for an answer here right now."
       }
     },
     "types": {

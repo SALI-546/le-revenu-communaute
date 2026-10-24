@@ -7,6 +7,8 @@ Fonctionnalités livrées :
 - liste des discussions issue de Strapi, avec auteur, catégorie, nombre de réponses et date ; filtre par catégorie, tri par date et pagination côté serveur ;
 - recherche dans les titres et les contenus (bonus), combinable avec le filtre et le tri ;
 - navigation par espaces comme sur la maquette : colonne latérale avec les 11 espaces et leurs icônes colorées, page « Tous les espaces » avec le nombre de discussions, page « Charte », barre de navigation fixe sur mobile ;
+- accueil vivant : hero avec les chiffres réels de la communauté (discussions, réponses, part des questions qui ont reçu une réponse), champ « Posez votre question » qui préremplit le formulaire de création, onglets « Récentes » et « Sans réponse » avec compteur, colonne « À vous de répondre » qui met en avant les questions encore sans réponse, carte d'accueil adaptée au visiteur ou au membre connecté ;
+- page d'un espace (`?category=…`) : en-tête avec icône, chiffres de l'espace, lien vers la rubrique correspondante de lerevenu.com et bouton « Publier ici » qui présélectionne l'espace ;
 - détail d'une discussion sur une URL propre (`/fr/discussions/<slug>`) avec ses réponses, et publication d'une réponse ;
 - création d'une discussion (titre de 10 caractères minimum, contenu, catégorie, type) avec erreurs de validation et redirection ;
 - connexion avec les utilisateurs de démonstration, publication interdite aux visiteurs, auteur toujours imposé par le serveur ;
@@ -116,7 +118,7 @@ L'application est servie sur http://localhost:3000. La racine redirige vers `/fr
 
 ## Comptes de démonstration
 
-Le seed crée 11 catégories (les espaces), 5 discussions, 4 réponses et ces utilisateurs. Leur mot de passe est la valeur de `SEED_USER_PASSWORD` :
+Le seed crée 11 catégories (les espaces), 12 discussions, 12 réponses et ces utilisateurs. Leur mot de passe est la valeur de `SEED_USER_PASSWORD` :
 
 | Utilisateur | E-mail                       |
 | ----------- | ---------------------------- |
@@ -124,6 +126,10 @@ Le seed crée 11 catégories (les espaces), 5 discussions, 4 réponses et ces ut
 | Hugo        | `hugo@demo.lerevenu.test`    |
 | Vincent     | `vincent@demo.lerevenu.test` |
 | Camille     | `camille@demo.lerevenu.test` |
+| Odile       | `odile@demo.lerevenu.test`   |
+| Nadia       | `nadia@demo.lerevenu.test`   |
+| Karim       | `karim@demo.lerevenu.test`   |
+| Sophie      | `sophie@demo.lerevenu.test`  |
 
 ## Tests
 
@@ -134,14 +140,14 @@ cd backend
 npm test
 ```
 
-Les 15 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
+Les 18 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
 
-| Exigence                          | Tests                                                                                                                                                                      |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Validation d'une discussion       | titre de moins de 10 caractères refusé (400), titre de 10 caractères accepté, contenu vide refusé, catégorie inconnue refusée                                              |
-| Publication sans authentification | création d'une discussion et d'une réponse refusées (401 ou 403)                                                                                                           |
-| Usurpation d'auteur               | un `author` envoyé par le client est ignoré : l'auteur est vérifié **en base**, pour une discussion et pour une réponse ; modifier la discussion d'un autre renvoie 403    |
-| Affichage des discussions         | titre, auteur, catégorie, nombre de réponses, date, tri ; filtre par catégorie ; recherche ; aucune adresse e-mail exposée ; espaces triés avec icône, couleur et compteur |
+| Exigence                          | Tests                                                                                                                                                                                                                                                                  |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Validation d'une discussion       | titre de moins de 10 caractères refusé (400), titre de 10 caractères accepté, contenu vide refusé, catégorie inconnue refusée                                                                                                                                          |
+| Publication sans authentification | création d'une discussion et d'une réponse refusées (401 ou 403)                                                                                                                                                                                                       |
+| Usurpation d'auteur               | un `author` envoyé par le client est ignoré : l'auteur est vérifié **en base**, pour une discussion et pour une réponse ; modifier la discussion d'un autre renvoie 403                                                                                                |
+| Affichage des discussions         | titre, auteur, catégorie, nombre de réponses, date, tri ; filtre par catégorie ; recherche ; aucune adresse e-mail exposée ; espaces triés avec icône, couleur et compteur ; discussions sans réponse ; chiffres de la communauté et d'un espace, slug invalide refusé |
 
 ### Parcours end-to-end (frontend)
 
@@ -150,7 +156,7 @@ cd frontend
 npm run test:e2e
 ```
 
-Playwright démarre Strapi et Next s'ils ne tournent pas déjà, puis exécute 11 parcours sur desktop et sur mobile : liste, filtre, recherche, détail, redirection d'un visiteur vers la connexion, création avec erreurs de validation puis publication, réponse, et absence de défilement horizontal sur les pages principales. Il utilise le Google Chrome installé sur la machine (`channel: 'chrome'`). Les tests écrivent dans la base de développement des contenus suffixés `[e2e]`. Si le port 3000 est déjà pris par une autre application, lancez `E2E_PORT=3100 npm run test:e2e`.
+Playwright démarre Strapi et Next s'ils ne tournent pas déjà, puis exécute 14 parcours sur desktop et sur mobile : liste, filtre, recherche, onglet « Sans réponse », détail, redirection d'un visiteur vers la connexion (en conservant la question préremplie), préremplissage depuis le champ rapide, création avec erreurs de validation puis publication, réponse, et absence de défilement horizontal sur les pages principales. Il utilise le Google Chrome installé sur la machine (`channel: 'chrome'`). Les tests écrivent dans la base de développement des contenus suffixés `[e2e]`. Si le port 3000 est déjà pris par une autre application, lancez `E2E_PORT=3100 npm run test:e2e`.
 
 ### Qualité
 
@@ -171,15 +177,16 @@ La spécification générée automatiquement ne reflétait pas le vrai contrat :
 
 Routes principales :
 
-| Méthode     | Route                         | Accès                                                                                                                                                                              |
-| ----------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| GET         | `/api/discussions`            | public : filtre `filters[category][slug][$eq]`, recherche `$containsi` sur `title` et `content`, tri `publishedAt:desc` ou `publishedAt:asc`, pagination de 50 éléments au maximum |
-| GET         | `/api/discussions/slug/:slug` | public : discussion avec ses réponses                                                                                                                                              |
-| POST        | `/api/discussions`            | connecté                                                                                                                                                                           |
-| PUT, DELETE | `/api/discussions/:id`        | auteur uniquement                                                                                                                                                                  |
-| POST        | `/api/replies`                | connecté                                                                                                                                                                           |
-| PUT, DELETE | `/api/replies/:id`            | auteur uniquement                                                                                                                                                                  |
-| GET         | `/api/categories`             | public                                                                                                                                                                             |
+| Méthode     | Route                         | Accès                                                                                                                                                                                                                                                |
+| ----------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET         | `/api/discussions`            | public : filtre `filters[category][slug][$eq]`, recherche `$containsi` sur `title` et `content`, discussions sans réponse avec `filters[replies][id][$null]=true`, tri `publishedAt:desc` ou `publishedAt:asc`, pagination de 50 éléments au maximum |
+| GET         | `/api/discussions/stats`      | public : nombre de discussions, de réponses, de questions et de questions ayant reçu une réponse, de discussions sans réponse ; `?category=<slug>` pour un espace                                                                                    |
+| GET         | `/api/discussions/slug/:slug` | public : discussion avec ses réponses                                                                                                                                                                                                                |
+| POST        | `/api/discussions`            | connecté                                                                                                                                                                                                                                             |
+| PUT, DELETE | `/api/discussions/:id`        | auteur uniquement                                                                                                                                                                                                                                    |
+| POST        | `/api/replies`                | connecté                                                                                                                                                                                                                                             |
+| PUT, DELETE | `/api/replies/:id`            | auteur uniquement                                                                                                                                                                                                                                    |
+| GET         | `/api/categories`             | public                                                                                                                                                                                                                                               |
 
 ## Architecture du backend
 
@@ -257,8 +264,9 @@ frontend/src/
 - **Next ne parle qu'à Strapi**, via `lib/strapi/client.ts`, marqué `server-only`. Il n'accède jamais à PostgreSQL directement.
 - **Lire et écrire sont séparés.** Les lectures sont des fonctions `'use cache'` dans `queries.ts`, appelées par des Server Components. Les mutations sont des Server Actions dans `actions.ts`.
 - **Cache Components et Partial Prerendering.** Le contenu stable (en-tête, hero, titres) fait partie du shell statique. Ce qui dépend de la requête (paramètres d'URL, session) est streamé sous `<Suspense>`, avec un skeleton. Toutes les pages sont donc partiellement prérendues, et **le build ne dépend pas de Strapi**.
-- **Recherche, tri, filtre et pagination** passent par l'URL (`?q=…&category=…&sort=…&page=…`). Les paramètres sont validés par Zod, puis transmis à Strapi. Ils servent aussi de clé de cache. Aucun tri ni filtre n'est fait en JavaScript.
-- La **recherche** utilise le composant `<Form>` de Next (`next/form`) : un formulaire GET qui navigue côté client et fonctionne aussi sans JavaScript. Strapi filtre les titres et les contenus avec `$containsi`.
+- **Recherche, onglet, tri, filtre et pagination** passent par l'URL (`?q=…&category=…&tab=…&sort=…&page=…`). Les paramètres sont validés par Zod, puis transmis à Strapi. Ils servent aussi de clé de cache. Aucun tri ni filtre n'est fait en JavaScript.
+- La **recherche** utilise le composant `<Form>` de Next (`next/form`) : un formulaire GET qui navigue côté client et fonctionne aussi sans JavaScript. Strapi filtre les titres et les contenus avec `$containsi`. Le champ « Posez votre question » suit le même principe : un formulaire GET vers `/discussions/new?title=…&type=…&category=…`, dont les paramètres sont validés par Zod puis utilisés comme valeurs initiales. Un visiteur est envoyé vers la connexion avec ces paramètres dans `redirectTo`, et retrouve sa question après s'être connecté.
+- **Chiffres de la communauté.** Un seul appel à `GET /discussions/stats`, qui compte côté Strapi avec `count()` du Document Service, au lieu de quatre requêtes paginées depuis Next. Le filtre « sans réponse » (`$null` sur la relation `replies`) n'est pas illustré dans la documentation de Strapi : son comportement est donc verrouillé par un test d'API. Le nombre de membres n'est pas affiché, car il demanderait d'ouvrir aux visiteurs la route `users/count`.
 
 ### Actualisation après une écriture
 

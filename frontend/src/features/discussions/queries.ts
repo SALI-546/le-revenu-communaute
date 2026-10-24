@@ -4,6 +4,7 @@ import { StrapiError, strapiFetch } from '@/lib/strapi/client';
 import type { ListFilters } from './schemas';
 import type {
   Category,
+  CommunityStats,
   DiscussionDetail,
   DiscussionSummary,
   StrapiList,
@@ -13,7 +14,15 @@ export const DISCUSSIONS_TAG = 'discussions';
 const CATEGORIES_TAG = 'categories';
 const PAGE_SIZE = 10;
 
-export async function getDiscussions({ category, sort, page, q }: ListFilters) {
+const WITHOUT_REPLY = 'filters[replies][id][$null]';
+
+export async function getDiscussions({
+  category,
+  tab,
+  sort,
+  page,
+  q,
+}: ListFilters) {
   'use cache';
   cacheTag(DISCUSSIONS_TAG);
   cacheLife('minutes');
@@ -26,11 +35,45 @@ export async function getDiscussions({ category, sort, page, q }: ListFilters) {
   if (category) {
     query.set('filters[category][slug][$eq]', category);
   }
+  if (tab === 'unanswered') {
+    query.set(WITHOUT_REPLY, 'true');
+  }
   if (q) {
     query.set('filters[$and][0][$or][0][title][$containsi]', q);
     query.set('filters[$and][0][$or][1][content][$containsi]', q);
   }
   return strapiFetch<StrapiList<DiscussionSummary>>('/discussions', { query });
+}
+
+export async function getAwaitingQuestions() {
+  'use cache';
+  cacheTag(DISCUSSIONS_TAG);
+  cacheLife('minutes');
+
+  const query = new URLSearchParams({
+    'filters[type][$eq]': 'question',
+    [WITHOUT_REPLY]: 'true',
+    sort: 'publishedAt:desc',
+    'pagination[pageSize]': '3',
+  });
+  const { data } = await strapiFetch<StrapiList<DiscussionSummary>>(
+    '/discussions',
+    { query },
+  );
+  return data;
+}
+
+export async function getCommunityStats(category?: string) {
+  'use cache';
+  cacheTag(DISCUSSIONS_TAG);
+  cacheLife('minutes');
+
+  const query = new URLSearchParams(category ? { category } : {});
+  const { data } = await strapiFetch<{ data: CommunityStats }>(
+    '/discussions/stats',
+    { query },
+  );
+  return data;
 }
 
 export async function getCategories() {

@@ -6,6 +6,8 @@ import { Avatar } from '@/components/ui/Avatar';
 import type { Dictionary } from '@/dictionaries';
 import type { Locale } from '@/dictionaries/config';
 import { formatDate } from '@/lib/formatDate';
+import { pluralize } from '@/lib/plural';
+import { TYPE_ICONS } from '../typeIcons';
 import type { DiscussionSummary } from '../types';
 
 type DiscussionCardProps = {
@@ -21,12 +23,7 @@ export function DiscussionCard({
 }: DiscussionCardProps) {
   const { title, slug, type, content, publishedAt, author, category, replies } =
     discussion;
-  const replyLabel =
-    dict.list.replies[
-      new Intl.PluralRules(locale).select(replies.count) === 'one'
-        ? 'one'
-        : 'other'
-    ];
+  const replyLabel = pluralize(locale, replies.count, dict.list.replies);
   const date = formatDate(locale, publishedAt, { dateStyle: 'medium' });
 
   return (
@@ -43,13 +40,21 @@ export function DiscussionCard({
         <span>{replyLabel}</span>
       </div>
       <div className="min-w-0">
-        <p className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+        <p className="mb-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs">
           {category && (
             <span className="font-bold tracking-[0.12em] text-brand-text uppercase">
               {category.name}
             </span>
           )}
-          <span className="text-ink-3">{dict.types[type]}</span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-semibold text-ink-2">
+            <HugeiconsIcon
+              icon={TYPE_ICONS[type]}
+              size={12}
+              color="currentColor"
+              aria-hidden="true"
+            />
+            {dict.types[type]}
+          </span>
         </p>
         <h3 className="font-display text-base leading-snug font-bold text-heading sm:text-lg">
           <Link

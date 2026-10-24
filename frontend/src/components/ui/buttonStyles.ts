@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost';
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'onHero';
 
 const variants: Record<ButtonVariant, string> = {
   primary:
@@ -9,6 +9,8 @@ const variants: Record<ButtonVariant, string> = {
     'border-line bg-surface text-ink hover:border-line-strong hover:bg-surface-2',
   ghost:
     'border-line bg-glass text-ink hover:border-line-strong hover:bg-surface-2',
+  onHero:
+    'border-on-hero/25 bg-on-hero/5 text-on-hero hover:border-on-hero/40 hover:bg-on-hero/10',
 };
 
 type ButtonStyleOptions = {
