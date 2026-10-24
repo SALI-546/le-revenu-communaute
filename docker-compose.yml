@@ -16,5 +16,43 @@ services:
       timeout: 5s
       retries: 10
 
+  strapi:
+    build: ./backend
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      HOST: 0.0.0.0
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${POSTGRES_DB}
+      DATABASE_USERNAME: ${POSTGRES_USER}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - '1337:1337'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'wget -q --spider http://127.0.0.1:1337/_health || exit 1',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 30s
+
+  next:
+    build: ./frontend
+    restart: unless-stopped
+    environment:
+      STRAPI_URL: http://strapi:1337
+    ports:
+      - '3000:3000'
+    depends_on:
+      strapi:
+        condition: service_healthy
+
 volumes:
   postgres-data:

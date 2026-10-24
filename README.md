@@ -34,9 +34,26 @@ Fonctionnalités livrées :
 | Tests           | `node:test` pour l'API, Playwright pour les parcours e2e                              |
 | Qualité         | ESLint, Prettier, commitlint et husky                                                 |
 
-Les projets ont été créés avec les CLI officielles (`create-next-app`, `create-strapi`). Les versions sont celles qu'elles installent.
+Les projets ont été créés avec les CLI officielles (`create-next-app`, `create-strapi`). Les versions sont celles qu'elles installent : par exemple React 19.3.0, et Tailwind branché par `@tailwindcss/turbopack` (le montage par défaut de `create-next-app` 16.4).
 
 ## Installation et lancement
+
+### Lancement rapide avec Docker (bonus)
+
+Une seule commande construit et démarre PostgreSQL, Strapi et Next, sans Node.js sur la machine. Il faut seulement avoir créé `.env` et `backend/.env` (étape 2 ci-dessous) :
+
+```bash
+docker compose up -d --build --wait
+```
+
+- Application : http://localhost:3000, API : http://localhost:1337/api.
+- Les images tournent en **mode production** : Strapi est compilé, Next utilise sa sortie `standalone`, et les deux processus s'exécutent sous un utilisateur non-root.
+- Les secrets ne sont pas copiés dans les images (`.dockerignore`) : ils sont lus au démarrage depuis `.env` et `backend/.env`.
+- Les services démarrent dans l'ordre grâce aux healthchecks : PostgreSQL, puis Strapi, puis Next. Le build de Next ne dépend pas de Strapi.
+- En production, le plugin Documentation ne régénère pas Swagger : utilisez le mode développement ci-dessous pour y accéder.
+- `docker compose down` arrête la stack. Les données restent dans le volume `postgres-data`.
+
+Les étapes suivantes décrivent le **mode développement**, avec rechargement à chaud. N'utilisez pas les deux modes en même temps : ils partagent les ports 1337 et 3000.
 
 ### Prérequis
 
@@ -71,6 +88,8 @@ cp frontend/.env.example frontend/.env.local
 ```bash
 docker compose up -d --wait postgres
 ```
+
+Cette commande ne démarre que PostgreSQL. Strapi et Next se lancent ensuite avec npm.
 
 ### 4. Strapi
 
@@ -114,7 +133,7 @@ cd backend
 npm test
 ```
 
-Les 13 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
+Les 14 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
 
 | Exigence                          | Tests                                                                                                                                                                   |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -194,7 +213,8 @@ backend/tests/       tests d'API
 
 - **Contrôleurs fins.** Ils valident la requête (`validateQuery`), assainissent l'entrée (`sanitizeInput`) et la sortie (`sanitizeOutput`), puis délèguent au service.
 - **Services.** Toute la logique passe par le **Document Service**, avec des `populate` ciblés : seuls les champs utiles de l'auteur et de la catégorie sont chargés.
-- **Auteur imposé.** À la création, le service ne lit que les champs autorisés et fixe `author` à partir de `ctx.state.user`. Tout `author` envoyé par le client est ignoré. Le service de mise à jour ne lit pas non plus `author` ni `slug`.
+- **Auteur imposé.** À la création, le service ne lit que les champs autorisés et fixe `author` à partir de `ctx.state.user`. Tout `author` envoyé par le client est ignoré. Le service de mise à jour ne lit pas non plus `author` ni `slug`. Un `PUT` remplace la discussion : il attend tous les champs éditables (`title`, `content`, `type`, `category`).
+- **Suppression.** Supprimer une discussion supprime aussi ses réponses, car Strapi ne supprime pas les relations en cascade.
 - **Validation métier côté Strapi.** Le Document Service n'applique **pas** les contraintes `minLength` et `required` du schéma : un titre trop court était enregistré. Les services valident donc explicitement le titre (10 à 150 caractères), le contenu non vide, le type, l'existence de la catégorie et celle de la discussion.
 - **Slug.** Le Document Service ne génère pas les UID. Le service construit le slug à partir du titre, avec un suffixe aléatoire, et l'index unique protège contre les collisions.
 - **Policies.** `is-authenticated` protège les créations. `is-owner` protège les modifications et suppressions : 404 si le document n'existe pas, 403 si l'utilisateur n'en est pas l'auteur.
@@ -257,7 +277,8 @@ L'utilisateur voit donc sa publication immédiatement, et le compteur de répons
 - La DAL (`lib/auth/dal.ts`) fournit `getCurrentUser()`, mis en cache par rendu avec `cache` de React, qui appelle `/users/me` et ne renvoie que `{ id, username }`. Elle fournit aussi `verifySession()`, qui redirige vers la connexion.
 - Le **proxy** ne fait aucun appel réseau. Il choisit la langue (`negotiator`, `@formatjs/intl-localematcher`) et redirige un visiteur sans cookie de `/discussions/new` vers la connexion, avec `redirectTo`. La vraie vérification reste dans la page et dans l'action.
 - La lecture de session est isolée sous `<Suspense>` dans le header et la zone de réponse, comme le recommande le guide « Authentication with Cache Components ».
-- La redirection après connexion n'accepte que des chemins internes, pour éviter les redirections ouvertes.
+- La redirection après connexion n'accepte que des chemins internes. La cible est résolue comme le ferait un navigateur (`new URL`), ce qui bloque aussi les variantes comme `/\evil.com`.
+- Si le cookie existe mais que le JWT n'est plus valide, la page de création renvoie vers la connexion dans la bonne langue, avec le retour vers la page demandée.
 
 ### États de chargement, d'erreur et vides
 
@@ -300,6 +321,8 @@ Les tests d'API utilisent le lanceur intégré à Node.js (`node:test`) et `fetc
 
 - **Hors périmètre volontairement** : les votes « Utile », la meilleure réponse, les vues et les statistiques de la maquette. Le modèle et l'architecture permettent de les ajouter.
 - **Modification et suppression** sont protégées côté API (`is-owner`) mais n'ont pas encore d'interface.
+- Le détail charge toutes les réponses d'une discussion. Pour de très longs fils, il faudrait les paginer.
+- Une page au-delà de la dernière (`?page=99`) affiche l'état vide plutôt qu'une redirection.
 - Le changement de langue conserve la page courante, mais pas les paramètres de filtre.
 - **Sessions** : il n'y a pas de révocation côté serveur avant l'expiration du JWT. Le passage au mode `refresh` de Strapi demanderait un Route Handler chargé de renouveler le cookie.
 - **Swagger** est public en local. En production, il faut activer « Restricted Access » dans l'administration. La documentation de Strapi signale aussi que ce plugin est peu maintenu, mais il fonctionne en 5.59.

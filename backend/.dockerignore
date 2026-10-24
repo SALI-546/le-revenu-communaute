@@ -1,0 +1,9 @@
+node_modules/
+.tmp/
+.cache/
+.git/
+build/
+dist/
+.strapi/
+.env
+src/extensions/documentation/
