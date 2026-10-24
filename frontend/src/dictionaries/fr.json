@@ -51,5 +51,54 @@
         "unavailable": "Connexion impossible pour le moment. Réessayez dans un instant."
       }
     }
+  },
+  "discussions": {
+    "list": {
+      "label": "Tous les sujets",
+      "title": "Discussions récentes",
+      "publish": "Publier une discussion",
+      "categories": {
+        "title": "Explorer",
+        "nav": "Catégories",
+        "all": "Toutes les discussions"
+      },
+      "sort": {
+        "label": "Trier les discussions",
+        "newest": "Plus récentes",
+        "oldest": "Plus anciennes"
+      },
+      "replies": {
+        "one": "réponse",
+        "other": "réponses"
+      },
+      "by": "Par",
+      "trust": {
+        "title": "Une communauté de confiance",
+        "description": "Les échanges sont modérés par l’équipe du Revenu."
+      },
+      "empty": {
+        "title": "Aucune discussion à afficher",
+        "description": "Essayez une autre catégorie ou lancez la première discussion sur ce sujet."
+      },
+      "error": {
+        "title": "Impossible de charger les discussions",
+        "description": "Une erreur est survenue. Vérifiez votre connexion puis réessayez.",
+        "retry": "Réessayer"
+      },
+      "count": {
+        "one": "discussion",
+        "other": "discussions"
+      }
+    },
+    "types": {
+      "question": "Question",
+      "discussion": "Discussion"
+    }
+  },
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Page précédente",
+    "next": "Page suivante",
+    "page": "Page"
   }
 }

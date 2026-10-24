@@ -51,5 +51,54 @@
         "unavailable": "Unable to log in right now. Please try again in a moment."
       }
     }
+  },
+  "discussions": {
+    "list": {
+      "label": "All topics",
+      "title": "Latest discussions",
+      "publish": "Start a discussion",
+      "categories": {
+        "title": "Explore",
+        "nav": "Categories",
+        "all": "All discussions"
+      },
+      "sort": {
+        "label": "Sort discussions",
+        "newest": "Newest",
+        "oldest": "Oldest"
+      },
+      "replies": {
+        "one": "reply",
+        "other": "replies"
+      },
+      "by": "By",
+      "trust": {
+        "title": "A trusted community",
+        "description": "Conversations are moderated by the Le Revenu team."
+      },
+      "empty": {
+        "title": "No discussions to show",
+        "description": "Try another category or start the first discussion on this topic."
+      },
+      "error": {
+        "title": "Unable to load discussions",
+        "description": "Something went wrong. Check your connection and try again.",
+        "retry": "Try again"
+      },
+      "count": {
+        "one": "discussion",
+        "other": "discussions"
+      }
+    },
+    "types": {
+      "question": "Question",
+      "discussion": "Discussion"
+    }
+  },
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page"
   }
 }
