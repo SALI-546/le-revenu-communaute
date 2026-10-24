@@ -1,3 +1,7 @@
+import type { ReactNode } from 'react';
+import clsx from 'clsx';
+import { CheckmarkBadge01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { Avatar } from '@/components/ui/Avatar';
 import type { Locale } from '@/dictionaries/config';
 import type { Reply } from '@/features/discussions/types';
@@ -7,16 +11,41 @@ type ReplyItemProps = {
   reply: Reply;
   locale: Locale;
   authorBadge?: string;
+  bestBadge?: string;
+  actions?: ReactNode;
 };
 
-export function ReplyItem({ reply, locale, authorBadge }: ReplyItemProps) {
+export function ReplyItem({
+  reply,
+  locale,
+  authorBadge,
+  bestBadge,
+  actions,
+}: ReplyItemProps) {
   const date = formatDate(locale, reply.publishedAt, {
     dateStyle: 'medium',
     timeStyle: 'short',
   });
 
   return (
-    <article className="rounded-xl border border-line bg-glass-strong px-5 py-6 sm:px-8 sm:py-8">
+    <article
+      id={`reply-${reply.documentId}`}
+      className={clsx(
+        'scroll-mt-28 rounded-xl border bg-glass-strong px-5 py-6 sm:px-8 sm:py-8',
+        bestBadge ? 'border-success/60 ring-1 ring-success/30' : 'border-line',
+      )}
+    >
+      {bestBadge && (
+        <p className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-success">
+          <HugeiconsIcon
+            icon={CheckmarkBadge01Icon}
+            size={16}
+            color="currentColor"
+            aria-hidden="true"
+          />
+          {bestBadge}
+        </p>
+      )}
       {reply.author && (
         <div className="flex items-center gap-3">
           <Avatar name={reply.author.username} />
@@ -40,6 +69,7 @@ export function ReplyItem({ reply, locale, authorBadge }: ReplyItemProps) {
       <p className="mt-5 text-sm leading-7 whitespace-pre-line text-ink-2">
         {reply.content}
       </p>
+      {actions && <div className="mt-5">{actions}</div>}
     </article>
   );
 }

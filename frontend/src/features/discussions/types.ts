@@ -59,6 +59,7 @@ export type DiscussionSummary = {
   author: Author;
   category: CategorySummary | null;
   replies: { count: number };
+  bestReply: { documentId: string } | null;
 };
 
 export type Pagination = {
@@ -74,6 +75,7 @@ export type Reply = {
   documentId: string;
   content: string;
   publishedAt: string;
+  helpfulCount: number;
   author: Author;
 };
 

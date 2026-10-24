@@ -1,13 +1,13 @@
 'use server';
 
-import { updateTag } from 'next/cache';
+import { refresh, updateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import * as z from 'zod';
 import { defaultLocale, hasLocale } from '@/dictionaries/config';
 import { verifySession } from '@/lib/auth/dal';
 import { StrapiError, strapiFetch } from '@/lib/strapi/client';
 import { DISCUSSIONS_TAG } from './queries';
-import { discussionSchema } from './schemas';
+import { discussionSchema, documentIdSchema } from './schemas';
 import type { DiscussionFormState } from './types';
 
 export async function createDiscussion(
@@ -55,4 +55,18 @@ export async function createDiscussion(
   redirect(
     `/${hasLocale(locale) ? locale : defaultLocale}/discussions/${slug}`,
   );
+}
+
+export async function chooseBestReply(
+  discussionId: string,
+  replyId: string | null,
+) {
+  const { token } = await verifySession();
+  const reply = replyId === null ? null : documentIdSchema.parse(replyId);
+  await strapiFetch(
+    `/discussions/${documentIdSchema.parse(discussionId)}/best-reply`,
+    { method: 'PUT', token, body: { data: { reply } } },
+  );
+  updateTag(DISCUSSIONS_TAG);
+  refresh();
 }

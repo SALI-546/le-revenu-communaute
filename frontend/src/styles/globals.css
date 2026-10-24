@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant compact (&:where([data-density='compact'], [data-density='compact'] *));
+
 :root {
   --brand: #cd1719;
   --brand-hover: #b31315;
@@ -33,34 +36,33 @@
   --shadow-lg: 0 24px 64px rgba(66, 0, 8, 0.13);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --brand: #e0262a;
-    --brand-hover: #f0393c;
-    --brand-soft: #3a1517;
-    --brand-text: #ff6b6e;
-    --heading: #f6b9bc;
-    --ink: #f7efec;
-    --ink-2: #e1d3cb;
-    --ink-3: #b9a6a7;
-    --background: #160d0e;
-    --surface: #211517;
-    --surface-2: #2b1d1f;
-    --surface-tint: #2e1618;
-    --line: #3d2b2d;
-    --line-strong: #5a4446;
-    --hairline: rgba(255, 255, 255, 0.08);
-    --glass: rgba(33, 21, 23, 0.72);
-    --glass-strong: rgba(22, 13, 14, 0.92);
-    --success: #34c759;
-    --success-soft: #123320;
-    --subscriber: #d9b44a;
-    --hero: #0d0304;
-    --hero-2: #2a0006;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.25);
-    --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.4);
-  }
+.dark {
+  color-scheme: dark;
+  --brand: #e0262a;
+  --brand-hover: #f0393c;
+  --brand-soft: #3a1517;
+  --brand-text: #ff6b6e;
+  --heading: #f6b9bc;
+  --ink: #f7efec;
+  --ink-2: #e1d3cb;
+  --ink-3: #b9a6a7;
+  --background: #160d0e;
+  --surface: #211517;
+  --surface-2: #2b1d1f;
+  --surface-tint: #2e1618;
+  --line: #3d2b2d;
+  --line-strong: #5a4446;
+  --hairline: rgba(255, 255, 255, 0.08);
+  --glass: rgba(33, 21, 23, 0.72);
+  --glass-strong: rgba(22, 13, 14, 0.92);
+  --success: #34c759;
+  --success-soft: #123320;
+  --subscriber: #d9b44a;
+  --hero: #0d0304;
+  --hero-2: #2a0006;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.4);
 }
 
 @theme {

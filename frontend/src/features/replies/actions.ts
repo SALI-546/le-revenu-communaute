@@ -3,6 +3,7 @@
 import { refresh, updateTag } from 'next/cache';
 import * as z from 'zod';
 import { DISCUSSIONS_TAG } from '@/features/discussions/queries';
+import { documentIdSchema } from '@/features/discussions/schemas';
 import { verifySession } from '@/lib/auth/dal';
 import { StrapiError, strapiFetch } from '@/lib/strapi/client';
 import { replySchema } from './schemas';
@@ -44,4 +45,12 @@ export async function createReply(
   updateTag(DISCUSSIONS_TAG);
   refresh();
   return { status: 'success' };
+}
+
+export async function toggleHelpful(replyId: string) {
+  const { token } = await verifySession();
+  const id = documentIdSchema.parse(replyId);
+  await strapiFetch(`/replies/${id}/helpful`, { method: 'POST', token });
+  updateTag(DISCUSSIONS_TAG);
+  refresh();
 }

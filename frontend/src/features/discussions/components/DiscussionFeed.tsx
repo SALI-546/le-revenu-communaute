@@ -16,6 +16,7 @@ import { listHref } from '../listHref';
 import { getCategories, getCommunityStats, getDiscussions } from '../queries';
 import { listSearchParamsSchema } from '../schemas';
 import { CategoryNav } from './CategoryNav';
+import { DensityToggle } from './DensityToggle';
 import { DiscussionCard } from './DiscussionCard';
 import { FeedTabs } from './FeedTabs';
 import { SortSelect } from './SortSelect';
@@ -72,7 +73,10 @@ export async function DiscussionFeed({ searchParams }: DiscussionFeedProps) {
             labels={dict.home.tabs}
             unanswered={filters.q ? undefined : stats.unanswered}
           />
-          <SortSelect filters={filters} locale={locale} labels={list.sort} />
+          <div className="flex gap-2">
+            <DensityToggle labels={list.density} />
+            <SortSelect filters={filters} locale={locale} labels={list.sort} />
+          </div>
         </div>
         <p className="mt-3 mb-3 flex min-h-8 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-3">
           <span>

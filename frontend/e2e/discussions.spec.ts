@@ -167,6 +167,40 @@ test.describe('publishing', () => {
     await expect(page.getByRole('main')).toContainText('Thomas');
   });
 
+  test('marks a reply as helpful, then withdraws the vote', async ({
+    page,
+  }) => {
+    await login(page, 'hugo@demo.lerevenu.test');
+    await page.goto(
+      '/fr/discussions/ouvrir-un-pea-avec-5-000-eur-par-ou-commencer',
+    );
+    const reply = page
+      .getByRole('article')
+      .filter({ hasText: 'Première chose' });
+    const helpful = reply.getByRole('button', { name: /^Utile/ });
+    await expect(helpful).toHaveAttribute('aria-pressed', 'false');
+    const before = Number(await helpful.locator('.tabular-nums').innerText());
+
+    await helpful.click();
+    await expect(helpful).toHaveAttribute('aria-pressed', 'true');
+    await expect(helpful).toContainText(String(before + 1));
+
+    await helpful.click();
+    await expect(helpful).toHaveAttribute('aria-pressed', 'false');
+    await expect(helpful).toContainText(String(before));
+  });
+
+  test('shows the best answer chosen by the author', async ({ page }) => {
+    await page.goto(
+      '/fr/discussions/ouvrir-un-pea-avec-5-000-eur-par-ou-commencer',
+    );
+
+    await expect(page.getByText('Résolu', { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /Meilleure réponse de Vincent/ }),
+    ).toBeVisible();
+  });
+
   test('posts a reply on a discussion', async ({ page }) => {
     await login(page, 'hugo@demo.lerevenu.test');
     await page.goto('/fr?sort=oldest');

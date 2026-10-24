@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import clsx from 'clsx';
 import {
   ArrowTurnBackwardIcon,
+  CheckmarkBadge01Icon,
   Home01Icon,
   SecurityCheckIcon,
 } from '@hugeicons/core-free-icons';
@@ -11,8 +12,11 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Avatar } from '@/components/ui/Avatar';
 import { getDictionary, getLocale } from '@/dictionaries';
 import { localizedHref } from '@/dictionaries/config';
+import { HelpfulLabel } from '@/features/replies/components/HelpfulLabel';
+import { ReplyActions } from '@/features/replies/components/ReplyActions';
 import { ReplyComposer } from '@/features/replies/components/ReplyComposer';
 import { ReplyItem } from '@/features/replies/components/ReplyItem';
+import { replyActionStyles } from '@/features/replies/components/replyActionStyles';
 import { formatDate } from '@/lib/formatDate';
 import { pluralize } from '@/lib/plural';
 import { requestTime } from '@/lib/requestTime';
@@ -43,11 +47,23 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
   }
 
   const { list, detail, types } = dict.discussions;
-  const { title, content, type, publishedAt, author, category, replies } =
-    discussion;
+  const {
+    title,
+    content,
+    type,
+    publishedAt,
+    author,
+    category,
+    replies,
+    bestReply,
+  } = discussion;
+  const best = replies.find(
+    ({ documentId }) => documentId === bestReply?.documentId,
+  );
   const space = categories.find(({ slug }) => slug === category?.slug);
-  const status =
-    replies.length === 0
+  const status = best
+    ? 'solved'
+    : replies.length === 0
       ? 'waiting'
       : type === 'question'
         ? 'answered'
@@ -121,9 +137,9 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
               <span
                 className={clsx(
                   'rounded-full px-2.5 py-1',
-                  status === 'answered'
-                    ? 'bg-success-soft text-success'
-                    : 'bg-brand-soft text-brand-text',
+                  status === 'waiting'
+                    ? 'bg-brand-soft text-brand-text'
+                    : 'bg-success-soft text-success',
                 )}
               >
                 {detail.status[status]}
@@ -174,6 +190,34 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
           {replies.length === 0 && (
             <p className="text-sm text-ink-3">{detail.repliesEmpty}</p>
           )}
+          {best?.author && (
+            <a
+              href={`#reply-${best.documentId}`}
+              className="group mb-2 flex gap-3 rounded-xl border border-success/40 bg-success-soft p-4 sm:p-5"
+            >
+              <HugeiconsIcon
+                icon={CheckmarkBadge01Icon}
+                size={20}
+                color="currentColor"
+                aria-hidden="true"
+                className="flex-none text-success"
+              />
+              <span className="grid gap-1">
+                <strong className="text-sm text-success">
+                  {dict.replies.best.summary.replace(
+                    '{name}',
+                    best.author.username,
+                  )}
+                </strong>
+                <span className="line-clamp-2 text-sm text-ink-2">
+                  {best.content}
+                </span>
+                <span className="text-xs font-bold text-success group-hover:underline">
+                  {dict.replies.best.jump}
+                </span>
+              </span>
+            </a>
+          )}
           {replies.map((reply) => (
             <ReplyItem
               key={reply.documentId}
@@ -183,6 +227,30 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
                 author && reply.author?.username === author.username
                   ? detail.authorBadge
                   : undefined
+              }
+              bestBadge={reply === best ? dict.replies.best.badge : undefined}
+              actions={
+                <Suspense
+                  fallback={
+                    <span className={replyActionStyles()}>
+                      <HelpfulLabel
+                        label={dict.replies.helpful.label}
+                        count={reply.helpfulCount}
+                      />
+                    </span>
+                  }
+                >
+                  <ReplyActions
+                    reply={reply}
+                    discussion={{
+                      documentId: discussion.documentId,
+                      slug: discussion.slug,
+                      author,
+                      bestReplyId: best?.documentId,
+                    }}
+                    locale={locale}
+                  />
+                </Suspense>
               }
             />
           ))}

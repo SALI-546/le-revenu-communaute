@@ -14,6 +14,7 @@ import { LocaleLinks } from './LocaleLinks';
 import { LocaleSwitcher } from './LocaleSwitcher';
 import { Logo } from './Logo';
 import { SearchForm } from './SearchForm';
+import { ThemeToggle } from './ThemeToggle';
 import {
   MAGAZINE_URL,
   SITE_BAR_SECTIONS,
@@ -80,6 +81,7 @@ export async function SiteHeader() {
           >
             <LocaleSwitcher current={locale} labels={layout.locale} />
           </Suspense>
+          <ThemeToggle labels={layout.theme} />
           <a
             href={SUBSCRIBE_URL}
             className="inline-flex min-h-7 items-center rounded-full bg-brand px-3 font-semibold whitespace-nowrap text-on-brand hover:bg-brand-hover"

@@ -28,6 +28,8 @@ export type ListFilters = z.infer<typeof listSearchParamsSchema>;
 
 export const DISCUSSION_TYPES = ['question', 'discussion'] as const;
 
+export const documentIdSchema = z.string().regex(/^[a-z0-9]+$/);
+
 export const discussionPrefillSchema = z.object({
   title: z.string().trim().max(150).optional().catch(undefined),
   type: z.enum(DISCUSSION_TYPES).optional().catch(undefined),

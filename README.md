@@ -13,7 +13,9 @@ Fonctionnalités livrées :
 - détail d'une discussion sur une URL propre (`/fr/discussions/<slug>`) avec ses réponses, et publication d'une réponse ;
 - création d'une discussion (titre de 10 caractères minimum, contenu, catégorie, type) avec erreurs de validation et redirection ;
 - connexion avec les utilisateurs de démonstration, publication interdite aux visiteurs, auteur toujours imposé par le serveur ;
-- interface en français et en anglais, responsive de 375 à 1440 px, mode sombre ;
+- interface en français et en anglais, responsive de 375 à 1440 px ;
+- bouton clair/sombre comme sur lerevenu.com (clair par défaut) et vue compacte de la liste, deux préférences mémorisées dans le navigateur ;
+- votes « Utile » sur les réponses (un vote par membre, retirable, impossible sur sa propre réponse) et meilleure réponse choisie par l'auteur de la discussion, signalée par « Résolu » dans la liste et mise en avant sur la page ;
 - documentation Swagger de l'API, tests d'API et tests end-to-end.
 
 ## Sommaire
@@ -141,7 +143,7 @@ cd backend
 npm test
 ```
 
-Les 18 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
+Les 21 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
 
 | Exigence                          | Tests                                                                                                                                                                                                                                                                  |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -149,6 +151,7 @@ Les 18 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprim�
 | Publication sans authentification | création d'une discussion et d'une réponse refusées (401 ou 403)                                                                                                                                                                                                       |
 | Usurpation d'auteur               | un `author` envoyé par le client est ignoré : l'auteur est vérifié **en base**, pour une discussion et pour une réponse ; modifier la discussion d'un autre renvoie 403                                                                                                |
 | Affichage des discussions         | titre, auteur, catégorie, nombre de réponses, date, tri ; filtre par catégorie ; recherche ; aucune adresse e-mail exposée ; espaces triés avec icône, couleur et compteur ; discussions sans réponse ; chiffres de la communauté et d'un espace, slug invalide refusé |
+| Votes et meilleure réponse        | un vote « Utile » compte une fois et se retire ; vote sur sa propre réponse ou sans connexion refusé (403) ; seul l'auteur choisit la meilleure réponse (403 sinon), qui doit appartenir à la discussion (400 sinon) et peut être retirée                              |
 
 ### Parcours end-to-end (frontend)
 
@@ -157,7 +160,7 @@ cd frontend
 npm run test:e2e
 ```
 
-Playwright démarre Strapi et Next s'ils ne tournent pas déjà, puis exécute 15 parcours sur desktop et sur mobile : liste, filtre, recherche, onglet « Sans réponse », détail, lectures associées et copie du lien, redirection d'un visiteur vers la connexion (en conservant la question préremplie), préremplissage depuis le champ rapide, création avec erreurs de validation puis publication, réponse, et absence de défilement horizontal sur les pages principales. Il utilise le Google Chrome installé sur la machine (`channel: 'chrome'`). Les tests écrivent dans la base de développement des contenus suffixés `[e2e]`. Si le port 3000 est déjà pris par une autre application, lancez `E2E_PORT=3100 npm run test:e2e`.
+Playwright démarre Strapi et Next s'ils ne tournent pas déjà, puis exécute 19 parcours sur desktop et sur mobile : liste, filtre, recherche, onglet « Sans réponse », détail, lectures associées et copie du lien, vote « Utile » puis retrait, meilleure réponse affichée, mode sombre et vue compacte mémorisés après rechargement, redirection d'un visiteur vers la connexion (en conservant la question préremplie), préremplissage depuis le champ rapide, création avec erreurs de validation puis publication, réponse, et absence de défilement horizontal sur les pages principales. Il utilise le Google Chrome installé sur la machine (`channel: 'chrome'`). Les tests écrivent dans la base de développement des contenus suffixés `[e2e]`. Si le port 3000 est déjà pris par une autre application, lancez `E2E_PORT=3100 npm run test:e2e`.
 
 ### Qualité
 
@@ -178,16 +181,19 @@ La spécification générée automatiquement ne reflétait pas le vrai contrat :
 
 Routes principales :
 
-| Méthode     | Route                         | Accès                                                                                                                                                                                                                                                |
-| ----------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| GET         | `/api/discussions`            | public : filtre `filters[category][slug][$eq]`, recherche `$containsi` sur `title` et `content`, discussions sans réponse avec `filters[replies][id][$null]=true`, tri `publishedAt:desc` ou `publishedAt:asc`, pagination de 50 éléments au maximum |
-| GET         | `/api/discussions/stats`      | public : nombre de discussions, de réponses, de questions et de questions ayant reçu une réponse, de discussions sans réponse ; `?category=<slug>` pour un espace                                                                                    |
-| GET         | `/api/discussions/slug/:slug` | public : discussion avec ses réponses                                                                                                                                                                                                                |
-| POST        | `/api/discussions`            | connecté                                                                                                                                                                                                                                             |
-| PUT, DELETE | `/api/discussions/:id`        | auteur uniquement                                                                                                                                                                                                                                    |
-| POST        | `/api/replies`                | connecté                                                                                                                                                                                                                                             |
-| PUT, DELETE | `/api/replies/:id`            | auteur uniquement                                                                                                                                                                                                                                    |
-| GET         | `/api/categories`             | public                                                                                                                                                                                                                                               |
+| Méthode     | Route                                          | Accès                                                                                                                                                                                                                                                |
+| ----------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET         | `/api/discussions`                             | public : filtre `filters[category][slug][$eq]`, recherche `$containsi` sur `title` et `content`, discussions sans réponse avec `filters[replies][id][$null]=true`, tri `publishedAt:desc` ou `publishedAt:asc`, pagination de 50 éléments au maximum |
+| GET         | `/api/discussions/stats`                       | public : nombre de discussions, de réponses, de questions et de questions ayant reçu une réponse, de discussions sans réponse ; `?category=<slug>` pour un espace                                                                                    |
+| GET         | `/api/discussions/slug/:slug`                  | public : discussion avec ses réponses                                                                                                                                                                                                                |
+| POST        | `/api/discussions`                             | connecté                                                                                                                                                                                                                                             |
+| PUT         | `/api/discussions/:id/best-reply`              | auteur uniquement : `{ data: { reply } }`, `null` pour retirer                                                                                                                                                                                       |
+| PUT, DELETE | `/api/discussions/:id`                         | auteur uniquement                                                                                                                                                                                                                                    |
+| POST        | `/api/replies`                                 | connecté                                                                                                                                                                                                                                             |
+| POST        | `/api/replies/:id/helpful`                     | connecté, sauf sur sa propre réponse : ajoute ou retire le vote « Utile »                                                                                                                                                                            |
+| GET         | `/api/replies/helpful?discussion=<documentId>` | connecté : réponses de la discussion que le membre a jugées utiles                                                                                                                                                                                   |
+| PUT, DELETE | `/api/replies/:id`                             | auteur uniquement                                                                                                                                                                                                                                    |
+| GET         | `/api/categories`                              | public                                                                                                                                                                                                                                               |
 
 ## Architecture du backend
 
@@ -207,11 +213,12 @@ backend/tests/       tests d'API
 
 ### Modèle de données
 
-| Type       | Champs                                                                                                                                                                                                      |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Category   | `name` (unique), `slug` (UID unique), `description`, `icon` et `color` (énumérations fermées, traduites en icône Hugeicons et en token de couleur côté Next), `position` (ordre d'affichage), `discussions` |
-| Discussion | `title` (10 à 150 caractères), `content` (requis), `type` (`question` ou `discussion`), `slug` (UID unique), `author` → User, `category` → Category, `replies` → Reply                                      |
-| Reply      | `content` (requis), `author` → User, `discussion` → Discussion                                                                                                                                              |
+| Type       | Champs                                                                                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Category   | `name` (unique), `slug` (UID unique), `description`, `icon` et `color` (énumérations fermées, traduites en icône Hugeicons et en token de couleur côté Next), `position` (ordre d'affichage), `discussions`     |
+| Discussion | `title` (10 à 150 caractères), `content` (requis), `type` (`question` ou `discussion`), `slug` (UID unique), `author` → User, `category` → Category, `replies` → Reply, `bestReply` → Reply (meilleure réponse) |
+| Reply      | `content` (requis), `author` → User, `discussion` → Discussion, `helpfulCount` (nombre de votes « Utile »)                                                                                                      |
+| Vote       | `reply` → Reply, `voter` → User. Type privé, sans route publique : il garantit un seul vote par membre                                                                                                          |
 
 - **`draftAndPublish` est désactivé** : un message de la communauté est publié immédiatement. De plus, Draft & Publish n'applique pas l'unicité aux brouillons.
 - **Index et contraintes.** `name` et les deux `slug` ont un index **UNIQUE en base** grâce à l'option `column: { unique: true }`. L'attribut `unique` seul n'est vérifié que par Strapi. Les relations passent par des tables de liaison que Strapi indexe sur les deux clés étrangères.
@@ -228,6 +235,8 @@ backend/tests/       tests d'API
 - **Slug.** Le Document Service ne génère pas les UID. Le service construit le slug à partir du titre, avec un suffixe aléatoire, et l'index unique protège contre les collisions.
 - **Policies.** `is-authenticated` protège les créations. `is-owner` protège les modifications et suppressions : 404 si le document n'existe pas, 403 si l'utilisateur n'en est pas l'auteur.
 - **Erreurs HTTP.** 400 pour une validation, 401 pour un utilisateur non connecté, 403 pour un accès interdit, 404 pour une ressource introuvable. Un visiteur reçoit 403 avant même la policy, parce que le rôle Public n'a pas la permission de créer. La policy reste une défense en profondeur.
+- **Votes « Utile ».** Chaque vote est un document `Vote`, ce qui permet de savoir qui a voté et de refuser un second vote. Le total est recompté avec `count()` et copié dans `Reply.helpfulCount` : la liste et le détail lisent un simple entier, sans exposer les votants ni charger les votes. Strapi ne sait pas déclarer un index unique sur deux colonnes : l'unicité du couple (réponse, votant) est vérifiée par le service. Supprimer une réponse supprime ses votes.
+- **Meilleure réponse.** `PUT /discussions/:id/best-reply` passe par `is-owner`, comme la modification. Le service vérifie que la réponse appartient à la discussion.
 - **Pagination.** 10 éléments par défaut et 50 au maximum (`config/api.ts`). Le tri est limité à `publishedAt` : toute autre valeur renvoie 400.
 
 ### Comptage des réponses
@@ -267,6 +276,8 @@ frontend/src/
 - **Cache Components et Partial Prerendering.** Le contenu stable (en-tête, hero, titres) fait partie du shell statique. Ce qui dépend de la requête (paramètres d'URL, session) est streamé sous `<Suspense>`, avec un skeleton. Toutes les pages sont donc partiellement prérendues, et **le build ne dépend pas de Strapi**.
 - **Recherche, onglet, tri, filtre et pagination** passent par l'URL (`?q=…&category=…&tab=…&sort=…&page=…`). Les paramètres sont validés par Zod, puis transmis à Strapi. Ils servent aussi de clé de cache. Aucun tri ni filtre n'est fait en JavaScript.
 - La **recherche** utilise le composant `<Form>` de Next (`next/form`) : un formulaire GET qui navigue côté client et fonctionne aussi sans JavaScript. Strapi filtre les titres et les contenus avec `$containsi`. Le champ « Posez votre question » suit le même principe : un formulaire GET vers `/discussions/new?title=…&type=…&category=…`, dont les paramètres sont validés par Zod puis utilisés comme valeurs initiales. Un visiteur est envoyé vers la connexion avec ces paramètres dans `redirectTo`, et retrouve sa question après s'être connecté.
+- **Votes et meilleure réponse côté Next.** La discussion reste en cache partagé. Ce qui dépend du membre (a-t-il voté ? est-il l'auteur ?) est lu à part, sans cache partagé, dans `ReplyActions` sous `<Suspense>`. Le fallback affiche déjà le compteur. Les votes du membre sont chargés en un seul appel par page grâce à `cache` de React. Les boutons sont des formulaires liés à des Server Actions (`toggleHelpful`, `chooseBestReply`) qui revalident le tag `discussions`. Ils fonctionnent donc sans JavaScript.
+- **Mode sombre et vue compacte.** lerevenu.com propose un bouton clair/sombre, clair par défaut. Le mode sombre passe donc de `prefers-color-scheme` à une classe `.dark` sur `<html>`, avec la variante Tailwind documentée `@custom-variant dark`. La vue compacte suit le même principe avec `data-density` et une variante `compact`. Un petit script en `<head>` applique les préférences enregistrées avant le premier rendu, ce qui évite le flash. Les boutons changent d'icône et de libellé en CSS (`dark:`, `compact:`) : aucun état React, donc aucun écart d'hydratation. Ces préférences purement visuelles restent dans `localStorage` et ne passent pas par le serveur, ce qui garde les pages en cache.
 - **Heure de la requête.** « Dernière activité » s'affiche en temps relatif (« il y a 2 heures »). Comme le recommande la documentation de Cache Components, `Date.now()` n'est appelé qu'après `connection()`, sous `<Suspense>`, via le petit utilitaire `lib/requestTime.ts`. La date absolue reste dans l'attribut `title`.
 - **Chiffres de la communauté.** Un seul appel à `GET /discussions/stats`, qui compte côté Strapi avec `count()` du Document Service, au lieu de quatre requêtes paginées depuis Next. Le filtre « sans réponse » (`$null` sur la relation `replies`) n'est pas illustré dans la documentation de Strapi : son comportement est donc verrouillé par un test d'API. Le nombre de membres n'est pas affiché, car il demanderait d'ouvrir aux visiteurs la route `users/count`.
 
@@ -332,7 +343,7 @@ Les tests d'API utilisent le lanceur intégré à Node.js (`node:test`) et `fetc
 
 ## Limites et évolutions
 
-- **Hors périmètre volontairement** : les votes « Utile », la meilleure réponse, les vues et les statistiques de la maquette. Le modèle et l'architecture permettent de les ajouter.
+- **Hors périmètre volontairement** : les vues, « Suivre », « Signaler », le classement et les événements de la maquette, faute de données réelles derrière. Le nombre de membres n'est pas affiché pour ne pas ouvrir la route `users/count` aux visiteurs.
 - **Modification et suppression** sont protégées côté API (`is-owner`) mais n'ont pas encore d'interface.
 - Le détail charge toutes les réponses d'une discussion. Pour de très longs fils, il faudrait les paginer.
 - Une page au-delà de la dernière (`?page=99`) affiche l'état vide plutôt qu'une redirection.

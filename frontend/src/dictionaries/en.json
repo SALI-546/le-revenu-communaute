@@ -66,6 +66,10 @@
       "publish": "Publish",
       "login": "Log in",
       "logout": "Log out"
+    },
+    "theme": {
+      "toDark": "Switch to dark mode",
+      "toLight": "Switch to light mode"
     }
   },
   "home": {
@@ -205,6 +209,11 @@
       "unansweredEmpty": {
         "title": "Everyone got an answer",
         "description": "No discussion is waiting for an answer here right now."
+      },
+      "solved": "Solved",
+      "density": {
+        "toCompact": "Compact view",
+        "toComfortable": "Detailed view"
       }
     },
     "types": {
@@ -238,7 +247,8 @@
       "publishedAt": "Published on {date} at {time}",
       "status": {
         "answered": "Answered",
-        "waiting": "Waiting for an answer"
+        "waiting": "Waiting for an answer",
+        "solved": "Solved"
       },
       "actions": {
         "label": "Discussion actions",
@@ -322,6 +332,17 @@
       "title": "Have an experience to share?",
       "description": "Log in with your community account to reply.",
       "cta": "Log in to reply"
+    },
+    "helpful": {
+      "label": "Helpful",
+      "login": "Log in to vote"
+    },
+    "best": {
+      "badge": "Best answer",
+      "choose": "Mark as best answer",
+      "clear": "Remove best answer",
+      "summary": "Best answer by {name}",
+      "jump": "Read the answer"
     }
   },
   "notFound": {

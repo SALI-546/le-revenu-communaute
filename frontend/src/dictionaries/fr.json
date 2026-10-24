@@ -66,6 +66,10 @@
       "publish": "Publier",
       "login": "Connexion",
       "logout": "Déconnexion"
+    },
+    "theme": {
+      "toDark": "Activer le mode sombre",
+      "toLight": "Activer le mode clair"
     }
   },
   "home": {
@@ -205,6 +209,11 @@
       "unansweredEmpty": {
         "title": "Tout le monde a eu une réponse",
         "description": "Aucune discussion n’attend de réponse ici pour le moment."
+      },
+      "solved": "Résolu",
+      "density": {
+        "toCompact": "Vue compacte",
+        "toComfortable": "Vue détaillée"
       }
     },
     "types": {
@@ -238,7 +247,8 @@
       "publishedAt": "Publié le {date} à {time}",
       "status": {
         "answered": "A reçu une réponse",
-        "waiting": "En attente de réponse"
+        "waiting": "En attente de réponse",
+        "solved": "Résolu"
       },
       "actions": {
         "label": "Actions sur la discussion",
@@ -322,6 +332,17 @@
       "title": "Vous avez une expérience à partager ?",
       "description": "Connectez-vous avec votre compte de la communauté pour répondre.",
       "cta": "Se connecter pour répondre"
+    },
+    "helpful": {
+      "label": "Utile",
+      "login": "Connectez-vous pour voter"
+    },
+    "best": {
+      "badge": "Meilleure réponse",
+      "choose": "Choisir comme meilleure réponse",
+      "clear": "Retirer la meilleure réponse",
+      "summary": "Meilleure réponse de {name}",
+      "jump": "Lire la réponse"
     }
   },
   "notFound": {

@@ -3,6 +3,7 @@ import { Playfair_Display, Source_Sans_3 } from 'next/font/google';
 import { lang } from 'next/root-params';
 import { getDictionary } from '@/dictionaries';
 import { locales } from '@/dictionaries/config';
+import { preferencesScript } from '@/lib/preferences';
 import '@/styles/globals.css';
 
 const sourceSans = Source_Sans_3({
@@ -33,7 +34,11 @@ export default async function RootLayout({ children }: LayoutProps<'/[lang]'>) {
     <html
       lang={await lang()}
       className={`${sourceSans.variable} ${playfair.variable} antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: preferencesScript }} />
+      </head>
       <body className="flex min-h-dvh flex-col font-sans">
         <a
           href="#content"
