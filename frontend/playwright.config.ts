@@ -7,11 +7,14 @@ process.env.E2E_PASSWORD ??= parseEnv(
   readFileSync('../backend/.env', 'utf8'),
 ).SEED_USER_PASSWORD;
 
+const port = process.env.E2E_PORT ?? '3000';
+const baseURL = `http://localhost:${port}`;
+
 export default defineConfig({
   testDir: './e2e',
   workers: 1,
   reporter: 'list',
-  use: { baseURL: 'http://localhost:3000', trace: 'retain-on-failure' },
+  use: { baseURL, trace: 'retain-on-failure' },
   projects: [
     {
       name: 'desktop',
@@ -30,8 +33,8 @@ export default defineConfig({
     },
     {
       name: 'Next',
-      command: 'npm run build && npm run start',
-      url: 'http://localhost:3000/fr',
+      command: `npm run build && npm run start -- -p ${port}`,
+      url: `${baseURL}/fr`,
       timeout: 300_000,
       reuseExistingServer: true,
     },
