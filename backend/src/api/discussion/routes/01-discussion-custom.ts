@@ -5,6 +5,11 @@ const config: Core.RouterConfig = {
   routes: [
     {
       method: 'GET',
+      path: '/discussions/stats',
+      handler: 'api::discussion.discussion.stats',
+    },
+    {
+      method: 'GET',
       path: '/discussions/slug/:slug',
       handler: 'api::discussion.discussion.findBySlug',
     },

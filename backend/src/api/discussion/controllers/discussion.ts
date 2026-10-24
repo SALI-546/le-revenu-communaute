@@ -4,6 +4,7 @@ import { withPublicAuthors } from '../../../utils/public-author';
 import type { DiscussionService, RawDiscussion } from '../services/discussion';
 
 const UID = 'api::discussion.discussion';
+const SLUG = /^[a-z0-9-]+$/;
 
 type Controller = Core.CoreAPI.Controller.CollectionType;
 type Sanitized = Record<string, unknown>;
@@ -39,6 +40,17 @@ export default factories.createCoreController(UID, ({ strapi }) => {
         withPublicAuthors(item, results[index]),
       );
       return this.transformResponse(data, { pagination });
+    },
+
+    async stats(ctx) {
+      const { category } = ctx.query;
+      if (
+        category !== undefined &&
+        (typeof category !== 'string' || !SLUG.test(category))
+      ) {
+        throw new errors.ValidationError('category must be a category slug');
+      }
+      return { data: await service().stats(category) };
     },
 
     async findBySlug(this: Controller, ctx) {

@@ -96,6 +96,10 @@ export const DEMO_USERS = [
   { username: 'Hugo', email: 'hugo@demo.lerevenu.test' },
   { username: 'Vincent', email: 'vincent@demo.lerevenu.test' },
   { username: 'Camille', email: 'camille@demo.lerevenu.test' },
+  { username: 'Odile', email: 'odile@demo.lerevenu.test' },
+  { username: 'Nadia', email: 'nadia@demo.lerevenu.test' },
+  { username: 'Karim', email: 'karim@demo.lerevenu.test' },
+  { username: 'Sophie', email: 'sophie@demo.lerevenu.test' },
 ];
 
 export const DEMO_DISCUSSIONS = [
@@ -169,6 +173,121 @@ export const DEMO_DISCUSSIONS = [
         author: 'Vincent',
         content:
           'Regardez bien les frais sur versements et la gestion pilotée : ce sont eux qui pèsent le plus sur la durée.',
+      },
+    ],
+  },
+  {
+    slug: 'taux-de-la-bce-quel-impact-sur-vos-placements',
+    title: 'Taux de la BCE : quel impact sur vos placements ?',
+    content:
+      'La Banque centrale européenne a de nouveau ajusté ses taux. Crédits, livrets, fonds euros, obligations : qu’est-ce que cela change concrètement pour vous ?',
+    type: 'discussion',
+    category: 'economie',
+    author: 'Karim',
+    replies: [
+      {
+        author: 'Odile',
+        content:
+          'Côté obligations, j’en ai profité pour allonger un peu la durée de mon portefeuille. Les livrets suivent avec retard, comme toujours.',
+      },
+    ],
+  },
+  {
+    slug: 'donation-aux-enfants-maintenant-ou-attendre',
+    title: 'Donation aux enfants : faut-il le faire maintenant ou attendre ?',
+    content:
+      'Nos enfants ont 19, 22 et 25 ans. Nous pensons à leur donner une partie de notre épargne pour les aider à démarrer. Quels pièges éviter ?',
+    type: 'question',
+    category: 'transmission',
+    author: 'Odile',
+    replies: [
+      {
+        author: 'Camille',
+        content:
+          'L’abattement de 100 000 € par parent et par enfant se renouvelle tous les quinze ans : plus on commence tôt, plus on peut en profiter.',
+      },
+      {
+        author: 'Vincent',
+        content:
+          'Pensez aussi à garder de quoi vivre confortablement. Un passage chez le notaire permet de cadrer la donation et d’éviter les mauvaises surprises.',
+      },
+    ],
+  },
+  {
+    slug: 'or-physique-pieces-ou-lingots',
+    title: 'Or physique : pièces ou lingots, que privilégier ?',
+    content:
+      'Je commence à acheter un peu d’or physique pour diversifier. Pièces ou lingots ? Et où les stocker sans trop de frais ?',
+    type: 'question',
+    category: 'alternatifs',
+    author: 'Sophie',
+    replies: [
+      {
+        author: 'Karim',
+        content:
+          'Les pièces courantes comme le napoléon sont plus faciles à revendre par petites quantités. Le lingot devient intéressant pour de gros montants.',
+      },
+    ],
+  },
+  {
+    slug: 'changer-de-banque-vos-retours-sur-la-mobilite-bancaire',
+    title: 'Changer de banque : vos retours sur la mobilité bancaire ?',
+    content:
+      'Je veux quitter ma banque traditionnelle pour une banque en ligne. Le service de mobilité fonctionne-t-il vraiment bien ?',
+    type: 'discussion',
+    category: 'budget',
+    author: 'Camille',
+    replies: [
+      {
+        author: 'Hugo',
+        content:
+          'Très bien de mon côté : prélèvements et virements ont été transférés en trois semaines. Gardez l’ancien compte ouvert un mois, par prudence.',
+      },
+    ],
+  },
+  {
+    slug: 'location-meublee-micro-bic-ou-regime-reel',
+    title: 'Location meublée : micro-BIC ou régime réel ?',
+    content:
+      'Je loue un studio meublé depuis deux mois. Je ne sais pas quel régime choisir pour ma première déclaration. Comment avez-vous fait votre choix ?',
+    type: 'question',
+    category: 'impots',
+    author: 'Nadia',
+    replies: [],
+  },
+  {
+    slug: 'dividendes-sur-un-compte-titres-flat-tax-ou-bareme',
+    title: 'Dividendes sur un compte-titres : flat tax ou barème ?',
+    content:
+      'Je perçois des dividendes sur un compte-titres ordinaire. Flat tax ou barème progressif : qu’avez-vous choisi et pourquoi ?',
+    type: 'question',
+    category: 'bourse',
+    author: 'Karim',
+    replies: [],
+  },
+  {
+    slug: 'bienvenue-presentez-vous-ici',
+    title: 'Bienvenue dans la communauté ! Présentez-vous ici',
+    content:
+      'Cet espace est le vôtre : dites-nous qui vous êtes, ce qui vous amène et les sujets d’argent qui vous intéressent le plus.',
+    type: 'discussion',
+    category: 'cafe',
+    author: 'Sophie',
+    replies: [
+      {
+        author: 'Thomas',
+        content:
+          'Bonjour à tous ! Lecteur du Revenu depuis dix ans, je m’intéresse surtout à la Bourse et à la préparation de la retraite.',
+      },
+      {
+        author: 'Nadia',
+        content:
+          'Bonjour ! Jeune propriétaire bailleuse, je viens chercher des conseils sur la fiscalité de la location.',
+      },
+      {
+        author: 'Odile',
+        content:
+          'Bonjour, retraitée et grand-mère : la transmission est mon grand sujet du moment. Ravie de vous lire !',
       },
     ],
   },

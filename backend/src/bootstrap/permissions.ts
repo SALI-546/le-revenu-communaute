@@ -5,6 +5,7 @@ const READ_ACTIONS = [
   'api::category.category.findOne',
   'api::discussion.discussion.find',
   'api::discussion.discussion.findBySlug',
+  'api::discussion.discussion.stats',
   'api::reply.reply.find',
 ];
 

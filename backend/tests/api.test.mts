@@ -56,10 +56,12 @@ after(async () => {
 
 describe('discussion list', () => {
   it('shows title, author, category, reply count and date, newest first', async () => {
-    const { status, body } = await request<Discussion[]>('/discussions');
+    const { status, body } = await request<Discussion[]>(
+      '/discussions?pagination[pageSize]=20',
+    );
 
     assert.equal(status, 200);
-    assert.equal(body.data.length, 5);
+    assert.equal(body.data.length, 12);
     const pea = body.data.find(({ slug }) => slug.startsWith('ouvrir-un-pea'));
     assert.equal(pea?.title, 'Ouvrir un PEA avec 5 000 € : par où commencer ?');
     assert.deepEqual(pea?.author, { username: 'Thomas' });
@@ -100,6 +102,18 @@ describe('discussion list', () => {
     );
   });
 
+  it('lists discussions without any reply', async () => {
+    const query = new URLSearchParams({
+      'filters[replies][id][$null]': 'true',
+    });
+    const { body } = await request<Discussion[]>(`/discussions?${query}`);
+
+    assert.deepEqual(
+      body.data.map(({ replies }) => replies.count).sort(),
+      [0, 0, 0, 0],
+    );
+  });
+
   it('never exposes author emails', async () => {
     const { body } = await request<Discussion[]>('/discussions');
 
@@ -128,6 +142,33 @@ describe('spaces', () => {
     assert.equal(bourse.icon, 'chart');
     assert.equal(bourse.color, 'blue');
     assert.equal(typeof bourse.discussions.count, 'number');
+  });
+});
+
+describe('community stats', () => {
+  it('counts discussions, replies and answered questions', async () => {
+    const { status, body } =
+      await request<Record<string, number>>('/discussions/stats');
+
+    assert.equal(status, 200);
+    assert.deepEqual(body.data, {
+      discussions: 12,
+      replies: 12,
+      questions: 7,
+      answeredQuestions: 4,
+      unanswered: 4,
+    });
+  });
+
+  it('scopes the stats to a space and rejects an invalid slug', async () => {
+    const { body } = await request<Record<string, number>>(
+      '/discussions/stats?category=bourse',
+    );
+    const invalid = await request('/discussions/stats?category=%3Cscript%3E');
+
+    assert.equal(body.data.discussions, 2);
+    assert.equal(body.data.replies, 2);
+    assert.equal(invalid.status, 400);
   });
 });
 

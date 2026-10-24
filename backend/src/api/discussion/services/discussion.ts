@@ -19,7 +19,16 @@ export type RawDiscussion = {
   replies?: { author?: Author }[] | { count: number };
 };
 
+export type CommunityStats = {
+  discussions: number;
+  replies: number;
+  questions: number;
+  answeredQuestions: number;
+  unanswered: number;
+};
+
 export type DiscussionService = {
+  stats(category?: string): Promise<CommunityStats>;
   find(
     params: object,
   ): Promise<{ results: RawDiscussion[]; pagination: object }>;
@@ -84,6 +93,31 @@ export default factories.createCoreService(UID, ({ strapi }) => {
   };
 
   return {
+    async stats(category?: string): Promise<CommunityStats> {
+      const discussions = strapi.documents(UID);
+      const inSpace = category ? { category: { slug: category } } : {};
+      const withoutReply = { replies: { id: { $null: true } } };
+      const [total, questions, unanswered, unansweredQuestions, replies] =
+        await Promise.all([
+          discussions.count({ filters: inSpace }),
+          discussions.count({ filters: { ...inSpace, type: 'question' } }),
+          discussions.count({ filters: { ...inSpace, ...withoutReply } }),
+          discussions.count({
+            filters: { ...inSpace, ...withoutReply, type: 'question' },
+          }),
+          strapi
+            .documents('api::reply.reply')
+            .count({ filters: category ? { discussion: inSpace } : {} }),
+        ]);
+      return {
+        discussions: total,
+        replies,
+        questions,
+        answeredQuestions: questions - unansweredQuestions,
+        unanswered,
+      };
+    },
+
     async find(params: { sort?: unknown } = {}) {
       const sort = params.sort ?? SORTS[0];
       if (typeof sort !== 'string' || !SORTS.includes(sort)) {

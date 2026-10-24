@@ -153,6 +153,12 @@ const listParameters = [
     schema: { type: 'string', example: 'bourse' },
   },
   {
+    name: 'filters[replies][id][$null]',
+    in: 'query',
+    description: 'Only discussions without any reply',
+    schema: { type: 'boolean' },
+  },
+  {
     name: 'sort',
     in: 'query',
     schema: {
@@ -189,6 +195,46 @@ const findBySlug = {
   },
 };
 
+const counter = { type: 'integer', minimum: 0 };
+
+const stats = {
+  get: {
+    tags: ['Discussion'],
+    summary: 'Count discussions, replies and answered questions',
+    operationId: 'get/discussions/stats',
+    security: [],
+    parameters: [
+      {
+        name: 'category',
+        in: 'query',
+        description: 'Only count this space',
+        schema: { type: 'string', example: 'bourse' },
+      },
+    ],
+    responses: {
+      200: {
+        description: 'OK',
+        content: json({
+          type: 'object',
+          properties: {
+            data: {
+              type: 'object',
+              properties: {
+                discussions: counter,
+                replies: counter,
+                questions: counter,
+                answeredQuestions: counter,
+                unanswered: counter,
+              },
+            },
+          },
+        }),
+      },
+      400: { description: 'Bad Request', content: json(ref('Error')) },
+    },
+  },
+};
+
 export const mutateDocumentation = (draft: OpenApiDraft) => {
   draft.info = {
     version: '1.0.0',
@@ -199,4 +245,5 @@ export const mutateDocumentation = (draft: OpenApiDraft) => {
   Object.assign(draft.components.schemas, schemas);
   draft.paths['/discussions'].get.parameters = listParameters;
   draft.paths['/discussions/slug/{slug}'] = findBySlug;
+  draft.paths['/discussions/stats'] = stats;
 };
