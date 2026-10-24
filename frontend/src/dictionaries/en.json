@@ -112,6 +112,48 @@
         "description": "It may have been deleted or moved by moderators.",
         "back": "Back to discussions"
       }
+    },
+    "create": {
+      "back": "Back to discussions",
+      "label": "New post",
+      "title": "Share with the community",
+      "description": "A precise title and some context get you more useful answers.",
+      "form": {
+        "typeLegend": "What kind of post?",
+        "types": {
+          "question": {
+            "label": "Question",
+            "hint": "Get help from members"
+          },
+          "discussion": {
+            "label": "Discussion",
+            "hint": "Share an opinion or an experience"
+          }
+        },
+        "title": "Post title",
+        "titleHint": "Phrase your title as a clear question (at least 10 characters).",
+        "category": "Category",
+        "categoryPlaceholder": "Choose a category…",
+        "content": "Your message",
+        "contentPlaceholder": "Describe your situation and what you have already considered…",
+        "compliance": {
+          "title": "A useful and responsible conversation",
+          "description": "Do not share personal data and avoid personalised buy or sell recommendations."
+        },
+        "cancel": "Cancel",
+        "submit": "Publish",
+        "submitting": "Publishing…",
+        "errors": {
+          "typeInvalid": "Choose the kind of post.",
+          "titleTooShort": "The title must be at least 10 characters long.",
+          "titleTooLong": "The title must not exceed 150 characters.",
+          "categoryRequired": "Select a category.",
+          "categoryInvalid": "This category does not exist.",
+          "contentRequired": "The message is required.",
+          "contentTooLong": "The message must not exceed 10,000 characters.",
+          "unavailable": "Unable to publish right now. Please try again in a moment."
+        }
+      }
     }
   },
   "pagination": {

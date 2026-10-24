@@ -41,3 +41,11 @@ export type Reply = {
 export type DiscussionDetail = Omit<DiscussionSummary, 'replies'> & {
   replies: Reply[];
 };
+
+export type DiscussionFormState = {
+  fieldErrors?: {
+    [Field in 'type' | 'title' | 'category' | 'content']?: string[];
+  };
+  error?: 'unavailable';
+  values?: { type: string; category: string };
+};

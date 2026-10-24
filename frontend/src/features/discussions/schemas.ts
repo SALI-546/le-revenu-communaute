@@ -13,3 +13,22 @@ export const listSearchParamsSchema = z.object({
 });
 
 export type ListFilters = z.infer<typeof listSearchParamsSchema>;
+
+export const DISCUSSION_TYPES = ['question', 'discussion'] as const;
+
+export const discussionSchema = z.object({
+  type: z.enum(DISCUSSION_TYPES, { error: 'typeInvalid' }),
+  title: z
+    .string()
+    .trim()
+    .min(10, { error: 'titleTooShort' })
+    .max(150, { error: 'titleTooLong' }),
+  category: z.string().min(1, { error: 'categoryRequired' }),
+  content: z
+    .string()
+    .trim()
+    .min(1, { error: 'contentRequired' })
+    .max(10000, { error: 'contentTooLong' }),
+});
+
+export type DiscussionInput = z.infer<typeof discussionSchema>;

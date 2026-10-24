@@ -112,6 +112,48 @@
         "description": "Elle a peut-être été supprimée ou déplacée par la modération.",
         "back": "Retour aux discussions"
       }
+    },
+    "create": {
+      "back": "Retour aux discussions",
+      "label": "Nouvelle publication",
+      "title": "Partagez avec la communauté",
+      "description": "Un titre précis et un peu de contexte permettent d’obtenir des réponses plus utiles.",
+      "form": {
+        "typeLegend": "Quel type de publication ?",
+        "types": {
+          "question": {
+            "label": "Question",
+            "hint": "Obtenez l’aide des membres"
+          },
+          "discussion": {
+            "label": "Discussion",
+            "hint": "Partagez un avis ou une expérience"
+          }
+        },
+        "title": "Titre de la publication",
+        "titleHint": "Formulez votre titre comme une question claire (10 caractères minimum).",
+        "category": "Catégorie",
+        "categoryPlaceholder": "Choisissez une catégorie…",
+        "content": "Votre message",
+        "contentPlaceholder": "Décrivez votre situation et ce que vous avez déjà envisagé…",
+        "compliance": {
+          "title": "Un échange utile et responsable",
+          "description": "Ne partagez aucune donnée personnelle et évitez les recommandations d’achat ou de vente personnalisées."
+        },
+        "cancel": "Annuler",
+        "submit": "Publier",
+        "submitting": "Publication…",
+        "errors": {
+          "typeInvalid": "Choisissez le type de publication.",
+          "titleTooShort": "Le titre doit contenir au moins 10 caractères.",
+          "titleTooLong": "Le titre ne doit pas dépasser 150 caractères.",
+          "categoryRequired": "Sélectionnez une catégorie.",
+          "categoryInvalid": "Cette catégorie n’existe pas.",
+          "contentRequired": "Le message est obligatoire.",
+          "contentTooLong": "Le message ne doit pas dépasser 10 000 caractères.",
+          "unavailable": "Publication impossible pour le moment. Réessayez dans un instant."
+        }
+      }
     }
   },
   "pagination": {
