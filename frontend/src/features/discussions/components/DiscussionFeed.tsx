@@ -107,7 +107,7 @@ export async function DiscussionFeed({ searchParams }: DiscussionFeedProps) {
             }
           />
         ) : (
-          <div className="bg-glass">
+          <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
             {discussions.map((discussion) => (
               <DiscussionCard
                 key={discussion.documentId}

@@ -6,7 +6,7 @@ type CommunityHeroProps = { hero: Dictionary['home']['hero'] };
 
 export function CommunityHero({ hero }: CommunityHeroProps) {
   return (
-    <section className="bg-hero px-3 py-9 text-on-hero lg:px-6 lg:py-14">
+    <section className="bg-linear-to-r from-hero to-hero-2 px-3 py-9 text-on-hero lg:px-6 lg:py-14">
       <div className="mx-auto w-full max-w-7xl">
         <p className="mb-4 inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.11em] text-hero-accent uppercase">
           <HugeiconsIcon

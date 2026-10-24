@@ -18,7 +18,16 @@
       "logout": "Se déconnecter"
     },
     "footer": {
-      "tagline": "La communauté des lecteurs du Revenu."
+      "tagline": "La communauté des lecteurs du Revenu.",
+      "sectionsTitle": "Les rubriques du Revenu",
+      "sections": {
+        "bourse": "Réussir en Bourse",
+        "placements": "Diversifier vos placements",
+        "immobilier": "Investir dans l’immobilier",
+        "impots": "Réduire vos impôts",
+        "succession": "Préparer une succession"
+      },
+      "subscribePitch": "Analyses de marché, conseils placements et sélections de valeurs."
     },
     "locale": {
       "label": "Choisir la langue",
@@ -31,7 +40,9 @@
       "label": "Rechercher dans la communauté",
       "placeholder": "Rechercher une discussion…",
       "submit": "Rechercher"
-    }
+    },
+    "logoAlt": "Le Revenu, votre conseiller indépendant depuis 1967",
+    "subscribe": "S’abonner"
   },
   "home": {
     "hero": {
@@ -116,7 +127,6 @@
     "detail": {
       "breadcrumb": "Fil d’Ariane",
       "home": "Accueil",
-      "publishedOn": "Publié le",
       "repliesEmpty": "Aucune réponse pour le moment. Soyez le premier à partager votre expérience.",
       "rail": {
         "title": "Cette discussion",
@@ -130,7 +140,8 @@
         "title": "Cette discussion n’existe plus",
         "description": "Elle a peut-être été supprimée ou déplacée par la modération.",
         "back": "Retour aux discussions"
-      }
+      },
+      "publishedAt": "Publié le {date} à {time}"
     },
     "create": {
       "back": "Retour aux discussions",

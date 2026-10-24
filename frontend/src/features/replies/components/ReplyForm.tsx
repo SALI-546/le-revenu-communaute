@@ -37,7 +37,7 @@ export function ReplyForm({ discussionId, username, dict }: ReplyFormProps) {
     <form
       action={formAction}
       noValidate
-      className="rounded-[13px] border border-line bg-glass-strong px-5 py-6 sm:px-8 sm:py-8"
+      className="rounded-xl border border-line bg-glass-strong px-5 py-6 sm:px-8 sm:py-8"
     >
       <input type="hidden" name="discussion" value={discussionId} />
       <div className="mb-5 flex items-center gap-3">
@@ -50,7 +50,7 @@ export function ReplyForm({ discussionId, username, dict }: ReplyFormProps) {
       {state.status === 'success' && (
         <p
           role="status"
-          className="mb-5 flex items-center gap-2 rounded-[9px] bg-success-soft p-3.5 text-sm font-bold text-success"
+          className="mb-5 flex items-center gap-2 rounded-lg bg-success-soft p-3.5 text-sm font-bold text-success"
         >
           <HugeiconsIcon
             icon={CheckmarkCircle02Icon}
@@ -64,7 +64,7 @@ export function ReplyForm({ discussionId, username, dict }: ReplyFormProps) {
       {state.error && (
         <p
           role="alert"
-          className="mb-5 flex items-center gap-2 rounded-[9px] bg-surface-tint p-3 text-xs font-semibold text-brand-text"
+          className="mb-5 flex items-center gap-2 rounded-lg bg-surface-tint p-3 text-xs font-semibold text-brand-text"
         >
           <HugeiconsIcon
             icon={Alert02Icon}

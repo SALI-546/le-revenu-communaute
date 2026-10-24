@@ -5,6 +5,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Avatar } from '@/components/ui/Avatar';
 import type { Dictionary } from '@/dictionaries';
 import type { Locale } from '@/dictionaries/config';
+import { formatDate } from '@/lib/formatDate';
 import type { DiscussionSummary } from '../types';
 
 type DiscussionCardProps = {
@@ -26,32 +27,31 @@ export function DiscussionCard({
         ? 'one'
         : 'other'
     ];
-  const date = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(
-    new Date(publishedAt),
-  );
+  const date = formatDate(locale, publishedAt, { dateStyle: 'medium' });
 
   return (
-    <article className="relative grid grid-cols-[44px_minmax(0,1fr)] gap-3 border-b border-line py-5 pr-8 pl-3 transition-colors hover:bg-surface sm:grid-cols-[62px_minmax(0,1fr)] sm:gap-5 sm:py-6 sm:pr-12 sm:pl-5">
+    <article className="relative grid grid-cols-[44px_minmax(0,1fr)] gap-3 border-b border-line py-5 pr-8 pl-3 transition-colors last:border-b-0 hover:bg-surface-2 sm:grid-cols-[62px_minmax(0,1fr)] sm:gap-5 sm:py-6 sm:pr-12 sm:pl-5">
       <div
         className={clsx(
-          'flex h-[50px] flex-col items-center justify-center rounded-[9px] border text-[9px] leading-tight text-ink-3 sm:size-[62px] sm:rounded-xl',
+          'flex h-[50px] flex-col items-center justify-center rounded-lg border text-[9px] leading-tight text-ink-3 sm:size-[62px] sm:rounded-xl',
           replies.count === 0 ? 'border-dashed border-brand/45' : 'border-line',
         )}
       >
-        <strong className="font-display text-[17px] text-ink sm:text-[21px]">
+        <strong className="font-display text-[17px] text-heading sm:text-[21px]">
           {replies.count}
         </strong>
         <span>{replyLabel}</span>
       </div>
       <div className="min-w-0">
-        <p className="mb-1.5 flex items-center gap-1.5 text-[11px] text-ink-3">
+        <p className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
           {category && (
-            <span className="font-bold text-brand-text">{category.name}</span>
+            <span className="font-bold tracking-[0.12em] text-brand-text uppercase">
+              {category.name}
+            </span>
           )}
-          <span aria-hidden="true">·</span>
-          <span>{dict.types[type]}</span>
+          <span className="text-ink-3">{dict.types[type]}</span>
         </p>
-        <h3 className="font-display text-base leading-snug font-bold text-ink sm:text-lg">
+        <h3 className="font-display text-base leading-snug font-bold text-heading sm:text-lg">
           <Link
             href={`/${locale}/discussions/${slug}`}
             className="after:absolute after:inset-0 hover:text-brand-text"

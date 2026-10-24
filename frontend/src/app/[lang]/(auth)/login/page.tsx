@@ -29,9 +29,9 @@ export default async function LoginPage({
       id="content"
       className="min-h-dvh bg-surface md:grid md:grid-cols-[minmax(20rem,0.85fr)_minmax(0,1.15fr)]"
     >
-      <section className="hidden flex-col justify-between bg-hero p-[clamp(2.25rem,6vw,5.375rem)] text-on-hero md:flex">
+      <section className="hidden flex-col justify-between bg-linear-to-br from-hero to-hero-2 p-[clamp(2.25rem,6vw,5.375rem)] text-on-hero md:flex">
         <Link href={home} className="flex items-center gap-3.5 self-start">
-          <Logo tone="light" />
+          <Logo alt={layout.logoAlt} withTagline={false} className="w-28" />
           <span className="border-l border-hero-2 pl-3.5 text-[13px] font-semibold">
             {layout.header.section}
           </span>
@@ -66,9 +66,9 @@ export default async function LoginPage({
         </Link>
         <div className="w-full max-w-[420px]">
           <span className="mb-10 inline-flex md:hidden">
-            <Logo />
+            <Logo alt={layout.logoAlt} className="w-36" />
           </span>
-          <h1 className="mb-2 font-display text-[31px] font-bold text-ink lg:text-[37px]">
+          <h1 className="mb-2 font-display text-[31px] font-bold text-heading lg:text-[37px]">
             {auth.login.title}
           </h1>
           <p className="mb-8 text-sm text-ink-3">{auth.login.description}</p>

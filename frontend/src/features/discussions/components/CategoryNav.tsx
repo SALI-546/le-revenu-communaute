@@ -37,9 +37,9 @@ export function CategoryNav({
                 href={listHref(locale, { ...filters, category: slug, page: 1 })}
                 aria-current={active ? 'page' : undefined}
                 className={clsx(
-                  'flex min-h-11 items-center rounded-full border px-3.5 text-xs font-semibold whitespace-nowrap lg:rounded-[9px] lg:border-transparent lg:px-2.5',
+                  'flex min-h-11 items-center rounded-full border px-3.5 text-xs font-semibold whitespace-nowrap lg:rounded-lg lg:border-transparent lg:px-2.5',
                   active
-                    ? 'border-ink bg-ink text-surface lg:bg-surface lg:font-bold lg:text-ink lg:shadow-sm'
+                    ? 'border-brand bg-brand text-on-brand lg:border-transparent lg:bg-surface lg:font-bold lg:text-heading lg:shadow-sm'
                     : 'border-line bg-surface text-ink-2 lg:bg-transparent lg:hover:bg-glass',
                 )}
               >

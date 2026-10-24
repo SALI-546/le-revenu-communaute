@@ -29,7 +29,7 @@ export default async function CommunityHomePage({
             </p>
             <h2
               id="feed-title"
-              className="font-display text-[25px] leading-tight font-bold text-ink sm:text-[31px]"
+              className="font-display text-[25px] leading-tight font-bold text-heading sm:text-[31px]"
             >
               {list.title}
             </h2>

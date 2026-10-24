@@ -34,7 +34,7 @@ export function LoginForm({ dict, redirectTo }: LoginFormProps) {
       {state.error && (
         <p
           role="alert"
-          className="flex items-center gap-2 rounded-[9px] bg-surface-tint p-3 text-xs font-semibold text-brand-text"
+          className="flex items-center gap-2 rounded-lg bg-surface-tint p-3 text-xs font-semibold text-brand-text"
         >
           <HugeiconsIcon
             icon={Alert02Icon}

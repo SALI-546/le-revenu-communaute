@@ -10,7 +10,7 @@ export function DiscussionFeedSkeleton() {
         {[1, 2, 3, 4].map((item) => (
           <span
             key={item}
-            className="h-11 w-28 animate-pulse rounded-full bg-surface-2 lg:w-full lg:rounded-[9px]"
+            className="h-11 w-28 animate-pulse rounded-full bg-surface-2 lg:w-full lg:rounded-lg"
           />
         ))}
       </div>

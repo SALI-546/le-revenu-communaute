@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
+import { Playfair_Display, Source_Sans_3 } from 'next/font/google';
 import { lang } from 'next/root-params';
 import { getDictionary } from '@/dictionaries';
 import { locales } from '@/dictionaries/config';
 import '@/styles/globals.css';
 
-const inter = Inter({ variable: '--font-inter', subsets: ['latin'] });
+const sourceSans = Source_Sans_3({
+  variable: '--font-source-sans',
+  subsets: ['latin'],
+});
 const playfair = Playfair_Display({
   variable: '--font-playfair',
   subsets: ['latin'],
@@ -29,7 +32,7 @@ export default async function RootLayout({ children }: LayoutProps<'/[lang]'>) {
   return (
     <html
       lang={await lang()}
-      className={`${inter.variable} ${playfair.variable} antialiased`}
+      className={`${sourceSans.variable} ${playfair.variable} antialiased`}
     >
       <body className="flex min-h-dvh flex-col font-sans">
         <a

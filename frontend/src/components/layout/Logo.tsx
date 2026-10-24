@@ -1,19 +1,32 @@
+import Image from 'next/image';
 import clsx from 'clsx';
 
-type LogoProps = { tone?: 'brand' | 'light' };
+type LogoProps = { alt: string; withTagline?: boolean; className?: string };
 
-export function Logo({ tone = 'brand' }: LogoProps) {
+export function Logo({ alt, withTagline = true, className }: LogoProps) {
+  const compact = (
+    <Image
+      src="/brand/logo.webp"
+      alt={alt}
+      width={645}
+      height={192}
+      className={clsx('h-auto', withTagline && 'hidden dark:block', className)}
+    />
+  );
+
+  if (!withTagline) {
+    return compact;
+  }
   return (
-    <span
-      className={clsx(
-        'flex items-start font-display text-xl leading-[0.85] font-black tracking-[-0.06em]',
-        tone === 'brand' ? 'text-brand' : 'text-on-hero',
-      )}
-    >
-      <small className="mr-[3px] font-sans text-[7px] font-extrabold tracking-[-0.05em]">
-        LE
-      </small>
-      REVENU
-    </span>
+    <>
+      <Image
+        src="/brand/logo-with-text.webp"
+        alt={alt}
+        width={645}
+        height={246}
+        className={clsx('h-auto dark:hidden', className)}
+      />
+      {compact}
+    </>
   );
 }

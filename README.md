@@ -149,7 +149,7 @@ cd frontend
 npm run test:e2e
 ```
 
-Playwright démarre Strapi et Next s'ils ne tournent pas déjà, puis exécute 11 parcours sur desktop et sur mobile : liste, filtre, recherche, détail, redirection d'un visiteur vers la connexion, création avec erreurs de validation puis publication, réponse, et absence de défilement horizontal sur les pages principales. Il utilise le Google Chrome installé sur la machine (`channel: 'chrome'`). Les tests écrivent dans la base de développement des contenus suffixés `[e2e]`.
+Playwright démarre Strapi et Next s'ils ne tournent pas déjà, puis exécute 11 parcours sur desktop et sur mobile : liste, filtre, recherche, détail, redirection d'un visiteur vers la connexion, création avec erreurs de validation puis publication, réponse, et absence de défilement horizontal sur les pages principales. Il utilise le Google Chrome installé sur la machine (`channel: 'chrome'`). Les tests écrivent dans la base de développement des contenus suffixés `[e2e]`. Si le port 3000 est déjà pris par une autre application, lancez `E2E_PORT=3100 npm run test:e2e`.
 
 ### Qualité
 
@@ -293,9 +293,11 @@ Chaque route a son `loading.tsx` (skeleton). Le groupe `(community)` a un `error
 
 ### Design system
 
-- Les tokens du Figma (couleurs claires et sombres, ombres, polices, breakpoints de la maquette) sont déclarés une seule fois dans `globals.css`, avec `@theme`.
+- L'identité reprend celle du **site réel lerevenu.com**, relevée dans ses feuilles de style : logo officiel, fond crème `#fff3ed`, titres bordeaux `#7c000e`, rouge `#cd1719` pour les boutons et les surtitres, pied de page en dégradé bordeaux, arrondis de 8 et 12 px. La maquette et le Figma fournissent la structure des écrans. Ils s'écartaient de la marque sur le logo, la police du texte et la palette.
+- Ces tokens (clairs et sombres), les ombres, les polices et les breakpoints de la maquette sont déclarés une seule fois dans `globals.css`, avec `@theme`.
 - **La palette par défaut de Tailwind est désactivée** (`--color-*: initial`). Seuls les tokens existent, ce qui rend impossible une couleur écrite en dur.
-- Les polices passent par `next/font` : Playfair Display pour les titres, Inter pour le texte. Les icônes viennent uniquement de Hugeicons.
+- Les polices sont celles du site, servies par `next/font` : Playfair Display pour les titres, Source Sans 3 pour le texte. Les icônes viennent uniquement de Hugeicons.
+- Les dates s'affichent à l'heure de Paris (`Europe/Paris`), quel que soit le fuseau du serveur (UTC dans un conteneur).
 - Le design est pensé mobile d'abord. Il est vérifié à 375, 768, 1024, 1280 et 1440 px, sans défilement horizontal, avec des zones tactiles de 44 px, un focus visible et le respect de `prefers-reduced-motion`.
 
 ## Bibliothèques ajoutées

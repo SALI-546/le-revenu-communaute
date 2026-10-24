@@ -37,7 +37,7 @@ export function StateCard({
           aria-hidden="true"
         />
       </span>
-      <h2 className="mb-2 font-display text-[25px] font-bold text-ink">
+      <h2 className="mb-2 font-display text-[25px] font-bold text-heading">
         {title}
       </h2>
       <p className="mb-6 max-w-md text-sm leading-relaxed text-ink-3">

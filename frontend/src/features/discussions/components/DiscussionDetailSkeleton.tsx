@@ -14,7 +14,7 @@ export function DiscussionDetailSkeleton() {
       aria-hidden="true"
       className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_286px]"
     >
-      <div className="grid gap-4 rounded-2xl border border-line bg-glass-strong p-8">
+      <div className="grid gap-4 rounded-xl border border-line bg-glass-strong p-8">
         {lines.map((line) => (
           <span
             key={line}
@@ -22,7 +22,7 @@ export function DiscussionDetailSkeleton() {
           />
         ))}
       </div>
-      <div className="hidden h-40 animate-pulse rounded-[14px] bg-surface-2 xl:block" />
+      <div className="hidden h-40 animate-pulse rounded-xl bg-surface-2 xl:block" />
     </div>
   );
 }

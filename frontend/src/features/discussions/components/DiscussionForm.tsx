@@ -67,13 +67,13 @@ export function DiscussionForm({
     <form
       action={formAction}
       noValidate
-      className="grid gap-6 rounded-[18px] border border-line bg-glass-strong p-[clamp(1.25rem,5vw,3.25rem)] shadow-md"
+      className="grid gap-6 rounded-xl border border-line bg-glass-strong p-[clamp(1.25rem,5vw,3.25rem)] shadow-md"
     >
       <input type="hidden" name="locale" value={locale} />
       {state.error && (
         <p
           role="alert"
-          className="flex items-center gap-2 rounded-[9px] bg-surface-tint p-3 text-xs font-semibold text-brand-text"
+          className="flex items-center gap-2 rounded-lg bg-surface-tint p-3 text-xs font-semibold text-brand-text"
         >
           <HugeiconsIcon
             icon={Alert02Icon}
@@ -104,7 +104,7 @@ export function DiscussionForm({
               defaultChecked={selectedType === option}
               className="peer sr-only"
             />
-            <span className="row-span-2 grid size-[42px] place-items-center rounded-[10px] bg-surface-2 text-ink-3 peer-checked:bg-brand-soft peer-checked:text-brand">
+            <span className="row-span-2 grid size-[42px] place-items-center rounded-lg bg-surface-2 text-ink-3 peer-checked:bg-brand-soft peer-checked:text-brand">
               <HugeiconsIcon
                 icon={TYPE_ICONS[option]}
                 size={21}
@@ -221,7 +221,7 @@ export function DiscussionForm({
           {content.length}/{formatCount(10000)}
         </p>
       </FormField>
-      <div className="flex gap-3 rounded-[10px] bg-surface-2 p-4">
+      <div className="flex gap-3 rounded-lg bg-surface-2 p-4">
         <HugeiconsIcon
           icon={SecurityCheckIcon}
           size={20}

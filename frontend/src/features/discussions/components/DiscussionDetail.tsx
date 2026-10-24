@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import {
   ArrowRight01Icon,
+  Home01Icon,
   SecurityCheckIcon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -11,13 +12,13 @@ import { getDictionary, getLocale } from '@/dictionaries';
 import { localizedHref } from '@/dictionaries/config';
 import { ReplyComposer } from '@/features/replies/components/ReplyComposer';
 import { ReplyItem } from '@/features/replies/components/ReplyItem';
+import { formatDate } from '@/lib/formatDate';
 import { listHref } from '../listHref';
 import { getDiscussion } from '../queries';
 
 type DiscussionDetailProps = { params: Promise<{ slug: string }> };
 
-const cardStyles =
-  'rounded-[14px] border border-line bg-glass-strong p-5 shadow-sm';
+const cardStyles = 'rounded-xl border border-line bg-surface p-5 shadow-sm';
 
 export async function DiscussionDetail({ params }: DiscussionDetailProps) {
   const { slug } = await params;
@@ -37,9 +38,19 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
     new Intl.PluralRules(locale).select(replies.length) === 'one'
       ? 'one'
       : 'other';
-  const date = new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(
-    new Date(publishedAt),
-  );
+  const published = detail.publishedAt
+    .replace(
+      '{date}',
+      formatDate(locale, publishedAt, {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }),
+    )
+    .replace(
+      '{time}',
+      formatDate(locale, publishedAt, { hour: '2-digit', minute: '2-digit' }),
+    );
 
   return (
     <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_286px]">
@@ -51,17 +62,18 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
                 href={localizedHref(locale)}
                 className="inline-flex min-h-8 items-center hover:text-ink"
               >
-                {detail.home}
+                <HugeiconsIcon
+                  icon={Home01Icon}
+                  size={17}
+                  color="currentColor"
+                  aria-hidden="true"
+                />
+                <span className="sr-only">{detail.home}</span>
               </Link>
             </li>
             {category && (
               <li className="flex items-center gap-1.5">
-                <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={14}
-                  color="currentColor"
-                  aria-hidden="true"
-                />
+                <span aria-hidden="true">/</span>
                 <Link
                   href={listHref(locale, { category: category.slug })}
                   className="inline-flex min-h-8 items-center hover:text-ink"
@@ -72,16 +84,21 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
             )}
           </ol>
         </nav>
-        <article className="rounded-2xl border border-line bg-glass-strong p-[clamp(1.375rem,4vw,2.875rem)] shadow-sm">
+        <article className="rounded-xl border border-line bg-glass-strong p-[clamp(1.375rem,4vw,2.875rem)] shadow-sm">
           <p className="mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold">
             {category && (
-              <span className="text-brand-text">{category.name}</span>
+              <Link
+                href={listHref(locale, { category: category.slug })}
+                className="inline-flex min-h-8 items-center rounded-full border border-ink-2 px-3 font-semibold text-ink-2 hover:border-brand hover:text-brand-text"
+              >
+                {category.name}
+              </Link>
             )}
-            <span className="rounded-full bg-surface-2 px-2 py-0.5 text-ink-2">
+            <span className="rounded-full bg-surface-2 px-2.5 py-1 text-ink-2">
               {types[type]}
             </span>
           </p>
-          <h1 className="mb-6 max-w-3xl font-display text-[31px] leading-[1.1] font-bold tracking-[-0.02em] text-ink sm:text-[clamp(1.875rem,4vw,2.875rem)]">
+          <h1 className="mb-6 max-w-3xl font-display text-[31px] leading-[1.1] font-bold tracking-[-0.02em] text-heading sm:text-[clamp(1.875rem,4vw,2.875rem)]">
             {title}
           </h1>
           {author && (
@@ -89,10 +106,9 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
               <Avatar name={author.username} size="lg" />
               <div className="grid">
                 <strong className="text-sm text-ink">{author.username}</strong>
-                <span className="text-xs text-ink-3">
-                  {detail.publishedOn}{' '}
-                  <time dateTime={publishedAt}>{date}</time>
-                </span>
+                <time dateTime={publishedAt} className="text-xs text-ink-3">
+                  {published}
+                </time>
               </div>
             </div>
           )}
@@ -103,7 +119,7 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
         <section aria-labelledby="replies-title" className="mt-10 grid gap-3">
           <h2
             id="replies-title"
-            className="mb-1 font-display text-[23px] font-bold text-ink"
+            className="mb-1 font-display text-[23px] font-bold text-heading"
           >
             {replies.length} {list.replies[plural]}
           </h2>
@@ -115,7 +131,7 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
           ))}
           <Suspense
             fallback={
-              <div className="h-48 animate-pulse rounded-[13px] bg-surface-2" />
+              <div className="h-48 animate-pulse rounded-xl bg-surface-2" />
             }
           >
             <ReplyComposer
@@ -127,11 +143,11 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
       </div>
       <aside className="grid gap-3.5 self-start md:grid-cols-2 xl:sticky xl:top-6 xl:grid-cols-1">
         <section className={cardStyles}>
-          <h2 className="mb-3 font-display text-[17px] font-bold text-ink">
+          <h2 className="mb-3 font-display text-[17px] font-bold text-heading">
             {detail.rail.title}
           </h2>
           <p className="text-xs text-ink-3">
-            <strong className="mr-1.5 font-display text-lg text-ink">
+            <strong className="mr-1.5 font-display text-lg text-heading">
               {replies.length}
             </strong>
             {detail.rail.replies}
@@ -142,7 +158,7 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
             <p className="text-[10px] tracking-widest text-ink-3 uppercase">
               {detail.rail.category}
             </p>
-            <h2 className="mt-1 mb-3 font-display text-[17px] font-bold text-ink">
+            <h2 className="mt-1 mb-3 font-display text-[17px] font-bold text-heading">
               {category.name}
             </h2>
             <Link
@@ -170,7 +186,7 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
             className="flex-none text-success"
           />
           <div>
-            <h2 className="mb-1 font-display text-[17px] font-bold text-ink">
+            <h2 className="mb-1 font-display text-[17px] font-bold text-heading">
               {detail.rail.guidelinesTitle}
             </h2>
             <p className="text-xs leading-relaxed text-ink-3">

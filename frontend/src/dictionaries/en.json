@@ -18,7 +18,16 @@
       "logout": "Log out"
     },
     "footer": {
-      "tagline": "The community of Le Revenu readers."
+      "tagline": "The community of Le Revenu readers.",
+      "sectionsTitle": "Le Revenu sections",
+      "sections": {
+        "bourse": "Succeed in the stock market",
+        "placements": "Diversify your investments",
+        "immobilier": "Invest in real estate",
+        "impots": "Reduce your taxes",
+        "succession": "Plan an estate"
+      },
+      "subscribePitch": "Market analysis, investment advice and stock picks."
     },
     "locale": {
       "label": "Choose language",
@@ -31,7 +40,9 @@
       "label": "Search the community",
       "placeholder": "Search discussions…",
       "submit": "Search"
-    }
+    },
+    "logoAlt": "Le Revenu, your independent adviser since 1967",
+    "subscribe": "Subscribe"
   },
   "home": {
     "hero": {
@@ -116,7 +127,6 @@
     "detail": {
       "breadcrumb": "Breadcrumb",
       "home": "Home",
-      "publishedOn": "Published on",
       "repliesEmpty": "No replies yet. Be the first to share your experience.",
       "rail": {
         "title": "This discussion",
@@ -130,7 +140,8 @@
         "title": "This discussion no longer exists",
         "description": "It may have been deleted or moved by moderators.",
         "back": "Back to discussions"
-      }
+      },
+      "publishedAt": "Published on {date} at {time}"
     },
     "create": {
       "back": "Back to discussions",

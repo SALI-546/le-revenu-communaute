@@ -32,7 +32,7 @@ export async function ReplyComposer({
 
   const redirectTo = localizedHref(locale, `/discussions/${slug}`);
   return (
-    <div className="flex flex-wrap items-center gap-4 rounded-[13px] border border-line bg-glass-strong px-5 py-6 sm:flex-nowrap sm:px-8">
+    <div className="flex flex-wrap items-center gap-4 rounded-xl border border-line bg-glass-strong px-5 py-6 sm:flex-nowrap sm:px-8">
       <HugeiconsIcon
         icon={LockIcon}
         size={24}
@@ -41,7 +41,7 @@ export async function ReplyComposer({
         className="text-brand"
       />
       <div className="flex-1">
-        <h3 className="mb-1 font-display text-[17px] font-bold text-ink">
+        <h3 className="mb-1 font-display text-[17px] font-bold text-heading">
           {replies.login.title}
         </h3>
         <p className="text-xs text-ink-3">{replies.login.description}</p>

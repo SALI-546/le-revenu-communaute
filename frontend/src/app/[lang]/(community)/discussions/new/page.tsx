@@ -36,14 +36,14 @@ export default async function NewDiscussionPage() {
         <p className="mb-2 text-[10px] font-bold tracking-[0.12em] text-brand-text uppercase">
           {create.label}
         </p>
-        <h1 className="mb-2.5 font-display text-[clamp(2rem,5vw,3rem)] leading-tight font-bold text-ink">
+        <h1 className="mb-2.5 font-display text-[clamp(2rem,5vw,3rem)] leading-tight font-bold text-heading">
           {create.title}
         </h1>
         <p className="text-sm text-ink-3">{create.description}</p>
       </div>
       <Suspense
         fallback={
-          <div className="h-[42rem] animate-pulse rounded-[18px] bg-surface-2" />
+          <div className="h-[42rem] animate-pulse rounded-xl bg-surface-2" />
         }
       >
         <NewDiscussionSection />
