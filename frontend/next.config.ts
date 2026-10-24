@@ -2,6 +2,7 @@ import path from 'node:path';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  agentRules: false,
   // The Docker image runs the standalone server; local `next start` keeps the default output.
   output: process.env.NEXT_STANDALONE === 'true' ? 'standalone' : undefined,
   cacheComponents: true,
