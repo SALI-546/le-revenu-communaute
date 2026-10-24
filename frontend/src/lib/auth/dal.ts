@@ -24,11 +24,11 @@ export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
   }
 });
 
-export const verifySession = cache(async () => {
+export const verifySession = cache(async (loginPath = '/login') => {
   const token = await getSessionToken();
   const user = await getCurrentUser();
   if (!token || !user) {
-    redirect('/login');
+    redirect(loginPath);
   }
   return { token, user };
 });

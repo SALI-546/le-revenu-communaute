@@ -135,5 +135,19 @@ export default factories.createCoreService(UID, ({ strapi }) => {
       await assertCategoryExists(data.category);
       return super.update(documentId, { ...params, data });
     },
+
+    async delete(documentId: string, params: object = {}) {
+      const replies = strapi.documents('api::reply.reply');
+      const orphans = await replies.findMany({
+        filters: { discussion: { documentId } },
+        fields: ['documentId'],
+      });
+      await Promise.all(
+        orphans.map((reply) =>
+          replies.delete({ documentId: reply.documentId }),
+        ),
+      );
+      return super.delete(documentId, params);
+    },
   };
 });

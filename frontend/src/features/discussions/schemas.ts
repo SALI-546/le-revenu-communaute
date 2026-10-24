@@ -37,5 +37,3 @@ export const discussionSchema = z.object({
     .min(1, { error: 'contentRequired' })
     .max(10000, { error: 'contentTooLong' }),
 });
-
-export type DiscussionInput = z.infer<typeof discussionSchema>;

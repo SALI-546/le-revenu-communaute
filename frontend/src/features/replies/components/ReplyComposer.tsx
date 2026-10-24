@@ -14,7 +14,8 @@ export async function ReplyComposer({
   slug,
 }: ReplyComposerProps) {
   const [user, { replies }, locale] = await Promise.all([
-    getCurrentUser(),
+    // A failing session check must not take down the discussion, which is already cached.
+    getCurrentUser().catch(() => null),
     getDictionary(),
     getLocale(),
   ]);

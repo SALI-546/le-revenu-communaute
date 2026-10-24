@@ -57,6 +57,8 @@ export function DiscussionForm({
     category: errorFor('category'),
     content: errorFor('content'),
   };
+  const formatCount = (value: number) =>
+    new Intl.NumberFormat(locale).format(value);
   const idOf = (field: keyof typeof errors) => `discussion-${field}`;
   const describedBy = (field: keyof typeof errors, hint?: string) =>
     errors[field] ? `${idOf(field)}-error` : hint;
@@ -154,7 +156,9 @@ export function DiscussionForm({
           className="flex justify-between gap-4 text-xs text-ink-3"
         >
           <span>{dict.titleHint}</span>
-          <span aria-hidden="true">{title.length}/150</span>
+          <span aria-hidden="true">
+            {title.length}/{formatCount(150)}
+          </span>
         </p>
       </FormField>
       <FormField
@@ -214,7 +218,7 @@ export function DiscussionForm({
           )}
         />
         <p aria-hidden="true" className="text-right text-xs text-ink-3">
-          {content.length}/10 000
+          {content.length}/{formatCount(10000)}
         </p>
       </FormField>
       <div className="flex gap-3 rounded-[10px] bg-surface-2 p-4">

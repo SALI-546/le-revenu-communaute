@@ -9,6 +9,7 @@ type Controller = Core.CoreAPI.Controller.CollectionType;
 
 export default factories.createCoreController(UID, ({ strapi }) => ({
   async create(this: Controller, ctx) {
+    await this.validateQuery(ctx);
     const { data } = ctx.request.body ?? {};
     if (typeof data !== 'object' || data === null) {
       throw new errors.ValidationError(

@@ -209,6 +209,38 @@ describe('author spoofing', () => {
     );
   });
 
+  it('deletes the replies of a deleted discussion', async () => {
+    const { body: created } = await request<Discussion>('/discussions', {
+      method: 'POST',
+      token: thomasToken,
+      data: validDiscussion(),
+    });
+    const { body: reply } = await request<Reply>('/replies', {
+      method: 'POST',
+      token: hugoToken,
+      data: {
+        content: 'Réponse vouée à disparaître',
+        discussion: created.data.documentId,
+      },
+    });
+
+    const { status } = await request(
+      `/discussions/${created.data.documentId}`,
+      {
+        method: 'DELETE',
+        token: thomasToken,
+      },
+    );
+
+    assert.equal(status, 204);
+    assert.equal(
+      await strapi
+        .documents('api::reply.reply')
+        .findOne({ documentId: reply.data.documentId }),
+      null,
+    );
+  });
+
   it('forbids editing a discussion written by someone else', async () => {
     const { body: created } = await request<Discussion>('/discussions', {
       method: 'POST',
