@@ -7,12 +7,16 @@ import { StrapiError, strapiFetch } from '@/lib/strapi/client';
 import { loginSchema } from './schemas';
 import type { LoginState } from './types';
 
-const safeRedirect = (target: FormDataEntryValue | null) =>
-  typeof target === 'string' &&
-  target.startsWith('/') &&
-  !target.startsWith('//')
-    ? target
-    : '/';
+const INTERNAL_ORIGIN = 'http://internal.invalid';
+
+// Resolving like a browser catches tricks such as "/\evil.com" that a prefix check lets through.
+const safeRedirect = (target: FormDataEntryValue | null) => {
+  if (typeof target !== 'string') {
+    return '/';
+  }
+  const url = new URL(target, INTERNAL_ORIGIN);
+  return url.origin === INTERNAL_ORIGIN ? `${url.pathname}${url.search}` : '/';
+};
 
 export async function login(
   _state: LoginState,
