@@ -10,7 +10,8 @@ import { LoginLink } from './LoginLink';
 
 export async function AccountMenu() {
   const [user, { layout }, locale] = await Promise.all([
-    getCurrentUser(),
+    // The header lives above the error boundary, so an unreachable API must not break the page.
+    getCurrentUser().catch(() => null),
     getDictionary(),
     getLocale(),
   ]);
