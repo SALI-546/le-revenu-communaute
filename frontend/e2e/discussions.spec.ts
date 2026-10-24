@@ -76,6 +76,29 @@ test.describe('discussion list', () => {
       page.getByRole('heading', { name: /réponses?$/ }),
     ).toBeVisible();
   });
+
+  test('suggests related discussions and copies the link', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.goto(
+      '/fr/discussions/ouvrir-un-pea-avec-5-000-eur-par-ou-commencer',
+    );
+
+    await expect(
+      page.getByRole('heading', {
+        name: 'À lire aussi dans « Bourse & actions »',
+      }),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Copier le lien' }).click();
+    await expect(
+      page.getByRole('button', { name: 'Lien copié' }),
+    ).toBeVisible();
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
+      page.url(),
+    );
+  });
 });
 
 test.describe('publishing', () => {

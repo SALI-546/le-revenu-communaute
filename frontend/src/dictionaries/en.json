@@ -218,17 +218,40 @@
       "rail": {
         "title": "This discussion",
         "replies": "Replies",
-        "category": "Category",
         "seeAll": "See all discussions",
         "guidelinesTitle": "Before you reply",
-        "guidelines": "Share your experience, without personal advice or solicitation."
+        "guidelines": "Share your experience, without personal advice or solicitation.",
+        "lastActivity": "Last activity",
+        "participants": "Participants",
+        "participantsCount": {
+          "one": "participant",
+          "other": "participants"
+        },
+        "space": "Space",
+        "publishHere": "Post in this space"
       },
       "notFound": {
         "title": "This discussion no longer exists",
         "description": "It may have been deleted or moved by moderators.",
         "back": "Back to discussions"
       },
-      "publishedAt": "Published on {date} at {time}"
+      "publishedAt": "Published on {date} at {time}",
+      "status": {
+        "answered": "Answered",
+        "waiting": "Waiting for an answer"
+      },
+      "actions": {
+        "label": "Discussion actions",
+        "reply": "Reply",
+        "copy": "Copy link",
+        "copied": "Link copied",
+        "copyFailed": "Could not copy"
+      },
+      "related": {
+        "title": "More in “{space}”",
+        "titleAll": "More from the community"
+      },
+      "authorBadge": "Author"
     },
     "create": {
       "back": "Back to discussions",

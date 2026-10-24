@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import clsx from 'clsx';
 import {
-  ArrowRight01Icon,
+  ArrowTurnBackwardIcon,
   Home01Icon,
   SecurityCheckIcon,
 } from '@hugeicons/core-free-icons';
@@ -14,19 +15,28 @@ import { ReplyComposer } from '@/features/replies/components/ReplyComposer';
 import { ReplyItem } from '@/features/replies/components/ReplyItem';
 import { formatDate } from '@/lib/formatDate';
 import { pluralize } from '@/lib/plural';
+import { requestTime } from '@/lib/requestTime';
 import { listHref } from '../listHref';
-import { getDiscussion } from '../queries';
+import { getCategories, getDiscussion } from '../queries';
+import { TYPE_ICONS } from '../typeIcons';
+import { CopyLinkButton } from './CopyLinkButton';
+import { DiscussionFacts } from './DiscussionFacts';
+import { RelatedDiscussions } from './RelatedDiscussions';
+import { SpaceCard } from './SpaceCard';
 
 type DiscussionDetailProps = { params: Promise<{ slug: string }> };
 
-const cardStyles = 'rounded-xl border border-line bg-surface p-5 shadow-sm';
+const actionStyles =
+  'inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-line px-3 text-xs font-semibold text-ink-2 transition-colors hover:border-line-strong hover:bg-surface-2 hover:text-ink';
 
 export async function DiscussionDetail({ params }: DiscussionDetailProps) {
   const { slug } = await params;
-  const [discussion, dict, locale] = await Promise.all([
+  const [discussion, categories, dict, locale, now] = await Promise.all([
     getDiscussion(slug),
+    getCategories(),
     getDictionary(),
     getLocale(),
+    requestTime(),
   ]);
   if (!discussion) {
     notFound();
@@ -35,6 +45,13 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
   const { list, detail, types } = dict.discussions;
   const { title, content, type, publishedAt, author, category, replies } =
     discussion;
+  const space = categories.find(({ slug }) => slug === category?.slug);
+  const status =
+    replies.length === 0
+      ? 'waiting'
+      : type === 'question'
+        ? 'answered'
+        : undefined;
   const published = detail.publishedAt
     .replace(
       '{date}',
@@ -50,7 +67,7 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
     );
 
   return (
-    <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_286px]">
+    <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_18rem]">
       <div className="min-w-0">
         <nav aria-label={detail.breadcrumb} className="mb-5">
           <ol className="flex flex-wrap items-center gap-1.5 text-xs text-ink-3">
@@ -91,9 +108,27 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
                 {category.name}
               </Link>
             )}
-            <span className="rounded-full bg-surface-2 px-2.5 py-1 text-ink-2">
+            <span className="inline-flex items-center gap-1 rounded-full bg-surface-2 px-2.5 py-1 text-ink-2">
+              <HugeiconsIcon
+                icon={TYPE_ICONS[type]}
+                size={13}
+                color="currentColor"
+                aria-hidden="true"
+              />
               {types[type]}
             </span>
+            {status && (
+              <span
+                className={clsx(
+                  'rounded-full px-2.5 py-1',
+                  status === 'answered'
+                    ? 'bg-success-soft text-success'
+                    : 'bg-brand-soft text-brand-text',
+                )}
+              >
+                {detail.status[status]}
+              </span>
+            )}
           </p>
           <h1 className="mb-6 max-w-3xl font-display text-[31px] leading-[1.1] font-bold tracking-[-0.02em] text-heading sm:text-[clamp(1.875rem,4vw,2.875rem)]">
             {title}
@@ -112,6 +147,22 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
           <p className="mt-8 text-[15px] leading-[1.8] whitespace-pre-line text-ink-2">
             {content}
           </p>
+          <div
+            role="group"
+            aria-label={detail.actions.label}
+            className="mt-8 flex flex-wrap gap-2 border-t border-line pt-5"
+          >
+            <a href="#reply" className={actionStyles}>
+              <HugeiconsIcon
+                icon={ArrowTurnBackwardIcon}
+                size={16}
+                color="currentColor"
+                aria-hidden="true"
+              />
+              {detail.actions.reply}
+            </a>
+            <CopyLinkButton labels={detail.actions} className={actionStyles} />
+          </div>
         </article>
         <section aria-labelledby="replies-title" className="mt-10 grid gap-3">
           <h2
@@ -124,57 +175,49 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
             <p className="text-sm text-ink-3">{detail.repliesEmpty}</p>
           )}
           {replies.map((reply) => (
-            <ReplyItem key={reply.documentId} reply={reply} locale={locale} />
-          ))}
-          <Suspense
-            fallback={
-              <div className="h-48 animate-pulse rounded-xl bg-surface-2" />
-            }
-          >
-            <ReplyComposer
-              discussionId={discussion.documentId}
-              slug={discussion.slug}
+            <ReplyItem
+              key={reply.documentId}
+              reply={reply}
+              locale={locale}
+              authorBadge={
+                author && reply.author?.username === author.username
+                  ? detail.authorBadge
+                  : undefined
+              }
             />
-          </Suspense>
-        </section>
-      </div>
-      <aside className="grid gap-3.5 self-start md:grid-cols-2 xl:sticky xl:top-6 xl:grid-cols-1">
-        <section className={cardStyles}>
-          <h2 className="mb-3 font-display text-[17px] font-bold text-heading">
-            {detail.rail.title}
-          </h2>
-          <p className="text-xs text-ink-3">
-            <strong className="mr-1.5 font-display text-lg text-heading">
-              {replies.length}
-            </strong>
-            {detail.rail.replies}
-          </p>
-        </section>
-        {category && (
-          <section className={cardStyles}>
-            <p className="text-[10px] tracking-widest text-ink-3 uppercase">
-              {detail.rail.category}
-            </p>
-            <h2 className="mt-1 mb-3 font-display text-[17px] font-bold text-heading">
-              {category.name}
-            </h2>
-            <Link
-              href={listHref(locale, { category: category.slug })}
-              className="inline-flex min-h-8 items-center gap-1.5 text-xs font-bold text-brand-text"
+          ))}
+          <div id="reply" className="scroll-mt-28">
+            <Suspense
+              fallback={
+                <div className="h-48 animate-pulse rounded-xl bg-surface-2" />
+              }
             >
-              {detail.rail.seeAll}
-              <HugeiconsIcon
-                icon={ArrowRight01Icon}
-                size={15}
-                color="currentColor"
-                aria-hidden="true"
+              <ReplyComposer
+                discussionId={discussion.documentId}
+                slug={discussion.slug}
               />
-            </Link>
-          </section>
+            </Suspense>
+          </div>
+        </section>
+        <RelatedDiscussions slug={discussion.slug} category={category} />
+      </div>
+      <aside className="grid content-start gap-4 sm:grid-cols-2 xl:sticky xl:top-24 xl:grid-cols-1 xl:self-start">
+        <DiscussionFacts
+          discussion={discussion}
+          locale={locale}
+          now={now}
+          labels={detail.rail}
+        />
+        {space && (
+          <SpaceCard
+            category={space}
+            locale={locale}
+            labels={detail.rail}
+            siteLink={dict.home.space.siteLink}
+            sections={dict.layout.pressBar.sections}
+          />
         )}
-        <section
-          className={`${cardStyles} flex gap-3 md:col-span-2 xl:col-span-1`}
-        >
+        <section className="flex gap-3 rounded-xl border border-line bg-surface-2 p-5 sm:col-span-2 xl:col-span-1">
           <HugeiconsIcon
             icon={SecurityCheckIcon}
             size={20}
@@ -183,7 +226,7 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
             className="flex-none text-success"
           />
           <div>
-            <h2 className="mb-1 font-display text-[17px] font-bold text-heading">
+            <h2 className="mb-1 text-sm font-bold text-ink">
               {detail.rail.guidelinesTitle}
             </h2>
             <p className="text-xs leading-relaxed text-ink-3">

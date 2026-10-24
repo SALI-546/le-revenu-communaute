@@ -63,6 +63,26 @@ export async function getAwaitingQuestions() {
   return data;
 }
 
+export async function getRelatedDiscussions(slug: string, category?: string) {
+  'use cache';
+  cacheTag(DISCUSSIONS_TAG);
+  cacheLife('minutes');
+
+  const query = new URLSearchParams({
+    'filters[slug][$ne]': slug,
+    sort: 'publishedAt:desc',
+    'pagination[pageSize]': '3',
+  });
+  if (category) {
+    query.set('filters[category][slug][$eq]', category);
+  }
+  const { data } = await strapiFetch<StrapiList<DiscussionSummary>>(
+    '/discussions',
+    { query },
+  );
+  return data;
+}
+
 export async function getCommunityStats(category?: string) {
   'use cache';
   cacheTag(DISCUSSIONS_TAG);

@@ -218,17 +218,40 @@
       "rail": {
         "title": "Cette discussion",
         "replies": "Réponses",
-        "category": "Catégorie",
         "seeAll": "Voir toutes les discussions",
         "guidelinesTitle": "Avant de répondre",
-        "guidelines": "Partagez votre expérience, sans conseil personnalisé ni sollicitation."
+        "guidelines": "Partagez votre expérience, sans conseil personnalisé ni sollicitation.",
+        "lastActivity": "Dernière activité",
+        "participants": "Participants",
+        "participantsCount": {
+          "one": "participant",
+          "other": "participants"
+        },
+        "space": "Espace",
+        "publishHere": "Publier dans cet espace"
       },
       "notFound": {
         "title": "Cette discussion n’existe plus",
         "description": "Elle a peut-être été supprimée ou déplacée par la modération.",
         "back": "Retour aux discussions"
       },
-      "publishedAt": "Publié le {date} à {time}"
+      "publishedAt": "Publié le {date} à {time}",
+      "status": {
+        "answered": "A reçu une réponse",
+        "waiting": "En attente de réponse"
+      },
+      "actions": {
+        "label": "Actions sur la discussion",
+        "reply": "Répondre",
+        "copy": "Copier le lien",
+        "copied": "Lien copié",
+        "copyFailed": "Copie impossible"
+      },
+      "related": {
+        "title": "À lire aussi dans « {space} »",
+        "titleAll": "À lire aussi dans la communauté"
+      },
+      "authorBadge": "Auteur"
     },
     "create": {
       "back": "Retour aux discussions",
