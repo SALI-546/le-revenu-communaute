@@ -70,7 +70,7 @@ const seedDiscussions = async (
         author: userIds.get(author),
       },
     });
-    const replyIds: string[] = [];
+    const replyIds: (number | string)[] = [];
     for (const { content, author: replyAuthor, helpful = [] } of demoReplies) {
       const reply = await replies.create({
         data: {
@@ -85,11 +85,11 @@ const seedDiscussions = async (
           data: { reply: reply.documentId, voter: userIds.get(voter) },
         });
       }
-      replyIds.push(reply.documentId);
+      replyIds.push(reply.id);
     }
     if (bestReply !== undefined) {
-      await discussions.update({
-        documentId: discussion.documentId,
+      await strapi.db.query('api::discussion.discussion').update({
+        where: { id: discussion.id },
         data: { bestReply: replyIds[bestReply] },
       });
     }

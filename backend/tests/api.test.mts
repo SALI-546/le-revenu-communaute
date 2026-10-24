@@ -329,9 +329,10 @@ describe('author spoofing', () => {
 });
 
 describe('helpful votes and best reply', () => {
-  type DetailReply = Reply & { helpfulCount: number };
+  type DetailReply = Reply & { helpfulCount: number; publishedAt: string };
   type Detail = {
     documentId: string;
+    publishedAt: string;
     replies: DetailReply[];
     bestReply: { documentId: string } | null;
   };
@@ -358,6 +359,9 @@ describe('helpful votes and best reply', () => {
       { token: hugoToken },
     );
     const second = await vote();
+    const after = await detailOf(
+      'ouvrir-un-pea-avec-5-000-eur-par-ou-commencer',
+    );
 
     assert.equal(first.status, 200);
     assert.deepEqual(first.body.data, {
@@ -369,6 +373,7 @@ describe('helpful votes and best reply', () => {
       helpfulCount: reply.helpfulCount,
       voted: false,
     });
+    assert.equal(replyBy(after, 'Camille').publishedAt, reply.publishedAt);
   });
 
   it('refuses a helpful vote on your own reply or without authentication', async () => {
@@ -402,11 +407,17 @@ describe('helpful votes and best reply', () => {
       thomasToken,
       other.replies[0].documentId,
     );
+    const empty = await choose(thomasToken, '');
     const byAuthor = await choose(thomasToken, camille.documentId);
+    const chosen = await detailOf(
+      'ouvrir-un-pea-avec-5-000-eur-par-ou-commencer',
+    );
     const cleared = await choose(thomasToken, null);
 
     assert.equal(byStranger.status, 403);
     assert.equal(fromElsewhere.status, 400);
+    assert.equal(empty.status, 400);
+    assert.equal(chosen.publishedAt, pea.publishedAt);
     assert.equal(byAuthor.status, 200);
     assert.equal(byAuthor.body.data.bestReply?.documentId, camille.documentId);
     assert.equal(cleared.body.data.bestReply, null);

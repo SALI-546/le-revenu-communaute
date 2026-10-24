@@ -172,11 +172,12 @@ export default factories.createCoreService(UID, ({ strapi }) => {
 
     async setBestReply(documentId: string, input: unknown) {
       const { reply } = (input ?? {}) as Record<string, unknown>;
-      if (reply !== null && typeof reply !== 'string') {
+      if (reply !== null && (typeof reply !== 'string' || reply === '')) {
         throw new errors.ValidationError(
           'reply must be a reply documentId or null',
         );
       }
+      let bestReply: number | string | null = null;
       if (reply) {
         const found = await strapi.documents('api::reply.reply').findFirst({
           filters: { documentId: reply, discussion: { documentId } },
@@ -187,13 +188,22 @@ export default factories.createCoreService(UID, ({ strapi }) => {
             'reply does not belong to this discussion',
           );
         }
+        bestReply = found.id;
       }
-      return strapi.documents(UID).update({
+      // The Document Service would reset publishedAt, which dates and sorts the discussion.
+      await strapi.db.query(UID).update({
+        where: { documentId },
+        data: { bestReply },
+      });
+      const discussion = await strapi.documents(UID).findOne({
         documentId,
-        data: { bestReply: reply },
         fields: ['slug'],
         populate: { bestReply: bestReplyFields },
       });
+      if (!discussion) {
+        throw new errors.NotFoundError('Discussion not found');
+      }
+      return discussion;
     },
 
     async update(documentId: string, params: { data?: unknown }) {

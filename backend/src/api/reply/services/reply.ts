@@ -66,20 +66,29 @@ export default factories.createCoreService(UID, ({ strapi }) => ({
     }
     const votes = strapi.documents(VOTE_UID);
     const ofReply = { reply: { documentId: replyDocumentId } };
-    const existing = await votes.findFirst({
-      filters: { ...ofReply, voter: { id: voter.id } },
-    });
+    const byVoter = { ...ofReply, voter: { id: voter.id } };
+    const existing = await votes.findFirst({ filters: byVoter });
     if (existing) {
       await votes.delete({ documentId: existing.documentId });
     } else {
       await votes.create({
         data: { reply: replyDocumentId, voter: voter.documentId },
       });
+      // Two simultaneous requests can both create a vote: keep the oldest one.
+      const duplicates = await votes.findMany({
+        filters: byVoter,
+        sort: 'id:asc',
+      });
+      await Promise.all(
+        duplicates
+          .slice(1)
+          .map((vote) => votes.delete({ documentId: vote.documentId })),
+      );
     }
     const helpfulCount = await votes.count({ filters: ofReply });
-    await strapi
-      .documents(UID)
-      .update({ documentId: replyDocumentId, data: { helpfulCount } });
+    await strapi.db
+      .query(UID)
+      .update({ where: { id: reply.id }, data: { helpfulCount } });
     return { helpfulCount, voted: !existing };
   },
 
