@@ -107,6 +107,30 @@ describe('discussion list', () => {
   });
 });
 
+describe('spaces', () => {
+  it('lists spaces in editorial order with icon, color and discussion count', async () => {
+    const { status, body } = await request<
+      {
+        slug: string;
+        icon: string;
+        color: string;
+        discussions: { count: number };
+      }[]
+    >('/categories?pagination[pageSize]=50');
+
+    assert.equal(status, 200);
+    assert.equal(body.data.length, 11);
+    assert.deepEqual(
+      body.data.slice(0, 3).map(({ slug }) => slug),
+      ['bourse', 'economie', 'epargne'],
+    );
+    const bourse = body.data[0];
+    assert.equal(bourse.icon, 'chart');
+    assert.equal(bourse.color, 'blue');
+    assert.equal(typeof bourse.discussions.count, 'number');
+  });
+});
+
 describe('discussion validation', () => {
   it('rejects a title shorter than 10 characters', async () => {
     const total = await countDiscussions();

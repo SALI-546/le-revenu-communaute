@@ -6,7 +6,9 @@ const UID = 'api::discussion.discussion';
 const SORTS = ['publishedAt:desc', 'publishedAt:asc'];
 const TYPES = ['question', 'discussion'] as const;
 const authorFields = { fields: ['username' as const] };
-const categoryFields = { fields: ['name' as const, 'slug' as const] };
+const categoryFields = {
+  fields: ['name' as const, 'slug' as const, 'icon' as const, 'color' as const],
+};
 
 type DiscussionType = (typeof TYPES)[number];
 

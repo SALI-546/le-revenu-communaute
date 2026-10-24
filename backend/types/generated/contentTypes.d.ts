@@ -454,6 +454,23 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    color: Schema.Attribute.Enumeration<
+      [
+        'blue',
+        'slate',
+        'green',
+        'teal',
+        'orange',
+        'indigo',
+        'rose',
+        'purple',
+        'cyan',
+        'gray',
+        'sand',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'gray'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -465,6 +482,23 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::discussion.discussion'
     >;
+    icon: Schema.Attribute.Enumeration<
+      [
+        'chart',
+        'globe',
+        'piggy-bank',
+        'umbrella',
+        'building',
+        'invoice',
+        'sofa',
+        'family',
+        'diamond',
+        'wallet',
+        'coffee',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'chart'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -477,6 +511,15 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 80;
       }>;
+    position: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;

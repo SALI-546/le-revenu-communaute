@@ -31,6 +31,48 @@
       "type": "text",
       "maxLength": 500
     },
+    "icon": {
+      "type": "enumeration",
+      "enum": [
+        "chart",
+        "globe",
+        "piggy-bank",
+        "umbrella",
+        "building",
+        "invoice",
+        "sofa",
+        "family",
+        "diamond",
+        "wallet",
+        "coffee"
+      ],
+      "required": true,
+      "default": "chart"
+    },
+    "color": {
+      "type": "enumeration",
+      "enum": [
+        "blue",
+        "slate",
+        "green",
+        "teal",
+        "orange",
+        "indigo",
+        "rose",
+        "purple",
+        "cyan",
+        "gray",
+        "sand"
+      ],
+      "required": true,
+      "default": "gray"
+    },
+    "position": {
+      "type": "integer",
+      "required": true,
+      "default": 0,
+      "min": 0
+    },
     "discussions": {
       "type": "relation",
       "relation": "oneToMany",

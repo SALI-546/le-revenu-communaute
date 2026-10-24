@@ -8,7 +8,10 @@ const seedCategories = async (strapi: Core.Strapi) => {
     const existing = await categories.findFirst({
       filters: { slug: data.slug },
     });
-    const category = existing ?? (await categories.create({ data }));
+    const category = existing
+      ? ((await categories.update({ documentId: existing.documentId, data })) ??
+        existing)
+      : await categories.create({ data });
     idsBySlug.set(data.slug, category.documentId);
   }
   return idsBySlug;

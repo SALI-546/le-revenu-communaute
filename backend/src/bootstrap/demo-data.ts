@@ -4,36 +4,92 @@ export const DEMO_CATEGORIES = [
     name: 'Bourse & actions',
     description:
       'Actions, ETF, PEA, compte-titres : stratégies et retours d’expérience.',
+    icon: 'chart',
+    color: 'blue',
+    position: 1,
+  },
+  {
+    slug: 'economie',
+    name: 'Économie',
+    description:
+      'Conjoncture, taux, inflation, emploi : l’actualité économique en France, en Europe et dans le monde.',
+    icon: 'globe',
+    color: 'slate',
+    position: 2,
   },
   {
     slug: 'epargne',
     name: 'Épargne & placements',
-    description:
-      'Livrets, fonds, diversification : faire travailler son épargne.',
+    description: 'Livrets, fonds euros, obligations, comptes à terme.',
+    icon: 'piggy-bank',
+    color: 'green',
+    position: 3,
   },
   {
     slug: 'assurance-vie',
     name: 'Assurance-vie',
-    description:
-      'Fonds euros, unités de compte, frais et fiscalité des contrats.',
+    description: 'Choisir son contrat, arbitrer, transmettre.',
+    icon: 'umbrella',
+    color: 'teal',
+    position: 4,
   },
   {
     slug: 'immobilier',
     name: 'Immobilier & SCPI',
-    description: 'Résidence principale, locatif, SCPI et crédit immobilier.',
+    description: 'Résidence principale, locatif, SCPI, crédit immobilier.',
+    icon: 'building',
+    color: 'orange',
+    position: 5,
   },
   {
     slug: 'impots',
     name: 'Impôts & fiscalité',
-    description:
-      'Déclaration, niches fiscales et optimisation dans les règles.',
+    description: 'Déclaration, niches fiscales, IFI : payer le juste impôt.',
+    icon: 'invoice',
+    color: 'indigo',
+    position: 6,
   },
   {
     slug: 'retraite',
     name: 'Retraite',
-    description: 'PER, pensions et préparation financière de la retraite.',
+    description: 'PER, rachat de trimestres, cumul emploi-retraite.',
+    icon: 'sofa',
+    color: 'rose',
+    position: 7,
   },
-];
+  {
+    slug: 'transmission',
+    name: 'Famille & transmission',
+    description: 'Donation, succession, protection du conjoint.',
+    icon: 'family',
+    color: 'purple',
+    position: 8,
+  },
+  {
+    slug: 'alternatifs',
+    name: 'Or, cryptos & alternatifs',
+    description: 'Or physique, cryptoactifs, forêts, private equity.',
+    icon: 'diamond',
+    color: 'cyan',
+    position: 9,
+  },
+  {
+    slug: 'budget',
+    name: 'Budget & conso',
+    description: 'Banques, crédits, assurances, bons plans.',
+    icon: 'wallet',
+    color: 'gray',
+    position: 10,
+  },
+  {
+    slug: 'cafe',
+    name: 'Le Café du Revenu',
+    description: 'Présentations, discussions libres, idées pour la rédaction.',
+    icon: 'coffee',
+    color: 'sand',
+    position: 11,
+  },
+] as const;
 
 export const DEMO_USERS = [
   { username: 'Thomas', email: 'thomas@demo.lerevenu.test' },
