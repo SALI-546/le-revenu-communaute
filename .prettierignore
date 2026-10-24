@@ -10,3 +10,5 @@ backend/src/extensions/documentation/
 frontend/.next/
 frontend/next-env.d.ts
 frontend/tsconfig.tsbuildinfo
+frontend/test-results/
+frontend/playwright-report/
