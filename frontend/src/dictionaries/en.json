@@ -20,6 +20,13 @@
     },
     "footer": {
       "tagline": "The community of Le Revenu readers."
+    },
+    "locale": {
+      "label": "Choose language",
+      "names": {
+        "fr": "Français",
+        "en": "English"
+      }
     }
   },
   "home": {
@@ -183,5 +190,10 @@
       "description": "Log in with your community account to reply.",
       "cta": "Log in to reply"
     }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has moved.",
+    "back": "Back to discussions"
   }
 }

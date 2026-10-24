@@ -6,6 +6,8 @@ import { buttonStyles } from '@/components/ui/buttonStyles';
 import { getDictionary, getLocale } from '@/dictionaries';
 import { localizedHref } from '@/dictionaries/config';
 import { AccountMenu } from './AccountMenu';
+import { LocaleLinks } from './LocaleLinks';
+import { LocaleSwitcher } from './LocaleSwitcher';
 import { Logo } from './Logo';
 
 export async function SiteHeader() {
@@ -30,6 +32,17 @@ export async function SiteHeader() {
             />
             {layout.pressBar.site}
           </a>
+          <Suspense
+            fallback={
+              <LocaleLinks
+                current={locale}
+                labels={layout.locale}
+                hrefFor={(target) => localizedHref(target)}
+              />
+            }
+          >
+            <LocaleSwitcher current={locale} labels={layout.locale} />
+          </Suspense>
         </div>
       </div>
       <div className="border-b border-line bg-glass-strong backdrop-blur-xl">

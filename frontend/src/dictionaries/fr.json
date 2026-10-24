@@ -20,6 +20,13 @@
     },
     "footer": {
       "tagline": "La communauté des lecteurs du Revenu."
+    },
+    "locale": {
+      "label": "Choisir la langue",
+      "names": {
+        "fr": "Français",
+        "en": "English"
+      }
     }
   },
   "home": {
@@ -183,5 +190,10 @@
       "description": "Connectez-vous avec votre compte de la communauté pour répondre.",
       "cta": "Se connecter pour répondre"
     }
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "description": "L’adresse demandée n’existe pas ou a été déplacée.",
+    "back": "Retour aux discussions"
   }
 }
