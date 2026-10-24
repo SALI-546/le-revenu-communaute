@@ -27,6 +27,11 @@
         "fr": "Français",
         "en": "English"
       }
+    },
+    "search": {
+      "label": "Search the community",
+      "placeholder": "Search discussions…",
+      "submit": "Search"
     }
   },
   "home": {
@@ -95,6 +100,14 @@
       "count": {
         "one": "discussion",
         "other": "discussions"
+      },
+      "search": {
+        "results": "Results for",
+        "clear": "Clear search",
+        "emptyTitle": "No results",
+        "emptyDescription": "Try other keywords or another category.",
+        "quoteOpen": "“",
+        "quoteClose": "”"
       }
     },
     "types": {

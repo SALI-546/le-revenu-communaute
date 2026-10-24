@@ -2,9 +2,12 @@ import type { ListFilters } from './schemas';
 
 export const listHref = (
   locale: string,
-  { category, sort, page }: Partial<ListFilters>,
+  { q, category, sort, page }: Partial<ListFilters>,
 ) => {
   const query = new URLSearchParams();
+  if (q) {
+    query.set('q', q);
+  }
   if (category) {
     query.set('category', category);
   }

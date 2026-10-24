@@ -134,6 +134,19 @@ const schemas: Record<string, Schema> = {
 
 const listParameters = [
   {
+    name: 'filters[$and][0][$or][0][title][$containsi]',
+    in: 'query',
+    description:
+      'Case-insensitive search in titles (pair it with the same filter on content)',
+    schema: { type: 'string', example: 'pea' },
+  },
+  {
+    name: 'filters[$and][0][$or][1][content][$containsi]',
+    in: 'query',
+    description: 'Case-insensitive search in contents',
+    schema: { type: 'string', example: 'pea' },
+  },
+  {
     name: 'filters[category][slug][$eq]',
     in: 'query',
     description: 'Only discussions of this category',

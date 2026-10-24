@@ -84,6 +84,22 @@ describe('discussion list', () => {
     );
   });
 
+  it('searches titles and contents without case sensitivity', async () => {
+    const query = new URLSearchParams({
+      'filters[$and][0][$or][0][title][$containsi]': 'PEA',
+      'filters[$and][0][$or][1][content][$containsi]': 'PEA',
+    });
+    const { status, body } = await request<Discussion[]>(
+      `/discussions?${query}`,
+    );
+
+    assert.equal(status, 200);
+    assert.ok(body.data.some(({ slug }) => slug.startsWith('ouvrir-un-pea')));
+    assert.ok(
+      body.data.every(({ slug }) => !slug.startsWith('credit-immobilier')),
+    );
+  });
+
   it('never exposes author emails', async () => {
     const { body } = await request<Discussion[]>('/discussions');
 

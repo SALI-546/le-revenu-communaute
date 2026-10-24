@@ -25,7 +25,7 @@ export function SortSelect({ filters, locale, labels }: SortSelectProps) {
           const sort = SORT_ORDERS.find(
             (order) => order === event.target.value,
           );
-          router.push(listHref(locale, { category: filters.category, sort }));
+          router.push(listHref(locale, { ...filters, sort, page: 1 }));
         }}
         className="h-full appearance-none bg-transparent py-2 pr-8 pl-3 text-xs font-semibold text-ink outline-none"
       >

@@ -34,7 +34,7 @@ export function CategoryNav({
           return (
             <li key={slug ?? 'all'} className="flex-none">
               <Link
-                href={listHref(locale, { category: slug, sort: filters.sort })}
+                href={listHref(locale, { ...filters, category: slug, page: 1 })}
                 aria-current={active ? 'page' : undefined}
                 className={clsx(
                   'flex min-h-11 items-center rounded-full border px-3.5 text-xs font-semibold whitespace-nowrap lg:rounded-[9px] lg:border-transparent lg:px-2.5',

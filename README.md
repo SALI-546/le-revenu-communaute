@@ -5,6 +5,7 @@ Espace communautaire où les lecteurs du Revenu posent des questions et échange
 Fonctionnalités livrées :
 
 - liste des discussions issue de Strapi, avec auteur, catégorie, nombre de réponses et date ; filtre par catégorie, tri par date et pagination côté serveur ;
+- recherche dans les titres et les contenus (bonus), combinable avec le filtre et le tri ;
 - détail d'une discussion sur une URL propre (`/fr/discussions/<slug>`) avec ses réponses, et publication d'une réponse ;
 - création d'une discussion (titre de 10 caractères minimum, contenu, catégorie, type) avec erreurs de validation et redirection ;
 - connexion avec les utilisateurs de démonstration, publication interdite aux visiteurs, auteur toujours imposé par le serveur ;
@@ -113,14 +114,14 @@ cd backend
 npm test
 ```
 
-Les 12 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
+Les 13 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
 
 | Exigence                          | Tests                                                                                                                                                                   |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Validation d'une discussion       | titre de moins de 10 caractères refusé (400), titre de 10 caractères accepté, contenu vide refusé, catégorie inconnue refusée                                           |
 | Publication sans authentification | création d'une discussion et d'une réponse refusées (401 ou 403)                                                                                                        |
 | Usurpation d'auteur               | un `author` envoyé par le client est ignoré : l'auteur est vérifié **en base**, pour une discussion et pour une réponse ; modifier la discussion d'un autre renvoie 403 |
-| Affichage des discussions         | titre, auteur, catégorie, nombre de réponses, date, tri ; filtre par catégorie ; aucune adresse e-mail exposée                                                          |
+| Affichage des discussions         | titre, auteur, catégorie, nombre de réponses, date, tri ; filtre par catégorie ; recherche ; aucune adresse e-mail exposée                                              |
 
 ### Parcours end-to-end (frontend)
 
@@ -129,7 +130,7 @@ cd frontend
 npm run test:e2e
 ```
 
-Playwright démarre Strapi et Next s'ils ne tournent pas déjà, puis exécute 6 parcours sur desktop et sur mobile : liste, filtre, détail, redirection d'un visiteur vers la connexion, création avec erreurs de validation puis publication, et réponse. Il utilise le Google Chrome installé sur la machine (`channel: 'chrome'`). Les tests écrivent dans la base de développement des contenus suffixés `[e2e]`.
+Playwright démarre Strapi et Next s'ils ne tournent pas déjà, puis exécute 11 parcours sur desktop et sur mobile : liste, filtre, recherche, détail, redirection d'un visiteur vers la connexion, création avec erreurs de validation puis publication, réponse, et absence de défilement horizontal sur les pages principales. Il utilise le Google Chrome installé sur la machine (`channel: 'chrome'`). Les tests écrivent dans la base de développement des contenus suffixés `[e2e]`.
 
 ### Qualité
 
@@ -150,15 +151,15 @@ La spécification générée automatiquement ne reflétait pas le vrai contrat :
 
 Routes principales :
 
-| Méthode     | Route                         | Accès                                                                                                                             |
-| ----------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| GET         | `/api/discussions`            | public : filtre `filters[category][slug][$eq]`, tri `publishedAt:desc` ou `publishedAt:asc`, pagination de 50 éléments au maximum |
-| GET         | `/api/discussions/slug/:slug` | public : discussion avec ses réponses                                                                                             |
-| POST        | `/api/discussions`            | connecté                                                                                                                          |
-| PUT, DELETE | `/api/discussions/:id`        | auteur uniquement                                                                                                                 |
-| POST        | `/api/replies`                | connecté                                                                                                                          |
-| PUT, DELETE | `/api/replies/:id`            | auteur uniquement                                                                                                                 |
-| GET         | `/api/categories`             | public                                                                                                                            |
+| Méthode     | Route                         | Accès                                                                                                                                                                              |
+| ----------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET         | `/api/discussions`            | public : filtre `filters[category][slug][$eq]`, recherche `$containsi` sur `title` et `content`, tri `publishedAt:desc` ou `publishedAt:asc`, pagination de 50 éléments au maximum |
+| GET         | `/api/discussions/slug/:slug` | public : discussion avec ses réponses                                                                                                                                              |
+| POST        | `/api/discussions`            | connecté                                                                                                                                                                           |
+| PUT, DELETE | `/api/discussions/:id`        | auteur uniquement                                                                                                                                                                  |
+| POST        | `/api/replies`                | connecté                                                                                                                                                                           |
+| PUT, DELETE | `/api/replies/:id`            | auteur uniquement                                                                                                                                                                  |
+| GET         | `/api/categories`             | public                                                                                                                                                                             |
 
 ## Architecture du backend
 
@@ -235,7 +236,8 @@ frontend/src/
 - **Next ne parle qu'à Strapi**, via `lib/strapi/client.ts`, marqué `server-only`. Il n'accède jamais à PostgreSQL directement.
 - **Lire et écrire sont séparés.** Les lectures sont des fonctions `'use cache'` dans `queries.ts`, appelées par des Server Components. Les mutations sont des Server Actions dans `actions.ts`.
 - **Cache Components et Partial Prerendering.** Le contenu stable (en-tête, hero, titres) fait partie du shell statique. Ce qui dépend de la requête (paramètres d'URL, session) est streamé sous `<Suspense>`, avec un skeleton. Toutes les pages sont donc partiellement prérendues, et **le build ne dépend pas de Strapi**.
-- **Tri, filtre et pagination** passent par l'URL (`?category=…&sort=…&page=…`). Les paramètres sont validés par Zod, puis transmis à Strapi. Ils servent aussi de clé de cache. Aucun tri n'est fait en JavaScript.
+- **Recherche, tri, filtre et pagination** passent par l'URL (`?q=…&category=…&sort=…&page=…`). Les paramètres sont validés par Zod, puis transmis à Strapi. Ils servent aussi de clé de cache. Aucun tri ni filtre n'est fait en JavaScript.
+- La **recherche** utilise le composant `<Form>` de Next (`next/form`) : un formulaire GET qui navigue côté client et fonctionne aussi sans JavaScript. Strapi filtre les titres et les contenus avec `$containsi`.
 
 ### Actualisation après une écriture
 
@@ -296,7 +298,7 @@ Les tests d'API utilisent le lanceur intégré à Node.js (`node:test`) et `fetc
 
 ## Limites et évolutions
 
-- **Hors périmètre volontairement** : la recherche, les votes « Utile », la meilleure réponse, les vues et les statistiques de la maquette. Le modèle et l'architecture permettent de les ajouter.
+- **Hors périmètre volontairement** : les votes « Utile », la meilleure réponse, les vues et les statistiques de la maquette. Le modèle et l'architecture permettent de les ajouter.
 - **Modification et suppression** sont protégées côté API (`is-owner`) mais n'ont pas encore d'interface.
 - Le changement de langue conserve la page courante, mais pas les paramètres de filtre.
 - **Sessions** : il n'y a pas de révocation côté serveur avant l'expiration du JWT. Le passage au mode `refresh` de Strapi demanderait un Route Handler chargé de renouveler le cookie.

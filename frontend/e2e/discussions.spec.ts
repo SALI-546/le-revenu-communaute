@@ -30,6 +30,25 @@ test.describe('discussion list', () => {
     }
   });
 
+  test('searches discussions and clears the search', async ({ page }) => {
+    await page.goto('/fr');
+    const search = page.getByRole('searchbox', {
+      name: 'Rechercher dans la communauté',
+    });
+    await search.fill('pea');
+    await search.press('Enter');
+
+    await expect(page).toHaveURL(/\/fr\?q=pea$/);
+    await expect(page.getByText('Résultats pour')).toBeVisible();
+    await expect(page.getByRole('link', { name: PEA_TITLE })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /Crédit immobilier/ }),
+    ).toHaveCount(0);
+
+    await page.getByRole('link', { name: 'Effacer la recherche' }).click();
+    await expect(page).toHaveURL(/\/fr$/);
+  });
+
   test('opens a discussion on its own URL with its replies', async ({
     page,
   }) => {

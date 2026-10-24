@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Add01Icon, MessageMultiple01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { SearchForm } from '@/components/layout/SearchForm';
 import { buttonStyles } from '@/components/ui/buttonStyles';
 import { Pagination } from '@/components/ui/Pagination';
 import { StateCard } from '@/components/ui/StateCard';
@@ -30,7 +31,14 @@ export async function DiscussionFeed({ searchParams }: DiscussionFeedProps) {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[205px_minmax(0,1fr)] lg:gap-7">
-      <aside className="min-w-0 lg:sticky lg:top-6 lg:self-start">
+      <aside className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4 lg:sticky lg:top-6 lg:block lg:self-start">
+        <SearchForm
+          id="feed-search"
+          action={listHref(locale, {})}
+          labels={dict.layout.search}
+          defaultValue={filters.q}
+          className="lg:hidden"
+        />
         <CategoryNav
           categories={categories}
           filters={filters}
@@ -45,6 +53,24 @@ export async function DiscussionFeed({ searchParams }: DiscussionFeedProps) {
         </p>
       </aside>
       <section aria-labelledby="feed-title" className="min-w-0">
+        {filters.q && (
+          <p className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-2">
+            <span>
+              {list.search.results}{' '}
+              <strong className="text-ink">
+                {list.search.quoteOpen}
+                {filters.q}
+                {list.search.quoteClose}
+              </strong>
+            </span>
+            <Link
+              href={listHref(locale, { ...filters, q: undefined, page: 1 })}
+              className="inline-flex min-h-8 items-center text-xs font-bold text-brand-text"
+            >
+              {list.search.clear}
+            </Link>
+          </p>
+        )}
         <div className="flex min-h-12 items-center justify-between gap-3 border-b border-line">
           <p className="text-xs text-ink-3">
             {total}{' '}
@@ -61,8 +87,10 @@ export async function DiscussionFeed({ searchParams }: DiscussionFeedProps) {
         {discussions.length === 0 ? (
           <StateCard
             icon={MessageMultiple01Icon}
-            title={list.empty.title}
-            description={list.empty.description}
+            title={filters.q ? list.search.emptyTitle : list.empty.title}
+            description={
+              filters.q ? list.search.emptyDescription : list.empty.description
+            }
             action={
               <Link
                 href={`/${locale}/discussions/new`}

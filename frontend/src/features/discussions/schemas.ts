@@ -10,6 +10,13 @@ export const listSearchParamsSchema = z.object({
     .catch(undefined),
   sort: z.enum(SORT_ORDERS).catch('newest'),
   page: z.coerce.number().int().min(1).catch(1),
+  q: z
+    .string()
+    .trim()
+    .max(100)
+    .transform((value) => value || undefined)
+    .optional()
+    .catch(undefined),
 });
 
 export type ListFilters = z.infer<typeof listSearchParamsSchema>;

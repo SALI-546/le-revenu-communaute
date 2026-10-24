@@ -9,6 +9,7 @@ import { AccountMenu } from './AccountMenu';
 import { LocaleLinks } from './LocaleLinks';
 import { LocaleSwitcher } from './LocaleSwitcher';
 import { Logo } from './Logo';
+import { SearchForm } from './SearchForm';
 
 export async function SiteHeader() {
   const [{ layout }, locale] = await Promise.all([
@@ -61,7 +62,13 @@ export async function SiteHeader() {
               {layout.header.section}
             </span>
           </Link>
-          <div className="ml-auto flex items-center gap-2">
+          <SearchForm
+            id="header-search"
+            action={localizedHref(locale)}
+            labels={layout.search}
+            className="ml-auto hidden w-[min(27.5rem,36vw)] lg:flex"
+          />
+          <div className="ml-auto flex items-center gap-2 lg:ml-0">
             <Suspense
               fallback={
                 <span className="size-11 rounded-[10px] bg-surface-2 lg:w-32" />

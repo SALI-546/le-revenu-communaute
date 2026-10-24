@@ -13,7 +13,7 @@ export const DISCUSSIONS_TAG = 'discussions';
 const CATEGORIES_TAG = 'categories';
 const PAGE_SIZE = 10;
 
-export async function getDiscussions({ category, sort, page }: ListFilters) {
+export async function getDiscussions({ category, sort, page, q }: ListFilters) {
   'use cache';
   cacheTag(DISCUSSIONS_TAG);
   cacheLife('minutes');
@@ -25,6 +25,10 @@ export async function getDiscussions({ category, sort, page }: ListFilters) {
   });
   if (category) {
     query.set('filters[category][slug][$eq]', category);
+  }
+  if (q) {
+    query.set('filters[$and][0][$or][0][title][$containsi]', q);
+    query.set('filters[$and][0][$or][1][content][$containsi]', q);
   }
   return strapiFetch<StrapiList<DiscussionSummary>>('/discussions', { query });
 }
