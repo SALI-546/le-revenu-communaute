@@ -102,7 +102,24 @@ export const DEMO_USERS = [
   { username: 'Sophie', email: 'sophie@demo.lerevenu.test' },
 ];
 
-export const DEMO_DISCUSSIONS = [
+type DemoReply = {
+  author: string;
+  content: string;
+  helpful?: readonly string[];
+};
+
+type DemoDiscussion = {
+  slug: string;
+  title: string;
+  content: string;
+  type: 'question' | 'discussion';
+  category: string;
+  author: string;
+  bestReply?: number;
+  replies: readonly DemoReply[];
+};
+
+export const DEMO_DISCUSSIONS: readonly DemoDiscussion[] = [
   {
     slug: 'ouvrir-un-pea-avec-5-000-eur-par-ou-commencer',
     title: 'Ouvrir un PEA avec 5 000 € : par où commencer ?',
@@ -111,16 +128,19 @@ export const DEMO_DISCUSSIONS = [
     type: 'question',
     category: 'bourse',
     author: 'Thomas',
+    bestReply: 0,
     replies: [
       {
         author: 'Vincent',
         content:
           'Pour débuter, un ETF éligible au PEA qui réplique un indice mondial fait très bien le travail : une seule ligne, des frais faibles, une large diversification.',
+        helpful: ['Thomas', 'Hugo', 'Odile'],
       },
       {
         author: 'Camille',
         content:
           'Première chose : vous avez bien une épargne de précaution à côté ? Le PEA, c’est de l’argent qu’on oublie au moins cinq ans.',
+        helpful: ['Thomas'],
       },
     ],
   },
@@ -200,11 +220,13 @@ export const DEMO_DISCUSSIONS = [
     type: 'question',
     category: 'transmission',
     author: 'Odile',
+    bestReply: 0,
     replies: [
       {
         author: 'Camille',
         content:
           'L’abattement de 100 000 € par parent et par enfant se renouvelle tous les quinze ans : plus on commence tôt, plus on peut en profiter.',
+        helpful: ['Odile', 'Nadia'],
       },
       {
         author: 'Vincent',
@@ -291,4 +313,4 @@ export const DEMO_DISCUSSIONS = [
       },
     ],
   },
-] as const;
+];

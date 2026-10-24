@@ -25,6 +25,11 @@
       "relation": "manyToOne",
       "target": "api::discussion.discussion",
       "inversedBy": "replies"
+    },
+    "helpfulCount": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
     }
   }
 }

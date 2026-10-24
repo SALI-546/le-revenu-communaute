@@ -327,3 +327,89 @@ describe('author spoofing', () => {
     assert.equal(status, 403);
   });
 });
+
+describe('helpful votes and best reply', () => {
+  type DetailReply = Reply & { helpfulCount: number };
+  type Detail = {
+    documentId: string;
+    replies: DetailReply[];
+    bestReply: { documentId: string } | null;
+  };
+
+  const detailOf = async (slug: string) => {
+    const { body } = await request<Detail>(`/discussions/slug/${slug}`);
+    return body.data;
+  };
+  const replyBy = (detail: Detail, username: string) =>
+    detail.replies.find((reply) => reply.author?.username === username)!;
+
+  it('counts a helpful vote once per member and lets them withdraw it', async () => {
+    const pea = await detailOf('ouvrir-un-pea-avec-5-000-eur-par-ou-commencer');
+    const reply = replyBy(pea, 'Camille');
+    const vote = () =>
+      request<{ helpfulCount: number; voted: boolean }>(
+        `/replies/${reply.documentId}/helpful`,
+        { method: 'POST', token: hugoToken },
+      );
+
+    const first = await vote();
+    const mine = await request<string[]>(
+      `/replies/helpful?discussion=${pea.documentId}`,
+      { token: hugoToken },
+    );
+    const second = await vote();
+
+    assert.equal(first.status, 200);
+    assert.deepEqual(first.body.data, {
+      helpfulCount: reply.helpfulCount + 1,
+      voted: true,
+    });
+    assert.ok(mine.body.data.includes(reply.documentId));
+    assert.deepEqual(second.body.data, {
+      helpfulCount: reply.helpfulCount,
+      voted: false,
+    });
+  });
+
+  it('refuses a helpful vote on your own reply or without authentication', async () => {
+    const discussion = await detailOf(
+      'j-ai-25-ans-et-10-000-eur-de-cote-je-fais-quoi',
+    );
+    const ownReply = replyBy(discussion, 'Thomas');
+    const path = `/replies/${ownReply.documentId}/helpful`;
+
+    const own = await request(path, { method: 'POST', token: thomasToken });
+    const anonymous = await request(path, { method: 'POST' });
+
+    assert.equal(own.status, 403);
+    assert.equal(anonymous.status, 403);
+  });
+
+  it('lets only the author choose a best reply from the same discussion', async () => {
+    const pea = await detailOf('ouvrir-un-pea-avec-5-000-eur-par-ou-commencer');
+    const other = await detailOf(
+      'j-ai-25-ans-et-10-000-eur-de-cote-je-fais-quoi',
+    );
+    const camille = replyBy(pea, 'Camille');
+    const choose = (token: string, reply: string | null) =>
+      request<{ bestReply: { documentId: string } | null }>(
+        `/discussions/${pea.documentId}/best-reply`,
+        { method: 'PUT', token, data: { reply } },
+      );
+
+    const byStranger = await choose(hugoToken, camille.documentId);
+    const fromElsewhere = await choose(
+      thomasToken,
+      other.replies[0].documentId,
+    );
+    const byAuthor = await choose(thomasToken, camille.documentId);
+    const cleared = await choose(thomasToken, null);
+
+    assert.equal(byStranger.status, 403);
+    assert.equal(fromElsewhere.status, 400);
+    assert.equal(byAuthor.status, 200);
+    assert.equal(byAuthor.body.data.bestReply?.documentId, camille.documentId);
+    assert.equal(cleared.body.data.bestReply, null);
+    assert.equal(pea.bestReply?.documentId, replyBy(pea, 'Vincent').documentId);
+  });
+});

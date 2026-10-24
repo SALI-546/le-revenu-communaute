@@ -53,6 +53,12 @@ export default factories.createCoreController(UID, ({ strapi }) => {
       return { data: await service().stats(category) };
     },
 
+    async setBestReply(this: Controller, ctx) {
+      const { data } = ctx.request.body ?? {};
+      const discussion = await service().setBestReply(ctx.params.id, data);
+      return present(this, discussion, ctx);
+    },
+
     async findBySlug(this: Controller, ctx) {
       await this.validateQuery(ctx);
       return present(this, await service().findBySlug(ctx.params.slug), ctx);

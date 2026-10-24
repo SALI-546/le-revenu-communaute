@@ -235,6 +235,98 @@ const stats = {
   },
 };
 
+const idParameter = {
+  name: 'id',
+  in: 'path',
+  required: true,
+  schema: { type: 'string' },
+};
+
+const authErrors = {
+  401: { description: 'Unauthorized', content: json(ref('Error')) },
+  403: { description: 'Forbidden', content: json(ref('Error')) },
+  404: { description: 'Not Found', content: json(ref('Error')) },
+};
+
+const toggleHelpful = {
+  post: {
+    tags: ['Reply'],
+    summary: 'Mark a reply as helpful, or withdraw the vote',
+    description: 'Members cannot vote for their own reply (403).',
+    operationId: 'post/replies/{id}/helpful',
+    parameters: [idParameter],
+    responses: {
+      200: {
+        description: 'OK',
+        content: json({
+          type: 'object',
+          properties: {
+            data: {
+              type: 'object',
+              properties: { helpfulCount: counter, voted: { type: 'boolean' } },
+            },
+          },
+        }),
+      },
+      ...authErrors,
+    },
+  },
+};
+
+const helpfulVotes = {
+  get: {
+    tags: ['Reply'],
+    summary: 'Replies of a discussion marked helpful by the current member',
+    operationId: 'get/replies/helpful',
+    parameters: [
+      {
+        name: 'discussion',
+        in: 'query',
+        required: true,
+        description: 'Discussion documentId',
+        schema: { type: 'string' },
+      },
+    ],
+    responses: {
+      200: {
+        description: 'OK',
+        content: json({
+          type: 'object',
+          properties: { data: { type: 'array', items: { type: 'string' } } },
+        }),
+      },
+      400: { description: 'Bad Request', content: json(ref('Error')) },
+      ...authErrors,
+    },
+  },
+};
+
+const bestReply = {
+  put: {
+    tags: ['Discussion'],
+    summary: 'Choose the best reply of your discussion, or clear it with null',
+    operationId: 'put/discussions/{id}/best-reply',
+    parameters: [idParameter],
+    requestBody: {
+      required: true,
+      content: json({
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: { reply: { type: 'string', nullable: true } },
+          },
+        },
+      }),
+    },
+    responses: {
+      200: { description: 'OK', content: json(ref('DiscussionResponse')) },
+      400: { description: 'Bad Request', content: json(ref('Error')) },
+      ...authErrors,
+    },
+  },
+};
+
 export const mutateDocumentation = (draft: OpenApiDraft) => {
   draft.info = {
     version: '1.0.0',
@@ -246,4 +338,7 @@ export const mutateDocumentation = (draft: OpenApiDraft) => {
   draft.paths['/discussions'].get.parameters = listParameters;
   draft.paths['/discussions/slug/{slug}'] = findBySlug;
   draft.paths['/discussions/stats'] = stats;
+  draft.paths['/discussions/{id}/best-reply'] = bestReply;
+  draft.paths['/replies/{id}/helpful'] = toggleHelpful;
+  draft.paths['/replies/helpful'] = helpfulVotes;
 };

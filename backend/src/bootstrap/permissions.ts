@@ -13,9 +13,12 @@ const WRITE_ACTIONS = [
   'api::discussion.discussion.create',
   'api::discussion.discussion.update',
   'api::discussion.discussion.delete',
+  'api::discussion.discussion.setBestReply',
   'api::reply.reply.create',
   'api::reply.reply.update',
   'api::reply.reply.delete',
+  'api::reply.reply.toggleHelpful',
+  'api::reply.reply.findHelpfulVotes',
 ];
 
 const PERMISSIONS_BY_ROLE = {

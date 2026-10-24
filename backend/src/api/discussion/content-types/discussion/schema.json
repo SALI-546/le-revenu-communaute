@@ -51,6 +51,11 @@
       "relation": "oneToMany",
       "target": "api::reply.reply",
       "mappedBy": "discussion"
+    },
+    "bestReply": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::reply.reply"
     }
   }
 }

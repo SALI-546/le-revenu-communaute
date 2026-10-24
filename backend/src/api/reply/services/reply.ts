@@ -2,12 +2,23 @@ import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
 
 const UID = 'api::reply.reply';
+const VOTE_UID = 'api::vote.vote';
+
+type Voter = { id: number; documentId: string };
 
 export type ReplyService = {
   createForAuthor(
     input: unknown,
     authorDocumentId: string,
   ): Promise<{ author?: { username: string } | null }>;
+  toggleHelpful(
+    replyDocumentId: string,
+    voter: Voter,
+  ): Promise<{ helpfulCount: number; voted: boolean }>;
+  findHelpfulVotes(
+    discussionDocumentId: string,
+    voterId: number,
+  ): Promise<string[]>;
 };
 
 const readContent = (input: unknown) => {
@@ -40,6 +51,58 @@ export default factories.createCoreService(UID, ({ strapi }) => ({
       data: { content, discussion, author: authorDocumentId },
       populate: { author: { fields: ['username'] } },
     });
+  },
+
+  async toggleHelpful(replyDocumentId: string, voter: Voter) {
+    const reply = await strapi.documents(UID).findOne({
+      documentId: replyDocumentId,
+      populate: { author: { fields: ['id'] } },
+    });
+    if (!reply) {
+      throw new errors.NotFoundError('Reply not found');
+    }
+    if (reply.author?.id === voter.id) {
+      throw new errors.ForbiddenError('You cannot vote for your own reply');
+    }
+    const votes = strapi.documents(VOTE_UID);
+    const ofReply = { reply: { documentId: replyDocumentId } };
+    const existing = await votes.findFirst({
+      filters: { ...ofReply, voter: { id: voter.id } },
+    });
+    if (existing) {
+      await votes.delete({ documentId: existing.documentId });
+    } else {
+      await votes.create({
+        data: { reply: replyDocumentId, voter: voter.documentId },
+      });
+    }
+    const helpfulCount = await votes.count({ filters: ofReply });
+    await strapi
+      .documents(UID)
+      .update({ documentId: replyDocumentId, data: { helpfulCount } });
+    return { helpfulCount, voted: !existing };
+  },
+
+  async findHelpfulVotes(discussionDocumentId: string, voterId: number) {
+    const votes = await strapi.documents(VOTE_UID).findMany({
+      filters: {
+        voter: { id: voterId },
+        reply: { discussion: { documentId: discussionDocumentId } },
+      },
+      populate: { reply: { fields: ['id'] } },
+    });
+    return votes.flatMap(({ reply }) => (reply ? [reply.documentId] : []));
+  },
+
+  async delete(documentId: string, params: object = {}) {
+    const votes = strapi.documents(VOTE_UID);
+    const orphans = await votes.findMany({
+      filters: { reply: { documentId } },
+    });
+    await Promise.all(
+      orphans.map((vote) => votes.delete({ documentId: vote.documentId })),
+    );
+    return super.delete(documentId, params);
   },
 
   async update(documentId: string, params: { data?: unknown }) {

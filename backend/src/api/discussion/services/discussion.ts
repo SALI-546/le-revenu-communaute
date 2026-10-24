@@ -9,6 +9,7 @@ const authorFields = { fields: ['username' as const] };
 const categoryFields = {
   fields: ['name' as const, 'slug' as const, 'icon' as const, 'color' as const],
 };
+const bestReplyFields = { fields: ['id' as const] };
 
 type DiscussionType = (typeof TYPES)[number];
 
@@ -37,6 +38,7 @@ export type DiscussionService = {
     input: unknown,
     authorDocumentId: string,
   ): Promise<RawDiscussion>;
+  setBestReply(documentId: string, input: unknown): Promise<RawDiscussion>;
 };
 
 const isDiscussionType = (value: unknown): value is DiscussionType =>
@@ -133,6 +135,7 @@ export default factories.createCoreService(UID, ({ strapi }) => {
           author: authorFields,
           category: categoryFields,
           replies: { count: true },
+          bestReply: bestReplyFields,
         },
       });
     },
@@ -144,8 +147,9 @@ export default factories.createCoreService(UID, ({ strapi }) => {
         populate: {
           author: authorFields,
           category: categoryFields,
+          bestReply: bestReplyFields,
           replies: {
-            fields: ['content', 'publishedAt'],
+            fields: ['content', 'publishedAt', 'helpfulCount'],
             sort: 'publishedAt:asc',
             populate: { author: authorFields },
           },
@@ -166,6 +170,32 @@ export default factories.createCoreService(UID, ({ strapi }) => {
       });
     },
 
+    async setBestReply(documentId: string, input: unknown) {
+      const { reply } = (input ?? {}) as Record<string, unknown>;
+      if (reply !== null && typeof reply !== 'string') {
+        throw new errors.ValidationError(
+          'reply must be a reply documentId or null',
+        );
+      }
+      if (reply) {
+        const found = await strapi.documents('api::reply.reply').findFirst({
+          filters: { documentId: reply, discussion: { documentId } },
+          fields: ['id'],
+        });
+        if (!found) {
+          throw new errors.ValidationError(
+            'reply does not belong to this discussion',
+          );
+        }
+      }
+      return strapi.documents(UID).update({
+        documentId,
+        data: { bestReply: reply },
+        fields: ['slug'],
+        populate: { bestReply: bestReplyFields },
+      });
+    },
+
     async update(documentId: string, params: { data?: unknown }) {
       const data = readInput(params.data);
       await assertCategoryExists(data.category);
@@ -173,14 +203,13 @@ export default factories.createCoreService(UID, ({ strapi }) => {
     },
 
     async delete(documentId: string, params: object = {}) {
-      const replies = strapi.documents('api::reply.reply');
-      const orphans = await replies.findMany({
+      const orphans = await strapi.documents('api::reply.reply').findMany({
         filters: { discussion: { documentId } },
         fields: ['documentId'],
       });
       await Promise.all(
         orphans.map((reply) =>
-          replies.delete({ documentId: reply.documentId }),
+          strapi.service('api::reply.reply').delete(reply.documentId),
         ),
       );
       return super.delete(documentId, params);

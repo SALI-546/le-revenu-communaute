@@ -7,7 +7,31 @@ const UID = 'api::reply.reply';
 
 type Controller = Core.CoreAPI.Controller.CollectionType;
 
+const DOCUMENT_ID = /^[a-z0-9]+$/;
+
 export default factories.createCoreController(UID, ({ strapi }) => ({
+  async toggleHelpful(ctx) {
+    const { id, documentId } = ctx.state.user;
+    const result = await (strapi.service(UID) as ReplyService).toggleHelpful(
+      ctx.params.id,
+      { id, documentId },
+    );
+    return { data: result };
+  },
+
+  async findHelpfulVotes(ctx) {
+    const { discussion } = ctx.query;
+    if (typeof discussion !== 'string' || !DOCUMENT_ID.test(discussion)) {
+      throw new errors.ValidationError(
+        'discussion must be a discussion documentId',
+      );
+    }
+    const replies = await (
+      strapi.service(UID) as ReplyService
+    ).findHelpfulVotes(discussion, ctx.state.user.id);
+    return { data: replies };
+  },
+
   async create(this: Controller, ctx) {
     await this.validateQuery(ctx);
     const { data } = ctx.request.body ?? {};

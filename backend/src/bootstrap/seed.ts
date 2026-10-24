@@ -49,10 +49,12 @@ const seedDiscussions = async (
 ) => {
   const discussions = strapi.documents('api::discussion.discussion');
   const replies = strapi.documents('api::reply.reply');
+  const votes = strapi.documents('api::vote.vote');
   for (const {
     replies: demoReplies,
     category,
     author,
+    bestReply,
     ...data
   } of DEMO_DISCUSSIONS) {
     const existing = await discussions.findFirst({
@@ -68,13 +70,27 @@ const seedDiscussions = async (
         author: userIds.get(author),
       },
     });
-    for (const reply of demoReplies) {
-      await replies.create({
+    const replyIds: string[] = [];
+    for (const { content, author: replyAuthor, helpful = [] } of demoReplies) {
+      const reply = await replies.create({
         data: {
-          content: reply.content,
+          content,
           discussion: discussion.documentId,
-          author: userIds.get(reply.author),
+          author: userIds.get(replyAuthor),
+          helpfulCount: helpful.length,
         },
+      });
+      for (const voter of helpful) {
+        await votes.create({
+          data: { reply: reply.documentId, voter: userIds.get(voter) },
+        });
+      }
+      replyIds.push(reply.documentId);
+    }
+    if (bestReply !== undefined) {
+      await discussions.update({
+        documentId: discussion.documentId,
+        data: { bestReply: replyIds[bestReply] },
       });
     }
   }
