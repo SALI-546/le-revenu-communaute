@@ -6,13 +6,21 @@
   "layout": {
     "skipToContent": "Skip to content",
     "pressBar": {
-      "site": "Le Revenu website"
+      "back": "Back to lerevenu.com",
+      "sectionsLabel": "lerevenu.com sections",
+      "magazine": "The magazine",
+      "sections": {
+        "bourse": "Stock market",
+        "placements": "Investments",
+        "immobilier": "Real estate",
+        "impots": "Taxes",
+        "succession": "Estate",
+        "viePratique": "Everyday money"
+      }
     },
     "header": {
       "home": "Le Revenu Community, home",
       "section": "Community",
-      "nav": "Community navigation",
-      "discussions": "Discussions",
       "publish": "Publish",
       "login": "Log in",
       "logout": "Log out"
@@ -42,7 +50,23 @@
       "submit": "Search"
     },
     "logoAlt": "Le Revenu, your independent adviser since 1967",
-    "subscribe": "Subscribe"
+    "subscribe": "Subscribe",
+    "sidebar": {
+      "label": "Main navigation",
+      "home": "Home",
+      "spaces": "All spaces",
+      "charter": "Guidelines",
+      "spacesTitle": "Spaces",
+      "backToSite": "Back to lerevenu.com"
+    },
+    "mobileNav": {
+      "label": "Mobile navigation",
+      "home": "Home",
+      "spaces": "Spaces",
+      "publish": "Publish",
+      "login": "Log in",
+      "logout": "Log out"
+    }
   },
   "home": {
     "hero": {
@@ -80,7 +104,6 @@
       "title": "Latest discussions",
       "publish": "Start a discussion",
       "categories": {
-        "title": "Explore",
         "nav": "Categories",
         "all": "All discussions"
       },
@@ -218,5 +241,47 @@
     "title": "Page not found",
     "description": "The page you are looking for does not exist or has moved.",
     "back": "Back to discussions"
+  },
+  "spaces": {
+    "title": "All spaces",
+    "description": "Eleven topic spaces, modelled on Le Revenu’s main sections.",
+    "count": {
+      "one": "discussion",
+      "other": "discussions"
+    }
+  },
+  "charter": {
+    "title": "Community guidelines",
+    "description": "Seven simple rules to keep conversations useful, safe and pleasant. They take two minutes to read.",
+    "rules": [
+      {
+        "title": "Be kind",
+        "text": "We debate ideas, never people. Beginners are welcome: there is no silly question."
+      },
+      {
+        "title": "Experience, not personal advice",
+        "text": "Share what you do and why. Everyone remains responsible for their own investment decisions."
+      },
+      {
+        "title": "No solicitation",
+        "text": "No promotion of products, referrals or paid services."
+      },
+      {
+        "title": "Link to reliable sources",
+        "text": "To avoid disguised advertising, favour lerevenu.com and official sources (public websites, AMF, Banque de France, Insee, Cour des comptes)."
+      },
+      {
+        "title": "No market rumours",
+        "text": "Unsourced “tips” and calls to buy or sell a security are removed."
+      },
+      {
+        "title": "Protect yourself",
+        "text": "A pseudonym is enough to take part. Never post bank details, contract numbers or anything that identifies you."
+      },
+      {
+        "title": "Report rather than reply",
+        "text": "A message looks problematic? Alert the moderation team rather than feeding the argument."
+      }
+    ]
   }
 }

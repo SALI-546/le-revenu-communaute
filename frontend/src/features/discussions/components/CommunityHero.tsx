@@ -6,8 +6,8 @@ type CommunityHeroProps = { hero: Dictionary['home']['hero'] };
 
 export function CommunityHero({ hero }: CommunityHeroProps) {
   return (
-    <section className="bg-linear-to-r from-hero to-hero-2 px-3 py-9 text-on-hero lg:px-6 lg:py-14">
-      <div className="mx-auto w-full max-w-7xl">
+    <section className="overflow-hidden rounded-xl bg-linear-to-br from-hero-2 via-hero to-hero px-5 py-8 text-on-hero shadow-lg sm:px-8 lg:py-10">
+      <div>
         <p className="mb-4 inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.11em] text-hero-accent uppercase">
           <HugeiconsIcon
             icon={SparklesIcon}
@@ -17,7 +17,7 @@ export function CommunityHero({ hero }: CommunityHeroProps) {
           />
           {hero.eyebrow}
         </p>
-        <h1 className="mb-4 max-w-3xl font-display text-4xl leading-[1.03] font-bold tracking-[-0.03em] lg:text-[clamp(2.375rem,4.1vw,3.75rem)]">
+        <h1 className="mb-4 max-w-3xl font-display text-4xl leading-[1.03] font-bold tracking-[-0.03em] lg:text-[clamp(2.25rem,3.4vw,3.25rem)]">
           {hero.title}
         </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-hero-ink lg:text-base">

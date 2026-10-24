@@ -16,7 +16,7 @@ export default function DiscussionPage({
   params,
 }: PageProps<'/[lang]/discussions/[slug]'>) {
   return (
-    <main id="content" className="page-shell pt-8 pb-24">
+    <main id="content" className="pt-8 pb-24">
       <Suspense fallback={<DiscussionDetailSkeleton />}>
         <DiscussionDetail params={params} />
       </Suspense>

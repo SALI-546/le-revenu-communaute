@@ -19,7 +19,7 @@ export default async function NewDiscussionPage() {
   const { create } = discussions;
 
   return (
-    <main id="content" className="page-shell max-w-[890px] pt-10 pb-28">
+    <main id="content" className="mx-auto max-w-[890px] pt-8 pb-28">
       <Link
         href={localizedHref(locale)}
         className="mb-7 inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-ink-3 hover:text-ink"

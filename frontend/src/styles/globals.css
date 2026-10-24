@@ -76,6 +76,17 @@
   --color-avatar-gray: #6e6e73;
   --color-avatar-orange: #c93400;
   --color-avatar-pink: #d30f45;
+  --color-space-blue: #007aff;
+  --color-space-slate: #3d5a80;
+  --color-space-green: #2fa84f;
+  --color-space-teal: #2a9cb3;
+  --color-space-orange: #e6860a;
+  --color-space-indigo: #5856d6;
+  --color-space-rose: #e8264f;
+  --color-space-purple: #a347d1;
+  --color-space-cyan: #00a8a0;
+  --color-space-gray: #7c7c82;
+  --color-space-sand: #a2845e;
 }
 
 @theme inline {

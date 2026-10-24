@@ -6,13 +6,21 @@
   "layout": {
     "skipToContent": "Aller au contenu",
     "pressBar": {
-      "site": "Le site Le Revenu"
+      "back": "Retour sur lerevenu.com",
+      "sectionsLabel": "Rubriques de lerevenu.com",
+      "magazine": "Le magazine",
+      "sections": {
+        "bourse": "Bourse",
+        "placements": "Placements",
+        "immobilier": "Immobilier",
+        "impots": "Impôts",
+        "succession": "Succession",
+        "viePratique": "Vie pratique"
+      }
     },
     "header": {
       "home": "Le Revenu Communauté, accueil",
       "section": "Communauté",
-      "nav": "Navigation de la communauté",
-      "discussions": "Discussions",
       "publish": "Publier",
       "login": "Se connecter",
       "logout": "Se déconnecter"
@@ -42,7 +50,23 @@
       "submit": "Rechercher"
     },
     "logoAlt": "Le Revenu, votre conseiller indépendant depuis 1967",
-    "subscribe": "S’abonner"
+    "subscribe": "S’abonner",
+    "sidebar": {
+      "label": "Navigation principale",
+      "home": "Accueil",
+      "spaces": "Tous les espaces",
+      "charter": "Charte",
+      "spacesTitle": "Espaces",
+      "backToSite": "Retour sur lerevenu.com"
+    },
+    "mobileNav": {
+      "label": "Navigation mobile",
+      "home": "Accueil",
+      "spaces": "Espaces",
+      "publish": "Publier",
+      "login": "Connexion",
+      "logout": "Déconnexion"
+    }
   },
   "home": {
     "hero": {
@@ -80,7 +104,6 @@
       "title": "Discussions récentes",
       "publish": "Publier une discussion",
       "categories": {
-        "title": "Explorer",
         "nav": "Catégories",
         "all": "Toutes les discussions"
       },
@@ -218,5 +241,47 @@
     "title": "Page introuvable",
     "description": "L’adresse demandée n’existe pas ou a été déplacée.",
     "back": "Retour aux discussions"
+  },
+  "spaces": {
+    "title": "Tous les espaces",
+    "description": "Onze espaces thématiques, calqués sur les grandes rubriques du Revenu.",
+    "count": {
+      "one": "discussion",
+      "other": "discussions"
+    }
+  },
+  "charter": {
+    "title": "La charte de la communauté",
+    "description": "Sept règles simples pour que les échanges restent utiles, sûrs et agréables. Elles se lisent en deux minutes.",
+    "rules": [
+      {
+        "title": "Bienveillance",
+        "text": "On débat des idées, jamais des personnes. Les débutants sont les bienvenus : aucune question n’est bête."
+      },
+      {
+        "title": "Expérience, pas conseil personnalisé",
+        "text": "Partagez ce que vous faites et pourquoi. Chacun reste responsable de ses décisions d’investissement."
+      },
+      {
+        "title": "Pas de sollicitation",
+        "text": "Aucune promotion de produit, de parrainage ou de service payant."
+      },
+      {
+        "title": "Des liens vers des sources fiables",
+        "text": "Pour éviter la publicité déguisée, privilégiez lerevenu.com et les sources officielles (sites publics, AMF, Banque de France, Insee, Cour des comptes)."
+      },
+      {
+        "title": "Pas de rumeurs de marché",
+        "text": "Les « tuyaux » non sourcés et les incitations à acheter ou vendre un titre sont supprimés."
+      },
+      {
+        "title": "Protégez-vous",
+        "text": "Un pseudonyme suffit pour participer. Ne publiez jamais vos coordonnées bancaires, numéros de contrat ou informations permettant de vous identifier."
+      },
+      {
+        "title": "Signalez plutôt que répondre",
+        "text": "Un message vous semble problématique ? Prévenez l’équipe de modération plutôt que d’entretenir la polémique."
+      }
+    ]
   }
 }

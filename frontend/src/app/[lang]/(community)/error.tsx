@@ -14,7 +14,7 @@ export default function CommunityError({ retry }: CommunityErrorProps) {
   const { error } = (lang === 'en' ? en : fr).discussions.list;
 
   return (
-    <div className="page-shell py-20">
+    <div className="py-10">
       <StateCard
         icon={Alert02Icon}
         tone="error"

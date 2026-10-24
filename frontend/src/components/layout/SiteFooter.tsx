@@ -8,7 +8,7 @@ export async function SiteFooter() {
   const { footer } = layout;
 
   return (
-    <footer className="bg-linear-to-t from-hero via-hero to-hero-2 text-hero-ink">
+    <footer className="pb-20 lg:pb-0 bg-linear-to-t from-hero via-hero to-hero-2 text-hero-ink">
       <div className="page-shell grid gap-10 py-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
         <nav aria-labelledby="footer-sections">
           <h2

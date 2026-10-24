@@ -12,7 +12,7 @@ export default async function CommunityNotFound() {
   ]);
 
   return (
-    <main id="content" className="page-shell py-20">
+    <main id="content" className="py-10">
       <StateCard
         icon={Search01Icon}
         title={notFound.title}

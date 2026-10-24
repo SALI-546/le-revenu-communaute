@@ -2,13 +2,44 @@ export type DiscussionType = 'question' | 'discussion';
 
 export type Author = { username: string } | null;
 
+export type SpaceIconName =
+  | 'chart'
+  | 'globe'
+  | 'piggy-bank'
+  | 'umbrella'
+  | 'building'
+  | 'invoice'
+  | 'sofa'
+  | 'family'
+  | 'diamond'
+  | 'wallet'
+  | 'coffee';
+
+export type SpaceColor =
+  | 'blue'
+  | 'slate'
+  | 'green'
+  | 'teal'
+  | 'orange'
+  | 'indigo'
+  | 'rose'
+  | 'purple'
+  | 'cyan'
+  | 'gray'
+  | 'sand';
+
 export type CategorySummary = {
   documentId: string;
   name: string;
   slug: string;
+  icon: SpaceIconName;
+  color: SpaceColor;
 };
 
-export type Category = CategorySummary & { description: string | null };
+export type Category = CategorySummary & {
+  description: string | null;
+  discussions: { count: number };
+};
 
 export type DiscussionSummary = {
   documentId: string;

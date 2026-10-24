@@ -5,7 +5,7 @@ test.describe('discussion list', () => {
   test('shows title, author, category, reply count and date', async ({
     page,
   }) => {
-    await page.goto('/fr');
+    await page.goto('/fr?sort=oldest');
 
     const card = page.getByRole('article').filter({ hasText: PEA_TITLE });
     await expect(card.getByRole('link', { name: PEA_TITLE })).toBeVisible();
@@ -21,9 +21,8 @@ test.describe('discussion list', () => {
   test('filters by category through the URL', async ({ page }) => {
     await page.goto('/fr?category=retraite');
 
-    const categories = page.getByRole('navigation', { name: 'Catégories' });
     await expect(
-      categories.getByRole('link', { name: 'Retraite' }),
+      page.getByRole('link', { name: 'Retraite', exact: true }),
     ).toHaveAttribute('aria-current', 'page');
     for (const card of await page.getByRole('article').all()) {
       await expect(card).toContainText('Retraite');
@@ -52,7 +51,7 @@ test.describe('discussion list', () => {
   test('opens a discussion on its own URL with its replies', async ({
     page,
   }) => {
-    await page.goto('/fr');
+    await page.goto('/fr?sort=oldest');
     await page.getByRole('link', { name: PEA_TITLE }).click();
 
     await expect(page).toHaveURL(/\/fr\/discussions\/ouvrir-un-pea/);
@@ -106,7 +105,7 @@ test.describe('publishing', () => {
 
   test('posts a reply on a discussion', async ({ page }) => {
     await login(page, 'hugo@demo.lerevenu.test');
-    await page.goto('/fr');
+    await page.goto('/fr?sort=oldest');
     await page.getByRole('link', { name: PEA_TITLE }).click();
 
     const reply = uniqueTitle('Pensez à comparer les frais de courtage.');

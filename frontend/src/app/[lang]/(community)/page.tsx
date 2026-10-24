@@ -19,9 +19,9 @@ export default async function CommunityHomePage({
   const { list } = discussions;
 
   return (
-    <main id="content">
+    <main id="content" className="pt-6 pb-20 lg:pt-8">
       <CommunityHero hero={home.hero} />
-      <div className="page-shell pt-8 pb-20 lg:pt-10">
+      <div className="pt-8">
         <div className="mb-6 flex items-end justify-between gap-5">
           <div>
             <p className="mb-2 text-[10px] font-bold tracking-[0.12em] text-brand-text uppercase">

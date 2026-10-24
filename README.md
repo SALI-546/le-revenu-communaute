@@ -6,6 +6,7 @@ Fonctionnalités livrées :
 
 - liste des discussions issue de Strapi, avec auteur, catégorie, nombre de réponses et date ; filtre par catégorie, tri par date et pagination côté serveur ;
 - recherche dans les titres et les contenus (bonus), combinable avec le filtre et le tri ;
+- navigation par espaces comme sur la maquette : colonne latérale avec les 11 espaces et leurs icônes colorées, page « Tous les espaces » avec le nombre de discussions, page « Charte », barre de navigation fixe sur mobile ;
 - détail d'une discussion sur une URL propre (`/fr/discussions/<slug>`) avec ses réponses, et publication d'une réponse ;
 - création d'une discussion (titre de 10 caractères minimum, contenu, catégorie, type) avec erreurs de validation et redirection ;
 - connexion avec les utilisateurs de démonstration, publication interdite aux visiteurs, auteur toujours imposé par le serveur ;
@@ -115,7 +116,7 @@ L'application est servie sur http://localhost:3000. La racine redirige vers `/fr
 
 ## Comptes de démonstration
 
-Le seed crée 6 catégories, 5 discussions, 4 réponses et ces utilisateurs. Leur mot de passe est la valeur de `SEED_USER_PASSWORD` :
+Le seed crée 11 catégories (les espaces), 5 discussions, 4 réponses et ces utilisateurs. Leur mot de passe est la valeur de `SEED_USER_PASSWORD` :
 
 | Utilisateur | E-mail                       |
 | ----------- | ---------------------------- |
@@ -133,14 +134,14 @@ cd backend
 npm test
 ```
 
-Les 14 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
+Les 15 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
 
-| Exigence                          | Tests                                                                                                                                                                   |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Validation d'une discussion       | titre de moins de 10 caractères refusé (400), titre de 10 caractères accepté, contenu vide refusé, catégorie inconnue refusée                                           |
-| Publication sans authentification | création d'une discussion et d'une réponse refusées (401 ou 403)                                                                                                        |
-| Usurpation d'auteur               | un `author` envoyé par le client est ignoré : l'auteur est vérifié **en base**, pour une discussion et pour une réponse ; modifier la discussion d'un autre renvoie 403 |
-| Affichage des discussions         | titre, auteur, catégorie, nombre de réponses, date, tri ; filtre par catégorie ; recherche ; aucune adresse e-mail exposée                                              |
+| Exigence                          | Tests                                                                                                                                                                      |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Validation d'une discussion       | titre de moins de 10 caractères refusé (400), titre de 10 caractères accepté, contenu vide refusé, catégorie inconnue refusée                                              |
+| Publication sans authentification | création d'une discussion et d'une réponse refusées (401 ou 403)                                                                                                           |
+| Usurpation d'auteur               | un `author` envoyé par le client est ignoré : l'auteur est vérifié **en base**, pour une discussion et pour une réponse ; modifier la discussion d'un autre renvoie 403    |
+| Affichage des discussions         | titre, auteur, catégorie, nombre de réponses, date, tri ; filtre par catégorie ; recherche ; aucune adresse e-mail exposée ; espaces triés avec icône, couleur et compteur |
 
 ### Parcours end-to-end (frontend)
 
@@ -198,11 +199,11 @@ backend/tests/       tests d'API
 
 ### Modèle de données
 
-| Type       | Champs                                                                                                                                                                 |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Category   | `name` (unique), `slug` (UID unique), `description`, `discussions`                                                                                                     |
-| Discussion | `title` (10 à 150 caractères), `content` (requis), `type` (`question` ou `discussion`), `slug` (UID unique), `author` → User, `category` → Category, `replies` → Reply |
-| Reply      | `content` (requis), `author` → User, `discussion` → Discussion                                                                                                         |
+| Type       | Champs                                                                                                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Category   | `name` (unique), `slug` (UID unique), `description`, `icon` et `color` (énumérations fermées, traduites en icône Hugeicons et en token de couleur côté Next), `position` (ordre d'affichage), `discussions` |
+| Discussion | `title` (10 à 150 caractères), `content` (requis), `type` (`question` ou `discussion`), `slug` (UID unique), `author` → User, `category` → Category, `replies` → Reply                                      |
+| Reply      | `content` (requis), `author` → User, `discussion` → Discussion                                                                                                                                              |
 
 - **`draftAndPublish` est désactivé** : un message de la communauté est publié immédiatement. De plus, Draft & Publish n'applique pas l'unicité aux brouillons.
 - **Index et contraintes.** `name` et les deux `slug` ont un index **UNIQUE en base** grâce à l'option `column: { unique: true }`. L'attribut `unique` seul n'est vérifié que par Strapi. Les relations passent par des tables de liaison que Strapi indexe sur les deux clés étrangères.
@@ -236,7 +237,7 @@ La liste affiche le nombre de réponses de chaque discussion. Il est obtenu avec
 ```
 frontend/src/
   app/[lang]/
-    (community)/       accueil, discussions/[slug], discussions/new, 404, chargement, erreur
+    (community)/       accueil, discussions/[slug], discussions/new, spaces, charter, 404, chargement, erreur
     (auth)/login/
   features/
     discussions/       queries.ts (lectures), actions.ts (mutations), schemas.ts (Zod), components/
@@ -252,7 +253,7 @@ frontend/src/
 
 ### Rendu et récupération des données
 
-- **Server Components par défaut.** Seuls les éléments interactifs sont des Client Components : les formulaires (connexion, création, réponse), le sélecteur de tri et le sélecteur de langue.
+- **Server Components par défaut.** Seuls les éléments interactifs sont des Client Components : les formulaires (connexion, création, réponse), le sélecteur de tri, le sélecteur de langue, et les navigations latérale et mobile, qui lisent l'URL pour marquer l'élément actif. Elles sont rendues sous `<Suspense>` : la barre mobile a un fallback identique, sans état actif, pour éviter tout décalage.
 - **Next ne parle qu'à Strapi**, via `lib/strapi/client.ts`, marqué `server-only`. Il n'accède jamais à PostgreSQL directement.
 - **Lire et écrire sont séparés.** Les lectures sont des fonctions `'use cache'` dans `queries.ts`, appelées par des Server Components. Les mutations sont des Server Actions dans `actions.ts`.
 - **Cache Components et Partial Prerendering.** Le contenu stable (en-tête, hero, titres) fait partie du shell statique. Ce qui dépend de la requête (paramètres d'URL, session) est streamé sous `<Suspense>`, avec un skeleton. Toutes les pages sont donc partiellement prérendues, et **le build ne dépend pas de Strapi**.

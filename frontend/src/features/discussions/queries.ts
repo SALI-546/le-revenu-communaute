@@ -38,10 +38,7 @@ export async function getCategories() {
   cacheTag(CATEGORIES_TAG);
   cacheLife('hours');
 
-  const query = new URLSearchParams({
-    sort: 'name:asc',
-    'pagination[pageSize]': '50',
-  });
+  const query = new URLSearchParams({ 'pagination[pageSize]': '50' });
   const { data } = await strapiFetch<StrapiList<Category>>('/categories', {
     query,
   });

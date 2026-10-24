@@ -2,7 +2,7 @@ import { DiscussionDetailSkeleton } from '@/features/discussions/components/Disc
 
 export default function DiscussionLoading() {
   return (
-    <div className="page-shell pt-8 pb-24">
+    <div className="pt-8 pb-24">
       <DiscussionDetailSkeleton />
     </div>
   );

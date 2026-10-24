@@ -30,14 +30,13 @@ export async function DiscussionFeed({ searchParams }: DiscussionFeedProps) {
   const { total } = meta.pagination;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[205px_minmax(0,1fr)] lg:gap-7">
-      <aside className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4 lg:sticky lg:top-6 lg:block lg:self-start">
+    <div className="grid gap-5">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:hidden">
         <SearchForm
           id="feed-search"
           action={listHref(locale, {})}
           labels={dict.layout.search}
           defaultValue={filters.q}
-          className="lg:hidden"
         />
         <CategoryNav
           categories={categories}
@@ -45,13 +44,7 @@ export async function DiscussionFeed({ searchParams }: DiscussionFeedProps) {
           locale={locale}
           labels={list.categories}
         />
-        <p className="mt-6 hidden border-t border-line p-4 text-[11px] leading-relaxed text-ink-3 lg:block">
-          <strong className="mb-0.5 block text-ink-2">
-            {list.trust.title}
-          </strong>
-          {list.trust.description}
-        </p>
-      </aside>
+      </div>
       <section aria-labelledby="feed-title" className="min-w-0">
         {filters.q && (
           <p className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-2">

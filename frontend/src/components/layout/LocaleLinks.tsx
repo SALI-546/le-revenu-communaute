@@ -11,7 +11,7 @@ type LocaleLinksProps = {
 
 export function LocaleLinks({ current, labels, hrefFor }: LocaleLinksProps) {
   return (
-    <nav aria-label={labels.label} className="ml-auto">
+    <nav aria-label={labels.label} className="max-md:ml-auto">
       <ul className="flex items-center gap-1">
         {locales.map((locale) => (
           <li key={locale}>
@@ -21,10 +21,10 @@ export function LocaleLinks({ current, labels, hrefFor }: LocaleLinksProps) {
               lang={locale}
               aria-current={locale === current ? 'true' : undefined}
               className={clsx(
-                'inline-flex min-h-8 items-center rounded px-1.5 uppercase',
+                'inline-flex min-h-10 items-center rounded px-1.5 uppercase',
                 locale === current
-                  ? 'text-on-hero'
-                  : 'text-hero-ink hover:text-on-hero',
+                  ? 'font-bold text-ink'
+                  : 'text-ink-3 hover:text-ink',
               )}
             >
               <span aria-hidden="true">{locale}</span>

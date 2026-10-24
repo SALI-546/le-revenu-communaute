@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { Add01Icon, News01Icon } from '@hugeicons/core-free-icons';
+import {
+  Add01Icon,
+  ArrowLeft01Icon,
+  Book02Icon,
+} from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { buttonStyles } from '@/components/ui/buttonStyles';
 import { getDictionary, getLocale } from '@/dictionaries';
@@ -10,7 +14,12 @@ import { LocaleLinks } from './LocaleLinks';
 import { LocaleSwitcher } from './LocaleSwitcher';
 import { Logo } from './Logo';
 import { SearchForm } from './SearchForm';
-import { SITE_URL, SUBSCRIBE_URL } from './siteLinks';
+import {
+  MAGAZINE_URL,
+  SITE_BAR_SECTIONS,
+  SITE_URL,
+  SUBSCRIBE_URL,
+} from './siteLinks';
 
 export async function SiteHeader() {
   const [{ layout }, locale] = await Promise.all([
@@ -20,19 +29,45 @@ export async function SiteHeader() {
 
   return (
     <>
-      <div className="bg-hero text-on-hero">
-        <div className="page-shell flex min-h-9 items-center gap-3 text-xs font-semibold">
+      <div className="border-b border-line bg-surface text-ink-2">
+        <div className="page-shell flex min-h-10 items-center gap-5 text-[13px]">
           <a
             href={SITE_URL}
-            className="inline-flex min-h-9 items-center gap-1.5 opacity-85 hover:opacity-100"
+            className="inline-flex min-h-10 items-center gap-1 font-semibold whitespace-nowrap text-ink hover:text-brand-text"
           >
             <HugeiconsIcon
-              icon={News01Icon}
-              size={14}
+              icon={ArrowLeft01Icon}
+              size={15}
               color="currentColor"
               aria-hidden="true"
             />
-            {layout.pressBar.site}
+            {layout.pressBar.back}
+          </a>
+          <nav
+            aria-label={layout.pressBar.sectionsLabel}
+            className="hidden min-w-0 gap-4 overflow-hidden border-l border-line pl-5 xl:flex"
+          >
+            {SITE_BAR_SECTIONS.map(({ key, path }) => (
+              <a
+                key={key}
+                href={`${SITE_URL}${path}`}
+                className="inline-flex min-h-10 items-center whitespace-nowrap hover:text-brand-text"
+              >
+                {layout.pressBar.sections[key]}
+              </a>
+            ))}
+          </nav>
+          <a
+            href={MAGAZINE_URL}
+            className="ml-auto hidden min-h-10 items-center gap-1.5 whitespace-nowrap hover:text-brand-text md:inline-flex"
+          >
+            <HugeiconsIcon
+              icon={Book02Icon}
+              size={15}
+              color="currentColor"
+              aria-hidden="true"
+            />
+            {layout.pressBar.magazine}
           </a>
           <Suspense
             fallback={
@@ -47,7 +82,7 @@ export async function SiteHeader() {
           </Suspense>
           <a
             href={SUBSCRIBE_URL}
-            className="inline-flex min-h-7 items-center rounded-lg bg-brand px-3 text-on-brand hover:bg-brand-hover"
+            className="inline-flex min-h-7 items-center rounded-full bg-brand px-3 font-semibold whitespace-nowrap text-on-brand hover:bg-brand-hover"
           >
             {layout.subscribe}
           </a>
@@ -97,16 +132,6 @@ export async function SiteHeader() {
             </Link>
           </div>
         </div>
-        <nav aria-label={layout.header.nav} className="border-t border-line">
-          <div className="page-shell flex h-11 items-stretch">
-            <Link
-              href={localizedHref(locale)}
-              className="relative flex items-center text-sm font-semibold text-ink after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-brand"
-            >
-              {layout.header.discussions}
-            </Link>
-          </div>
-        </nav>
       </header>
     </>
   );

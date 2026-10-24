@@ -13,7 +13,7 @@ export default async function DiscussionNotFound() {
   const { notFound } = discussions.detail;
 
   return (
-    <main id="content" className="page-shell py-20">
+    <main id="content" className="py-10">
       <StateCard
         icon={MessageMultiple01Icon}
         title={notFound.title}

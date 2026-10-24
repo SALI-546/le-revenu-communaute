@@ -2,7 +2,7 @@ import { DiscussionFeedSkeleton } from '@/features/discussions/components/Discus
 
 export default function CommunityLoading() {
   return (
-    <div className="page-shell pt-10 pb-20">
+    <div className="py-8">
       <DiscussionFeedSkeleton />
     </div>
   );
