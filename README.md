@@ -322,7 +322,7 @@ Chaque route a son `loading.tsx` (skeleton). Le groupe `(community)` a un `error
 
 ### Design system
 
-- L'identité reprend celle du **site réel lerevenu.com**, relevée dans ses feuilles de style : logo officiel, fond crème `#fff3ed`, titres bordeaux `#7c000e`, rouge `#cd1719` pour les boutons et les surtitres, pied de page en dégradé bordeaux, arrondis de 8 et 12 px. La maquette et le Figma fournissent la structure des écrans. Ils s'écartaient de la marque sur le logo, la police du texte et la palette.
+- L'identité reprend celle du **site réel lerevenu.com**, relevée dans ses feuilles de style : logo officiel, fond crème `#fff3ed`, titres bordeaux `#7c000e`, rouge `#cd1719` pour les boutons et les surtitres, pied de page en dégradé bordeaux, arrondis de 8 et 12 px. La maquette fournit la structure des écrans. Elle s'écartait de la marque sur le logo, la police du texte et la palette.
 - Ces tokens (clairs et sombres), les ombres, les polices et les breakpoints de la maquette sont déclarés une seule fois dans `globals.css`, avec `@theme`.
 - **La palette par défaut de Tailwind est désactivée** (`--color-*: initial`). Seuls les tokens existent, ce qui rend impossible une couleur écrite en dur.
 - Les polices sont celles du site, servies par `next/font` : Playfair Display pour les titres, Source Sans 3 pour le texte. Les icônes viennent uniquement de Hugeicons.
