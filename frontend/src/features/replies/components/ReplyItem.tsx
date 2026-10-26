@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react';
+import Link from 'next/link';
 import clsx from 'clsx';
 import { CheckmarkBadge01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Avatar } from '@/components/ui/Avatar';
 import type { Locale } from '@/dictionaries/config';
 import type { Reply } from '@/features/discussions/types';
+import { memberHref } from '@/features/members/memberHref';
 import { formatDate } from '@/lib/formatDate';
 
 type ReplyItemProps = {
@@ -51,9 +53,12 @@ export function ReplyItem({
           <Avatar name={reply.author.username} />
           <div className="grid">
             <p className="flex items-center gap-2">
-              <strong className="text-sm text-ink">
+              <Link
+                href={memberHref(locale, reply.author.username)}
+                className="text-sm font-bold text-ink hover:text-brand-text hover:underline"
+              >
                 {reply.author.username}
-              </strong>
+              </Link>
               {authorBadge && (
                 <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[10px] font-bold text-brand-text">
                   {authorBadge}

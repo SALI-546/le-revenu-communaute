@@ -17,6 +17,7 @@ import { ReplyActions } from '@/features/replies/components/ReplyActions';
 import { ReplyComposer } from '@/features/replies/components/ReplyComposer';
 import { ReplyItem } from '@/features/replies/components/ReplyItem';
 import { replyActionStyles } from '@/features/replies/components/replyActionStyles';
+import { memberHref } from '@/features/members/memberHref';
 import { formatDate } from '@/lib/formatDate';
 import { pluralize } from '@/lib/plural';
 import { requestTime } from '@/lib/requestTime';
@@ -153,7 +154,12 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
             <div className="flex items-center gap-3">
               <Avatar name={author.username} size="lg" />
               <div className="grid">
-                <strong className="text-sm text-ink">{author.username}</strong>
+                <Link
+                  href={memberHref(locale, author.username)}
+                  className="text-sm font-bold text-ink hover:text-brand-text hover:underline"
+                >
+                  {author.username}
+                </Link>
                 <time dateTime={publishedAt} className="text-xs text-ink-3">
                   {published}
                 </time>

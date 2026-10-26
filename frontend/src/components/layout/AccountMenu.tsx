@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Logout03Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Avatar } from '@/components/ui/Avatar';
@@ -5,6 +6,7 @@ import { buttonStyles } from '@/components/ui/buttonStyles';
 import { getDictionary, getLocale } from '@/dictionaries';
 import { localizedHref } from '@/dictionaries/config';
 import { logout } from '@/features/auth/actions';
+import { memberHref } from '@/features/members/memberHref';
 import { getCurrentUser } from '@/lib/auth/dal';
 import { LoginLink } from './LoginLink';
 
@@ -27,10 +29,13 @@ export async function AccountMenu() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="flex min-h-11 items-center gap-2 rounded-full border border-line bg-surface p-1 text-[13px] font-semibold lg:pr-3">
+      <Link
+        href={memberHref(locale, user.username)}
+        className="flex min-h-11 items-center gap-2 rounded-full border border-line bg-surface p-1 text-[13px] font-semibold hover:border-line-strong lg:pr-3"
+      >
         <Avatar name={user.username} size="sm" />
         <span className="max-lg:sr-only">{user.username}</span>
-      </span>
+      </Link>
       <form action={logout}>
         <input type="hidden" name="redirectTo" value={localizedHref(locale)} />
         <button

@@ -77,6 +77,21 @@ test.describe('discussion list', () => {
     ).toBeVisible();
   });
 
+  test('opens the public profile of a reply author', async ({ page }) => {
+    await page.goto(
+      '/fr/discussions/ouvrir-un-pea-avec-5-000-eur-par-ou-commencer',
+    );
+    await page.getByRole('link', { name: 'Vincent', exact: true }).click();
+
+    await expect(page).toHaveURL(/\/fr\/members\/Vincent$/);
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Vincent' }),
+    ).toBeVisible();
+    await expect(
+      page.getByText('meilleure réponse', { exact: true }),
+    ).toBeVisible();
+  });
+
   test('suggests related discussions and copies the link', async ({
     page,
     context,

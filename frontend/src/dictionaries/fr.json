@@ -395,5 +395,41 @@
         "text": "Un message vous semble problématique ? Prévenez l’équipe de modération plutôt que d’entretenir la polémique."
       }
     ]
+  },
+  "members": {
+    "since": "Membre depuis {date}",
+    "stats": {
+      "label": "Activité de {name}",
+      "discussions": {
+        "one": "discussion",
+        "other": "discussions"
+      },
+      "replies": {
+        "one": "réponse",
+        "other": "réponses"
+      },
+      "helpful": {
+        "one": "vote « Utile » reçu",
+        "other": "votes « Utile » reçus"
+      },
+      "bestAnswers": {
+        "one": "meilleure réponse",
+        "other": "meilleures réponses"
+      }
+    },
+    "discussions": {
+      "title": "Dernières discussions",
+      "empty": "Aucune discussion publiée pour le moment."
+    },
+    "replies": {
+      "title": "Dernières réponses",
+      "empty": "Aucune réponse publiée pour le moment.",
+      "in": "Dans"
+    },
+    "notFound": {
+      "title": "Ce membre est introuvable",
+      "description": "Le pseudo est peut-être mal orthographié, ou le compte n’existe plus.",
+      "back": "Retour aux discussions"
+    }
   }
 }

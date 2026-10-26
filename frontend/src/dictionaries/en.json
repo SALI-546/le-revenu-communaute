@@ -395,5 +395,41 @@
         "text": "A message looks problematic? Alert the moderation team rather than feeding the argument."
       }
     ]
+  },
+  "members": {
+    "since": "Member since {date}",
+    "stats": {
+      "label": "{name}’s activity",
+      "discussions": {
+        "one": "discussion",
+        "other": "discussions"
+      },
+      "replies": {
+        "one": "reply",
+        "other": "replies"
+      },
+      "helpful": {
+        "one": "“Helpful” vote received",
+        "other": "“Helpful” votes received"
+      },
+      "bestAnswers": {
+        "one": "best answer",
+        "other": "best answers"
+      }
+    },
+    "discussions": {
+      "title": "Latest discussions",
+      "empty": "No discussion published yet."
+    },
+    "replies": {
+      "title": "Latest replies",
+      "empty": "No reply published yet.",
+      "in": "In"
+    },
+    "notFound": {
+      "title": "Member not found",
+      "description": "The username may be misspelled, or the account no longer exists.",
+      "back": "Back to discussions"
+    }
   }
 }

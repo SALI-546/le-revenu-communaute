@@ -16,6 +16,7 @@ Fonctionnalités livrées :
 - interface en français et en anglais, responsive de 375 à 1440 px ;
 - bouton clair/sombre comme sur lerevenu.com (clair par défaut) et vue compacte de la liste, deux préférences mémorisées dans le navigateur ;
 - votes « Utile » sur les réponses (un vote par membre, retirable, impossible sur sa propre réponse) et meilleure réponse choisie par l'auteur de la discussion, signalée par « Résolu » dans la liste et mise en avant sur la page ;
+- profil public de chaque membre (`/fr/members/<pseudo>`) : chiffres d'activité (discussions, réponses, votes « Utile » reçus, meilleures réponses), dernières discussions et dernières réponses. Les noms d'auteur et le menu du compte y mènent ;
 - documentation Swagger de l'API, tests d'API et tests end-to-end.
 
 ## Sommaire
@@ -143,7 +144,7 @@ cd backend
 npm test
 ```
 
-Les 21 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
+Les 23 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution**, puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
 
 | Exigence                          | Tests                                                                                                                                                                                                                                                                  |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -152,6 +153,7 @@ Les 21 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprim�
 | Usurpation d'auteur               | un `author` envoyé par le client est ignoré : l'auteur est vérifié **en base**, pour une discussion et pour une réponse ; modifier la discussion d'un autre renvoie 403                                                                                                |
 | Affichage des discussions         | titre, auteur, catégorie, nombre de réponses, date, tri ; filtre par catégorie ; recherche ; aucune adresse e-mail exposée ; espaces triés avec icône, couleur et compteur ; discussions sans réponse ; chiffres de la communauté et d'un espace, slug invalide refusé |
 | Votes et meilleure réponse        | un vote « Utile » compte une fois et se retire ; vote sur sa propre réponse ou sans connexion refusé (403) ; seul l'auteur choisit la meilleure réponse (403 sinon), qui doit appartenir à la discussion (400 sinon) et peut être retirée                              |
+| Profil d'un membre                | chiffres d'activité exacts, aucune adresse e-mail ; 404 pour un membre inconnu, 400 pour un pseudo invalide                                                                                                                                                            |
 
 ### Parcours end-to-end (frontend)
 
@@ -160,7 +162,7 @@ cd frontend
 npm run test:e2e
 ```
 
-Playwright démarre Strapi et Next s'ils ne tournent pas déjà, puis exécute 19 parcours sur desktop et sur mobile : liste, filtre, recherche, onglet « Sans réponse », détail, lectures associées et copie du lien, vote « Utile » puis retrait, meilleure réponse affichée, mode sombre et vue compacte mémorisés après rechargement, redirection d'un visiteur vers la connexion (en conservant la question préremplie), préremplissage depuis le champ rapide, création avec erreurs de validation puis publication, réponse, et absence de défilement horizontal sur les pages principales. Il utilise le Google Chrome installé sur la machine (`channel: 'chrome'`). Les tests écrivent dans la base de développement des contenus suffixés `[e2e]`. Si le port 3000 est déjà pris par une autre application, lancez `E2E_PORT=3100 npm run test:e2e`.
+Playwright démarre Strapi et Next s'ils ne tournent pas déjà, puis exécute 23 parcours sur desktop et sur mobile : liste, filtre, recherche, onglet « Sans réponse », détail, lectures associées et copie du lien, vote « Utile » puis retrait, meilleure réponse affichée, profil d'un membre, mode sombre et vue compacte mémorisés après rechargement, redirection d'un visiteur vers la connexion (en conservant la question préremplie), préremplissage depuis le champ rapide, création avec erreurs de validation puis publication, réponse, et absence de défilement horizontal sur sept pages, à la taille de l'appareil puis à 375 px. Il utilise le Google Chrome installé sur la machine (`channel: 'chrome'`). Les tests écrivent dans la base de développement des contenus suffixés `[e2e]`. Si le port 3000 est déjà pris par une autre application, lancez `E2E_PORT=3100 npm run test:e2e`.
 
 ### Qualité
 
@@ -184,6 +186,7 @@ Routes principales :
 | Méthode     | Route                                          | Accès                                                                                                                                                                                                                                                |
 | ----------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | GET         | `/api/discussions`                             | public : filtre `filters[category][slug][$eq]`, recherche `$containsi` sur `title` et `content`, discussions sans réponse avec `filters[replies][id][$null]=true`, tri `publishedAt:desc` ou `publishedAt:asc`, pagination de 50 éléments au maximum |
+| GET         | `/api/members/:username`                       | public : profil d'un membre (pseudo, date d'inscription, chiffres d'activité, dernières discussions et réponses), sans e-mail                                                                                                                        |
 | GET         | `/api/discussions/stats`                       | public : nombre de discussions, de réponses, de questions et de questions ayant reçu une réponse, de discussions sans réponse ; `?category=<slug>` pour un espace                                                                                    |
 | GET         | `/api/discussions/slug/:slug`                  | public : discussion avec ses réponses                                                                                                                                                                                                                |
 | POST        | `/api/discussions`                             | connecté                                                                                                                                                                                                                                             |
@@ -199,11 +202,12 @@ Routes principales :
 
 ```
 backend/src/
-  api/{category,discussion,reply}/
+  api/{category,discussion,reply,vote}/
     content-types/   schémas
     controllers/     validation et assainissement de l'entrée et de la sortie, puis appel du service
     services/        logique métier via le Document Service
-    routes/          routes core et route personnalisée par slug
+    routes/          routes core et routes personnalisées (slug, statistiques, votes, meilleure réponse)
+  api/member/        profil public : route, contrôleur et service, sans content type
   policies/          is-authenticated, is-owner (globales)
   bootstrap/         permissions des rôles et seed
   documentation/     contrat OpenAPI
@@ -255,11 +259,12 @@ La liste affiche le nombre de réponses de chaque discussion. Il est obtenu avec
 ```
 frontend/src/
   app/[lang]/
-    (community)/       accueil, discussions/[slug], discussions/new, spaces, charter, 404, chargement, erreur
+    (community)/       accueil, discussions/[slug], discussions/new, spaces, charter, members/[username], 404, chargement, erreur
     (auth)/login/
   features/
     discussions/       queries.ts (lectures), actions.ts (mutations), schemas.ts (Zod), components/
     replies/           même découpage
+    members/           profil public
     auth/
   lib/strapi/client.ts fetch typé unique vers Strapi
   lib/auth/            session (cookie), DAL
@@ -279,6 +284,7 @@ frontend/src/
 - La **recherche** utilise le composant `<Form>` de Next (`next/form`) : un formulaire GET qui navigue côté client et fonctionne aussi sans JavaScript. Strapi filtre les titres et les contenus avec `$containsi`. Le champ « Posez votre question » suit le même principe : un formulaire GET vers `/discussions/new?title=…&type=…&category=…`, dont les paramètres sont validés par Zod puis utilisés comme valeurs initiales. Un visiteur est envoyé vers la connexion avec ces paramètres dans `redirectTo`, et retrouve sa question après s'être connecté.
 - **Votes et meilleure réponse côté Next.** La discussion reste en cache partagé. Ce qui dépend du membre (a-t-il voté ? est-il l'auteur ?) est lu à part, sans cache partagé, dans `ReplyActions` sous `<Suspense>`. Le fallback affiche déjà le compteur. Les votes du membre sont chargés en un seul appel par page grâce à `cache` de React. Les boutons sont des formulaires liés à des Server Actions (`toggleHelpful`, `chooseBestReply`) qui revalident le tag `discussions`. Ils fonctionnent donc sans JavaScript.
 - **Mode sombre et vue compacte.** lerevenu.com propose un bouton clair/sombre, clair par défaut. Le mode sombre passe donc de `prefers-color-scheme` à une classe `.dark` sur `<html>`, avec la variante Tailwind documentée `@custom-variant dark`. La vue compacte suit le même principe avec `data-density` et une variante `compact`. Un petit script en `<head>` applique les préférences enregistrées avant le premier rendu, ce qui évite le flash. Les boutons changent d'icône et de libellé en CSS (`dark:`, `compact:`) : aucun état React, donc aucun écart d'hydratation. Ces préférences purement visuelles restent dans `localStorage` et ne passent pas par le serveur, ce qui garde les pages en cache.
+- **Profil public.** La route `users` de Strapi exposerait les e-mails. Le profil passe donc par une API dédiée, `api/member`, qui ne renvoie que le pseudo, la date d'inscription, des compteurs (`count()` du Document Service) et les dernières publications. Côté Next, les paramètres dynamiques arrivent encore encodés : le pseudo est décodé une seule fois (`decodeUsername`), sinon un pseudo accentué serait encodé deux fois vers Strapi.
 - **Heure de la requête.** « Dernière activité » s'affiche en temps relatif (« il y a 2 heures »). Comme le recommande la documentation de Cache Components, `Date.now()` n'est appelé qu'après `connection()`, sous `<Suspense>`, via le petit utilitaire `lib/requestTime.ts`. La date absolue reste dans l'attribut `title`.
 - **Chiffres de la communauté.** Un seul appel à `GET /discussions/stats`, qui compte côté Strapi avec `count()` du Document Service, au lieu de quatre requêtes paginées depuis Next. Le filtre « sans réponse » (`$null` sur la relation `replies`) n'est pas illustré dans la documentation de Strapi : son comportement est donc verrouillé par un test d'API. Le nombre de membres n'est pas affiché, car il demanderait d'ouvrir aux visiteurs la route `users/count`.
 

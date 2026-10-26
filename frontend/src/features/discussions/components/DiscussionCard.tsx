@@ -9,6 +9,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Avatar } from '@/components/ui/Avatar';
 import type { Dictionary } from '@/dictionaries';
 import type { Locale } from '@/dictionaries/config';
+import { memberHref } from '@/features/members/memberHref';
 import { formatDate } from '@/lib/formatDate';
 import { pluralize } from '@/lib/plural';
 import { TYPE_ICONS } from '../typeIcons';
@@ -106,9 +107,12 @@ export function DiscussionCard({
               <Avatar name={author.username} size="sm" />
               <span>
                 {dict.list.by}{' '}
-                <strong className="font-semibold text-ink-2">
+                <Link
+                  href={memberHref(locale, author.username)}
+                  className="relative z-10 font-semibold text-ink-2 hover:text-brand-text hover:underline"
+                >
                   {author.username}
-                </strong>
+                </Link>
               </span>
               <span aria-hidden="true" className="mx-1 h-3 w-px bg-line" />
             </>
