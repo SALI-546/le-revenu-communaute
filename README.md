@@ -323,6 +323,7 @@ Chaque route a son `loading.tsx` (skeleton). Le groupe `(community)` a un `error
 ### Design system
 
 - L'identité reprend celle du **site réel lerevenu.com**, relevée dans ses feuilles de style : logo officiel, fond crème `#fff3ed`, titres bordeaux `#7c000e`, rouge `#cd1719` pour les boutons et les surtitres, pied de page en dégradé bordeaux, arrondis de 8 et 12 px. La maquette fournit la structure des écrans. Elle s'écartait de la marque sur le logo, la police du texte et la palette.
+- La typographie suit les mesures relevées sur lerevenu.com : texte courant et extraits en 16 px, titres d'articles en Playfair de 18 à 22 px, titres de section de 24 à 30 px, signatures en petites capitales de 12 px. Les listes et l'article sont posés sur le fond crème, sans cadre, séparés par des filets, comme sur le site. Le gris-bleu des extraits (`#7e8b92`) et le rose des signatures (`#c2949a`) du site n'atteignent pas le contraste AA sur le fond crème (3,2:1 et 2,4:1) : les tokens `lede` et `meta` gardent leur teinte, assombrie pour dépasser 4,5:1.
 - Ces tokens (clairs et sombres), les ombres, les polices et les breakpoints de la maquette sont déclarés une seule fois dans `globals.css`, avec `@theme`.
 - **La palette par défaut de Tailwind est désactivée** (`--color-*: initial`). Seuls les tokens existent, ce qui rend impossible une couleur écrite en dur.
 - Les polices sont celles du site, servies par `next/font` : Playfair Display pour les titres, Source Sans 3 pour le texte. Les icônes viennent uniquement de Hugeicons.
