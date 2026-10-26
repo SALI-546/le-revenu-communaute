@@ -37,6 +37,11 @@ type ApiBody<T> = {
 type RequestOptions = { method?: string; token?: string; data?: unknown };
 
 const resetDatabase = async () => {
+  if (process.env.DATABASE_NAME === TEST_DATABASE) {
+    throw new Error(
+      `DATABASE_NAME must not be ${TEST_DATABASE}: the tests drop that database.`,
+    );
+  }
   const client = new pg.Client({
     host: process.env.DATABASE_HOST,
     port: Number(process.env.DATABASE_PORT),
