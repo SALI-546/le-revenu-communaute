@@ -1,7 +1,7 @@
 import 'server-only';
 import { cache } from 'react';
 import { getSessionToken } from '@/lib/auth/session';
-import { strapiFetch } from '@/lib/strapi/client';
+import { StrapiError, strapiFetch } from '@/lib/strapi/client';
 
 export const getMyHelpfulVotes = cache(async (discussionId: string) => {
   const token = await getSessionToken();
@@ -14,7 +14,10 @@ export const getMyHelpfulVotes = cache(async (discussionId: string) => {
       query: new URLSearchParams({ discussion: discussionId }),
     });
     return data;
-  } catch {
-    return [];
+  } catch (error) {
+    if (error instanceof StrapiError && error.status === 401) {
+      return [];
+    }
+    throw error;
   }
 });

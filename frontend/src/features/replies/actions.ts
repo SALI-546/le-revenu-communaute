@@ -60,7 +60,7 @@ export async function toggleHelpful(replyId: string) {
     });
   } catch (error) {
     // A refused vote (deleted reply, own reply) only refreshes the page to its real state.
-    if (!(error instanceof StrapiError)) {
+    if (!(error instanceof StrapiError) || error.status >= 500) {
       throw error;
     }
   }

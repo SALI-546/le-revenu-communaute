@@ -80,7 +80,7 @@ export async function chooseBestReply(
     });
   } catch (error) {
     // A refused change (deleted reply, not the author) only refreshes the page to its real state.
-    if (!(error instanceof StrapiError)) {
+    if (!(error instanceof StrapiError) || error.status >= 500) {
       throw error;
     }
   }

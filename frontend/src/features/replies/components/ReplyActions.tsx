@@ -28,16 +28,25 @@ export async function ReplyActions({
   discussion,
   locale,
 }: ReplyActionsProps) {
-  const [user, votes, { replies: dict }] = await Promise.all([
-    getCurrentUser().catch(() => null),
-    getMyHelpfulVotes(discussion.documentId),
+  const [session, { replies: dict }] = await Promise.all([
+    Promise.all([
+      getCurrentUser(),
+      getMyHelpfulVotes(discussion.documentId),
+    ]).catch(() => null),
     getDictionary(),
   ]);
-  const voted = votes.includes(reply.documentId);
-  const isBest = discussion.bestReplyId === reply.documentId;
   const helpful = (
     <HelpfulLabel label={dict.helpful.label} count={reply.helpfulCount} />
   );
+
+  // Strapi is unreachable: show the count without asking a signed-in member to log in.
+  if (!session) {
+    return <span className={replyActionStyles()}>{helpful}</span>;
+  }
+
+  const [user, votes] = session;
+  const voted = votes.includes(reply.documentId);
+  const isBest = discussion.bestReplyId === reply.documentId;
 
   if (!user) {
     const redirectTo = localizedHref(locale, `/discussions/${discussion.slug}`);
