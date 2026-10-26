@@ -1,7 +1,7 @@
 type Authored = { author?: { username: string } | null };
 type Sanitized = Record<string, unknown>;
 
-const publicAuthor = ({ author }: Authored) =>
+export const publicAuthor = ({ author }: Authored) =>
   author ? { username: author.username } : null;
 
 // sanitizeOutput drops User relations unless users.find is granted, which would expose /api/users and its emails.

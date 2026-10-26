@@ -413,7 +413,6 @@ describe('helpful votes and best reply', () => {
       'ouvrir-un-pea-avec-5-000-eur-par-ou-commencer',
     );
     const cleared = await choose(thomasToken, null);
-    await choose(thomasToken, replyBy(pea, 'Vincent').documentId);
 
     assert.equal(byStranger.status, 403);
     assert.equal(fromElsewhere.status, 400);
@@ -428,6 +427,19 @@ describe('helpful votes and best reply', () => {
 
 describe('member profile', () => {
   it('shows public activity without any email', async () => {
+    const { body: pea } = await request<{
+      documentId: string;
+      replies: Reply[];
+    }>('/discussions/slug/ouvrir-un-pea-avec-5-000-eur-par-ou-commencer');
+    const vincent = pea.data.replies.find(
+      (reply) => reply.author?.username === 'Vincent',
+    )!;
+    await request(`/discussions/${pea.data.documentId}/best-reply`, {
+      method: 'PUT',
+      token: thomasToken,
+      data: { reply: vincent.documentId },
+    });
+
     const { status, body } = await request<{
       username: string;
       stats: Record<string, number>;
@@ -447,8 +459,8 @@ describe('member profile', () => {
   });
 
   it('answers 404 for an unknown member and 400 for an invalid name', async () => {
-    const unknown = await request('/members/Personne');
-    const invalid = await request('/members/%3Cscript%3E');
+    const unknown = await request('/members/Jean%20Personne');
+    const invalid = await request(`/members/${'a'.repeat(101)}`);
 
     assert.equal(unknown.status, 404);
     assert.equal(invalid.status, 400);
