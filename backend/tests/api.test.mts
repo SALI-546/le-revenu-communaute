@@ -413,6 +413,7 @@ describe('helpful votes and best reply', () => {
       'ouvrir-un-pea-avec-5-000-eur-par-ou-commencer',
     );
     const cleared = await choose(thomasToken, null);
+    await choose(thomasToken, replyBy(pea, 'Vincent').documentId);
 
     assert.equal(byStranger.status, 403);
     assert.equal(fromElsewhere.status, 400);
@@ -422,5 +423,34 @@ describe('helpful votes and best reply', () => {
     assert.equal(byAuthor.body.data.bestReply?.documentId, camille.documentId);
     assert.equal(cleared.body.data.bestReply, null);
     assert.equal(pea.bestReply?.documentId, replyBy(pea, 'Vincent').documentId);
+  });
+});
+
+describe('member profile', () => {
+  it('shows public activity without any email', async () => {
+    const { status, body } = await request<{
+      username: string;
+      stats: Record<string, number>;
+      discussions: Discussion[];
+    }>('/members/Vincent');
+
+    assert.equal(status, 200);
+    assert.equal(body.data.username, 'Vincent');
+    assert.deepEqual(body.data.stats, {
+      discussions: 1,
+      replies: 3,
+      helpful: 3,
+      bestAnswers: 1,
+    });
+    assert.deepEqual(body.data.discussions[0].author, { username: 'Vincent' });
+    assert.doesNotMatch(JSON.stringify(body), /@demo\.lerevenu\.test/);
+  });
+
+  it('answers 404 for an unknown member and 400 for an invalid name', async () => {
+    const unknown = await request('/members/Personne');
+    const invalid = await request('/members/%3Cscript%3E');
+
+    assert.equal(unknown.status, 404);
+    assert.equal(invalid.status, 400);
   });
 });

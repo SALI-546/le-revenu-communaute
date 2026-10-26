@@ -327,6 +327,53 @@ const bestReply = {
   },
 };
 
+const member = {
+  get: {
+    tags: ['Member'],
+    summary: 'Public profile of a member: activity counts and latest posts',
+    operationId: 'get/members/{username}',
+    security: [],
+    parameters: [
+      {
+        name: 'username',
+        in: 'path',
+        required: true,
+        schema: { type: 'string', example: 'Vincent' },
+      },
+    ],
+    responses: {
+      200: {
+        description: 'OK',
+        content: json({
+          type: 'object',
+          properties: {
+            data: {
+              type: 'object',
+              properties: {
+                username: { type: 'string' },
+                memberSince: { type: 'string', format: 'date-time' },
+                stats: {
+                  type: 'object',
+                  properties: {
+                    discussions: counter,
+                    replies: counter,
+                    helpful: counter,
+                    bestAnswers: counter,
+                  },
+                },
+                discussions: { type: 'array', items: { type: 'object' } },
+                replies: { type: 'array', items: { type: 'object' } },
+              },
+            },
+          },
+        }),
+      },
+      400: { description: 'Bad Request', content: json(ref('Error')) },
+      404: { description: 'Not Found', content: json(ref('Error')) },
+    },
+  },
+};
+
 export const mutateDocumentation = (draft: OpenApiDraft) => {
   draft.info = {
     version: '1.0.0',
@@ -341,4 +388,5 @@ export const mutateDocumentation = (draft: OpenApiDraft) => {
   draft.paths['/discussions/{id}/best-reply'] = bestReply;
   draft.paths['/replies/{id}/helpful'] = toggleHelpful;
   draft.paths['/replies/helpful'] = helpfulVotes;
+  draft.paths['/members/{username}'] = member;
 };

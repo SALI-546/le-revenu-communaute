@@ -7,6 +7,7 @@ const READ_ACTIONS = [
   'api::discussion.discussion.findBySlug',
   'api::discussion.discussion.stats',
   'api::reply.reply.find',
+  'api::member.member.findOne',
 ];
 
 const WRITE_ACTIONS = [
