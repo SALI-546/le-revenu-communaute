@@ -58,7 +58,7 @@ export function CommunityHero({
         className="absolute -top-28 -right-20 -z-10 size-80 rounded-full bg-brand/30 blur-3xl"
       />
       <div className="px-5 pt-8 pb-7 sm:px-8 lg:pt-10">
-        <p className="mb-4 inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.11em] text-hero-accent uppercase">
+        <p className="mb-4 inline-flex items-center gap-2 text-xs font-bold tracking-[0.11em] text-hero-accent uppercase">
           <HugeiconsIcon
             icon={SparklesIcon}
             size={15}
@@ -70,7 +70,7 @@ export function CommunityHero({
         <h1 className="mb-4 max-w-3xl font-display text-4xl leading-[1.03] font-bold tracking-[-0.03em] lg:text-[clamp(2.25rem,3.4vw,3.25rem)]">
           {hero.title}
         </h1>
-        <p className="max-w-2xl text-sm leading-relaxed text-hero-ink lg:text-base">
+        <p className="max-w-2xl text-base leading-relaxed text-hero-ink lg:text-lg">
           {hero.description}
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
@@ -109,7 +109,7 @@ export function CommunityHero({
             key={label}
             className="flex flex-col-reverse justify-end gap-0.5 border-on-hero/10 px-5 py-4 max-sm:nth-[-n+2]:border-b max-sm:odd:border-r sm:px-8 sm:not-last:border-r"
           >
-            <dt className="text-xs leading-snug text-hero-ink">{label}</dt>
+            <dt className="text-sm leading-snug text-hero-ink">{label}</dt>
             <dd className="font-display text-2xl font-bold tabular-nums sm:text-[28px]">
               {value}
             </dd>

@@ -32,12 +32,12 @@ export default async function LoginPage({
       <section className="hidden flex-col justify-between bg-linear-to-br from-hero to-hero-2 p-[clamp(2.25rem,6vw,5.375rem)] text-on-hero md:flex">
         <Link href={home} className="flex items-center gap-3.5 self-start">
           <Logo alt={layout.logoAlt} withTagline={false} className="w-28" />
-          <span className="border-l border-hero-2 pl-3.5 text-[13px] font-semibold">
+          <span className="border-l border-hero-2 pl-3.5 text-sm font-semibold">
             {layout.header.section}
           </span>
         </Link>
         <div className="max-w-xl">
-          <p className="mb-4 text-[11px] font-bold tracking-[0.11em] text-hero-accent uppercase">
+          <p className="mb-4 text-xs font-bold tracking-[0.11em] text-hero-accent uppercase">
             {auth.login.story.eyebrow}
           </p>
           <h2 className="mb-5 font-display text-[clamp(2.625rem,5vw,4.125rem)] leading-[1.03] font-bold tracking-[-0.03em]">

@@ -24,8 +24,8 @@ export function CharterCard({ labels, locale }: CharterCardProps) {
       </h2>
       <ol className="mt-3 grid gap-2">
         {labels.points.map((point, index) => (
-          <li key={point} className="flex gap-2.5 text-xs text-ink-2">
-            <span className="grid size-5 flex-none place-items-center rounded-full bg-surface text-[10px] font-bold text-ink">
+          <li key={point} className="flex gap-2.5 text-sm text-ink-2">
+            <span className="grid size-5 flex-none place-items-center rounded-full bg-surface text-xs font-bold text-ink">
               {index + 1}
             </span>
             {point}

@@ -30,7 +30,7 @@ export async function MemberProfile({ params }: MemberProfileProps) {
 
   return (
     <div className="grid gap-10">
-      <section className="rounded-xl border border-line bg-surface p-5 shadow-sm sm:p-8">
+      <section className="rounded-xl border border-line bg-surface p-5 sm:p-8">
         <div className="flex items-center gap-4">
           <Avatar name={member.username} size="lg" />
           <div>
@@ -70,14 +70,14 @@ export async function MemberProfile({ params }: MemberProfileProps) {
       <section aria-labelledby="member-discussions">
         <h2
           id="member-discussions"
-          className="mb-4 font-display text-[23px] font-bold text-heading"
+          className="mb-4 font-display text-2xl sm:text-[30px] font-bold text-heading"
         >
           {members.discussions.title}
         </h2>
         {member.discussions.length === 0 ? (
           <p className="text-sm text-ink-3">{members.discussions.empty}</p>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
+          <div className="border-t border-line">
             {member.discussions.map((discussion) => (
               <DiscussionCard
                 key={discussion.documentId}
@@ -92,7 +92,7 @@ export async function MemberProfile({ params }: MemberProfileProps) {
       <section aria-labelledby="member-replies">
         <h2
           id="member-replies"
-          className="mb-4 font-display text-[23px] font-bold text-heading"
+          className="mb-4 font-display text-2xl sm:text-[30px] font-bold text-heading"
         >
           {members.replies.title}
         </h2>
@@ -103,7 +103,7 @@ export async function MemberProfile({ params }: MemberProfileProps) {
             {member.replies.map((reply) => (
               <li
                 key={reply.documentId}
-                className="rounded-xl border border-line bg-surface p-5 shadow-sm"
+                className="rounded-xl border border-line bg-surface p-5"
               >
                 {reply.discussion && (
                   <p className="mb-2 text-xs text-ink-3">
@@ -116,7 +116,7 @@ export async function MemberProfile({ params }: MemberProfileProps) {
                     </Link>
                   </p>
                 )}
-                <p className="line-clamp-3 text-sm leading-relaxed text-ink-2">
+                <p className="line-clamp-3 text-base leading-relaxed text-ink-2">
                   {reply.content}
                 </p>
                 <p className="mt-3 flex items-center gap-3 text-xs text-ink-3">

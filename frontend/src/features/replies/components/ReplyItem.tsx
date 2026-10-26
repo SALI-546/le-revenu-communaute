@@ -33,8 +33,10 @@ export function ReplyItem({
     <article
       id={`reply-${reply.documentId}`}
       className={clsx(
-        'scroll-mt-28 rounded-xl border bg-glass-strong px-5 py-6 sm:px-8 sm:py-8',
-        bestBadge ? 'border-success/60 ring-1 ring-success/30' : 'border-line',
+        'scroll-mt-28 py-7',
+        bestBadge
+          ? 'rounded-xl border border-success/50 bg-success-soft/40 px-5 sm:px-7'
+          : 'border-t border-line',
       )}
     >
       {bestBadge && (
@@ -60,7 +62,7 @@ export function ReplyItem({
                 {reply.author.username}
               </Link>
               {authorBadge && (
-                <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[10px] font-bold text-brand-text">
+                <span className="rounded-full bg-brand-soft px-2 py-0.5 text-xs font-bold text-brand-text">
                   {authorBadge}
                 </span>
               )}
@@ -71,7 +73,7 @@ export function ReplyItem({
           </div>
         </div>
       )}
-      <p className="mt-5 text-sm leading-7 whitespace-pre-line text-ink-2">
+      <p className="mt-5 text-base leading-[1.7] whitespace-pre-line text-ink-2">
         {reply.content}
       </p>
       {actions && <div className="mt-5">{actions}</div>}

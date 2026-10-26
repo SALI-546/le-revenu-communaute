@@ -17,7 +17,7 @@ export async function AwaitingQuestions() {
   const { awaiting } = home.aside;
 
   return (
-    <section className="rounded-xl border border-line bg-surface p-5 shadow-sm">
+    <section className="rounded-xl border border-line bg-surface p-5">
       <h2 className="flex items-center gap-2 text-sm font-bold text-ink">
         <HugeiconsIcon
           icon={HelpCircleIcon}
@@ -28,7 +28,7 @@ export async function AwaitingQuestions() {
         />
         {awaiting.title}
       </h2>
-      <p className="mt-1 mb-3 text-xs text-ink-3">{awaiting.description}</p>
+      <p className="mt-1 mb-3 text-sm text-ink-3">{awaiting.description}</p>
       {questions.length === 0 ? (
         <p className="rounded-lg bg-success-soft p-3 text-xs font-semibold text-success">
           {awaiting.empty}
@@ -45,11 +45,11 @@ export async function AwaitingQuestions() {
                 className="group grid min-h-11 gap-0.5 py-3"
               >
                 {category && (
-                  <span className="text-[10px] font-bold tracking-[0.1em] text-brand-text uppercase">
+                  <span className="text-xs font-bold tracking-[0.1em] text-brand-text uppercase">
                     {category.name}
                   </span>
                 )}
-                <span className="font-display text-[15px] leading-snug font-bold text-heading group-hover:text-brand-text">
+                <span className="font-display text-[17px] leading-snug font-bold text-heading group-hover:text-brand-text">
                   {title}
                 </span>
               </Link>

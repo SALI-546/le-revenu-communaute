@@ -25,7 +25,7 @@ export const buttonStyles = ({
   className,
 }: ButtonStyleOptions = {}) =>
   clsx(
-    'inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border px-4 text-[13px] font-bold transition duration-200 hover:-translate-y-px',
+    'inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border px-4 text-sm font-bold transition duration-200 hover:-translate-y-px',
     variants[variant],
     block && 'w-full',
     className,

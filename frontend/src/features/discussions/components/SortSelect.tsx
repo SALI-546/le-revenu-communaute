@@ -27,7 +27,7 @@ export function SortSelect({ filters, locale, labels }: SortSelectProps) {
           );
           router.push(listHref(locale, { ...filters, sort, page: 1 }));
         }}
-        className="h-full appearance-none bg-transparent py-2 pr-8 pl-3 text-xs font-semibold text-ink outline-none"
+        className="h-full appearance-none bg-transparent py-2 pr-8 pl-3 text-sm font-semibold text-ink outline-none"
       >
         {SORT_ORDERS.map((order) => (
           <option key={order} value={order}>

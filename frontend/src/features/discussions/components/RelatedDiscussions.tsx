@@ -29,13 +29,13 @@ export async function RelatedDiscussions({
     <section aria-labelledby="related-title" className="mt-12">
       <h2
         id="related-title"
-        className="mb-4 font-display text-[23px] font-bold text-heading"
+        className="mb-4 font-display text-2xl sm:text-[30px] font-bold text-heading"
       >
         {category && inSpace.length
           ? related.title.replace('{space}', category.name)
           : related.titleAll}
       </h2>
-      <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
+      <div className="border-t border-line">
         {discussions.map((discussion) => (
           <DiscussionCard
             key={discussion.documentId}

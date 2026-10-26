@@ -19,7 +19,7 @@ export function QuickAsk({ locale, labels, types, space }: QuickAskProps) {
   return (
     <Form
       action={localizedHref(locale, '/discussions/new')}
-      className="grid gap-3 rounded-xl border border-line bg-surface p-3 shadow-sm sm:p-4"
+      className="grid gap-3 rounded-xl border border-line bg-surface p-3 sm:p-4"
     >
       {space && <input type="hidden" name="category" value={space.slug} />}
       <div className="flex items-center gap-3">
@@ -55,7 +55,7 @@ export function QuickAsk({ locale, labels, types, space }: QuickAskProps) {
           {DISCUSSION_TYPES.map((type) => (
             <label
               key={type}
-              className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-full border border-line px-3.5 text-xs font-semibold text-ink-2 hover:border-line-strong has-checked:border-brand has-checked:bg-surface-tint has-checked:text-brand-text has-focus-visible:ring-3 has-focus-visible:ring-brand-soft"
+              className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-full border border-line px-3.5 text-sm font-semibold text-ink-2 hover:border-line-strong has-checked:border-brand has-checked:bg-surface-tint has-checked:text-brand-text has-focus-visible:ring-3 has-focus-visible:ring-brand-soft"
             >
               <input
                 type="radio"

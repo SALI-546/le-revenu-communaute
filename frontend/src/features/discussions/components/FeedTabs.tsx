@@ -32,7 +32,7 @@ export function FeedTabs({
                 href={listHref(locale, { ...filters, tab, page: 1 })}
                 aria-current={active ? 'page' : undefined}
                 className={clsx(
-                  'inline-flex min-h-11 items-center gap-1.5 rounded-md px-3 text-xs font-semibold transition-colors sm:px-3.5',
+                  'inline-flex min-h-11 items-center gap-1.5 rounded-md px-3 text-sm font-semibold transition-colors sm:px-3.5',
                   active
                     ? 'bg-surface text-ink shadow-sm'
                     : 'text-ink-3 hover:text-ink',
@@ -46,7 +46,7 @@ export function FeedTabs({
                 />
                 {labels[tab]}
                 {tab === 'unanswered' && unanswered !== undefined && (
-                  <span className="grid min-w-5 place-items-center rounded-full bg-brand-soft px-1.5 text-[10px] font-bold text-brand-text tabular-nums">
+                  <span className="grid min-w-5 place-items-center rounded-full bg-brand-soft px-1.5 text-xs font-bold text-brand-text tabular-nums">
                     {unanswered}
                   </span>
                 )}

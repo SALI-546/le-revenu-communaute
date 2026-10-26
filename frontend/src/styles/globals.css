@@ -13,6 +13,8 @@
   --ink: #121212;
   --ink-2: #4e4546;
   --ink-3: #6b5e5f;
+  --lede: #5f6c73;
+  --meta: #8f535a;
   --background: #fff3ed;
   --surface: #fffaf7;
   --surface-2: #f8ebe4;
@@ -46,6 +48,8 @@
   --ink: #f7efec;
   --ink-2: #e1d3cb;
   --ink-3: #b9a6a7;
+  --lede: #a9b4ba;
+  --meta: #d1a3a8;
   --background: #160d0e;
   --surface: #211517;
   --surface-2: #2b1d1f;
@@ -101,6 +105,8 @@
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
   --color-ink-3: var(--ink-3);
+  --color-lede: var(--lede);
+  --color-meta: var(--meta);
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);

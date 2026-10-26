@@ -115,8 +115,8 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
             )}
           </ol>
         </nav>
-        <article className="rounded-xl border border-line bg-glass-strong p-[clamp(1.375rem,4vw,2.875rem)] shadow-sm">
-          <p className="mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold">
+        <article className="border-b border-line pb-10">
+          <p className="mb-4 flex flex-wrap items-center gap-2 text-xs font-bold">
             {category && (
               <Link
                 href={listHref(locale, { category: category.slug })}
@@ -147,7 +147,7 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
               </span>
             )}
           </p>
-          <h1 className="mb-6 max-w-3xl font-display text-[31px] leading-[1.1] font-bold tracking-[-0.02em] text-heading sm:text-[clamp(1.875rem,4vw,2.875rem)]">
+          <h1 className="mb-6 max-w-3xl font-display text-balance text-[31px] leading-[1.1] font-bold tracking-[-0.02em] text-heading sm:text-[clamp(1.875rem,4vw,2.875rem)]">
             {title}
           </h1>
           {author && (
@@ -160,13 +160,13 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
                 >
                   {author.username}
                 </Link>
-                <time dateTime={publishedAt} className="text-xs text-ink-3">
+                <time dateTime={publishedAt} className="text-sm text-meta">
                   {published}
                 </time>
               </div>
             </div>
           )}
-          <p className="mt-8 text-[15px] leading-[1.8] whitespace-pre-line text-ink-2">
+          <p className="mt-8 text-base leading-[1.7] whitespace-pre-line text-ink-2 sm:text-[17px]">
             {content}
           </p>
           <div
@@ -189,12 +189,12 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
         <section aria-labelledby="replies-title" className="mt-10 grid gap-3">
           <h2
             id="replies-title"
-            className="mb-1 font-display text-[23px] font-bold text-heading"
+            className="mb-1 font-display text-2xl sm:text-[30px] font-bold text-heading"
           >
             {replies.length} {pluralize(locale, replies.length, list.replies)}
           </h2>
           {replies.length === 0 && (
-            <p className="text-sm text-ink-3">{detail.repliesEmpty}</p>
+            <p className="text-base text-ink-3">{detail.repliesEmpty}</p>
           )}
           {best?.author && (
             <a
@@ -215,7 +215,7 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
                     best.author.username,
                   )}
                 </strong>
-                <span className="line-clamp-2 text-sm text-ink-2">
+                <span className="line-clamp-2 text-base text-ink-2">
                   {best.content}
                 </span>
                 <span className="text-xs font-bold text-success group-hover:underline">
@@ -303,7 +303,7 @@ export async function DiscussionDetail({ params }: DiscussionDetailProps) {
             <h2 className="mb-1 text-sm font-bold text-ink">
               {detail.rail.guidelinesTitle}
             </h2>
-            <p className="text-xs leading-relaxed text-ink-3">
+            <p className="text-sm leading-relaxed text-ink-3">
               {detail.rail.guidelines}
             </p>
           </div>

@@ -31,7 +31,7 @@ export async function AccountMenu() {
     <div className="flex items-center gap-2">
       <Link
         href={memberHref(locale, user.username)}
-        className="flex min-h-11 items-center gap-2 rounded-full border border-line bg-surface p-1 text-[13px] font-semibold hover:border-line-strong lg:pr-3"
+        className="flex min-h-11 items-center gap-2 rounded-full border border-line bg-surface p-1 text-sm font-semibold hover:border-line-strong lg:pr-3"
       >
         <Avatar name={user.username} size="sm" />
         <span className="max-lg:sr-only">{user.username}</span>

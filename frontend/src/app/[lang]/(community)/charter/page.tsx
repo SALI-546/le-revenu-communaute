@@ -20,7 +20,7 @@ export default async function CharterPage() {
         {charter.rules.map(({ title, text }, index) => (
           <li
             key={title}
-            className="grid grid-cols-[2.25rem_minmax(0,1fr)] gap-3 rounded-xl border border-line bg-surface p-4 shadow-sm"
+            className="grid grid-cols-[2.25rem_minmax(0,1fr)] gap-3 rounded-xl border border-l-[6px] border-line border-l-brand bg-surface p-4 pl-5"
           >
             <span
               aria-hidden="true"
@@ -30,7 +30,7 @@ export default async function CharterPage() {
             </span>
             <div>
               <h2 className="font-semibold text-ink">{title}</h2>
-              <p className="mt-0.5 text-sm text-ink-2">{text}</p>
+              <p className="mt-0.5 text-base text-ink-2">{text}</p>
             </div>
           </li>
         ))}

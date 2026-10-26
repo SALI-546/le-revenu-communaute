@@ -41,10 +41,10 @@ export function DiscussionCard({
   const date = formatDate(locale, publishedAt, { dateStyle: 'medium' });
 
   return (
-    <article className="relative grid grid-cols-[44px_minmax(0,1fr)] gap-3 border-b border-line py-5 pr-8 pl-3 transition-colors last:border-b-0 hover:bg-surface-2 compact:py-3.5 sm:grid-cols-[62px_minmax(0,1fr)] sm:gap-5 sm:py-6 sm:pr-12 sm:pl-5 sm:compact:py-4">
+    <article className="relative grid grid-cols-[44px_minmax(0,1fr)] gap-3 border-b border-line py-6 pr-8 compact:py-4 sm:grid-cols-[62px_minmax(0,1fr)] sm:gap-6 sm:py-7 sm:pr-12 sm:compact:py-5">
       <div
         className={clsx(
-          'flex h-[50px] flex-col items-center justify-center rounded-lg border text-[9px] leading-tight text-ink-3 sm:size-[62px] sm:rounded-xl',
+          'flex h-[50px] flex-col items-center justify-center rounded-lg border text-xs leading-tight text-ink-3 sm:size-[62px] sm:rounded-xl',
           bestReply
             ? 'border-success/40 bg-success-soft text-success'
             : replies.count === 0
@@ -54,7 +54,7 @@ export function DiscussionCard({
       >
         <strong
           className={clsx(
-            'font-display text-[17px] sm:text-[21px]',
+            'font-display text-xl sm:text-2xl',
             bestReply ? 'text-success' : 'text-heading',
           )}
         >
@@ -69,7 +69,7 @@ export function DiscussionCard({
               {category.name}
             </span>
           )}
-          <span className="inline-flex items-center gap-1 rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-semibold text-ink-2">
+          <span className="inline-flex items-center gap-1 rounded-full bg-surface-2 px-2 py-0.5 text-xs font-semibold text-ink-2">
             <HugeiconsIcon
               icon={TYPE_ICONS[type]}
               size={12}
@@ -79,7 +79,7 @@ export function DiscussionCard({
             {dict.types[type]}
           </span>
           {bestReply && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-[11px] font-semibold text-success">
+            <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-xs font-semibold text-success">
               <HugeiconsIcon
                 icon={CheckmarkBadge01Icon}
                 size={12}
@@ -90,7 +90,7 @@ export function DiscussionCard({
             </span>
           )}
         </p>
-        <h3 className="font-display text-base leading-snug font-bold text-heading sm:text-lg">
+        <h3 className="font-display text-lg leading-snug font-bold text-balance text-heading sm:text-[22px]">
           <Link
             href={`/${locale}/discussions/${slug}`}
             className="after:absolute after:inset-0 hover:text-brand-text"
@@ -98,10 +98,10 @@ export function DiscussionCard({
             {title}
           </Link>
         </h3>
-        <p className="mt-1.5 mb-3 line-clamp-2 text-xs leading-relaxed text-ink-3 compact:hidden">
+        <p className="mt-2 mb-3 line-clamp-2 text-base leading-6 text-lede compact:hidden">
           {content}
         </p>
-        <p className="flex items-center gap-1.5 text-[11px] text-ink-3 compact:mt-1.5">
+        <p className="flex flex-wrap items-center gap-1.5 text-xs font-semibold tracking-[0.06em] text-meta uppercase compact:mt-1.5">
           {author && (
             <>
               <Avatar name={author.username} size="sm" />
@@ -109,7 +109,7 @@ export function DiscussionCard({
                 {dict.list.by}{' '}
                 <Link
                   href={memberHref(locale, author.username)}
-                  className="relative z-10 font-semibold text-ink-2 hover:text-brand-text hover:underline"
+                  className="relative z-10 font-bold text-meta hover:text-brand-text hover:underline"
                 >
                   {author.username}
                 </Link>

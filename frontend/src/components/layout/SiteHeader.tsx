@@ -31,7 +31,7 @@ export async function SiteHeader() {
   return (
     <>
       <div className="border-b border-line bg-surface text-ink-2">
-        <div className="page-shell flex min-h-10 items-center gap-3 text-[13px] sm:gap-5">
+        <div className="page-shell flex min-h-10 items-center gap-3 text-[13px] sm:gap-5 sm:text-sm">
           <a
             href={SITE_URL}
             className="inline-flex min-h-10 items-center gap-1 font-semibold whitespace-nowrap text-ink hover:text-brand-text"

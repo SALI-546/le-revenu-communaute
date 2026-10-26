@@ -33,7 +33,7 @@ export async function SpacesGrid() {
           <li key={slug}>
             <Link
               href={listHref(locale, { category: slug })}
-              className="flex h-full flex-col gap-1.5 rounded-xl border border-line bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="flex h-full flex-col gap-1.5 rounded-xl border border-line bg-surface p-5 transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <span className="mb-1.5">
                 <SpaceIcon icon={icon} color={color} size="md" />
@@ -41,8 +41,10 @@ export async function SpacesGrid() {
               <span className="font-display text-lg font-bold text-heading">
                 {name}
               </span>
-              <span className="flex-1 text-sm text-ink-2">{description}</span>
-              <span className="text-xs text-ink-3">
+              <span className="flex-1 text-[15px] leading-relaxed text-ink-2">
+                {description}
+              </span>
+              <span className="text-sm text-ink-3">
                 {discussions.count}{' '}
                 {pluralize(locale, discussions.count, spaces.count)}
               </span>

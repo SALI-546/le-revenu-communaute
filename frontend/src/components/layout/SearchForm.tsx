@@ -44,7 +44,7 @@ export function SearchForm({
         maxLength={100}
         defaultValue={defaultValue}
         placeholder={labels.placeholder}
-        className="min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-ink-3"
+        className="min-w-0 flex-1 bg-transparent text-base text-ink outline-none placeholder:text-ink-3"
       />
       <button type="submit" className="sr-only">
         {labels.submit}

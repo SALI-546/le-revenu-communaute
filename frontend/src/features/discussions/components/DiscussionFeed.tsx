@@ -78,7 +78,7 @@ export async function DiscussionFeed({ searchParams }: DiscussionFeedProps) {
             <SortSelect filters={filters} locale={locale} labels={list.sort} />
           </div>
         </div>
-        <p className="mt-3 mb-3 flex min-h-8 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-3">
+        <p className="mt-3 mb-3 flex min-h-8 flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-3">
           <span>
             {total} {pluralize(locale, total, list.count)}
           </span>
@@ -126,7 +126,7 @@ export async function DiscussionFeed({ searchParams }: DiscussionFeedProps) {
             }
           />
         ) : (
-          <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
+          <div className="border-t border-line">
             {discussions.map((discussion) => (
               <DiscussionCard
                 key={discussion.documentId}

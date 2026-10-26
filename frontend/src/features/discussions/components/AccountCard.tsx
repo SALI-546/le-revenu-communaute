@@ -17,7 +17,7 @@ export async function AccountCard() {
 
   if (user) {
     return (
-      <section className="rounded-xl border border-line bg-surface p-5 shadow-sm">
+      <section className="rounded-xl border border-line bg-surface p-5">
         <div className="mb-3 flex items-center gap-3">
           <Avatar name={user.username} />
           <h2 className="font-display text-xl font-bold text-heading">
@@ -44,7 +44,7 @@ export async function AccountCard() {
   }
 
   return (
-    <section className="rounded-xl border border-brand/20 bg-linear-to-b from-surface-tint to-surface p-5 shadow-sm">
+    <section className="rounded-xl border border-brand/20 bg-linear-to-b from-surface-tint to-surface p-5">
       <h2 className="font-display text-xl font-bold text-heading">
         {join.title}
       </h2>

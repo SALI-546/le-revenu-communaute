@@ -32,7 +32,7 @@ export function DiscussionFacts({
   ];
 
   return (
-    <section className="rounded-xl border border-line bg-surface p-5 shadow-sm">
+    <section className="rounded-xl border border-line bg-surface p-5">
       <h2 className="mb-4 text-sm font-bold text-ink">{labels.title}</h2>
       <dl className="grid grid-cols-2 gap-4">
         <div className="flex flex-col-reverse gap-0.5">

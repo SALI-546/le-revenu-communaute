@@ -44,7 +44,7 @@ export async function ReplyComposer({
         <h3 className="mb-1 font-display text-[17px] font-bold text-heading">
           {replies.login.title}
         </h3>
-        <p className="text-xs text-ink-3">{replies.login.description}</p>
+        <p className="text-sm text-ink-3">{replies.login.description}</p>
       </div>
       <Link
         href={`${localizedHref(locale, '/login')}?${new URLSearchParams({ redirectTo })}`}

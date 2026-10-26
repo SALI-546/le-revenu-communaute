@@ -35,7 +35,7 @@ export default async function NewDiscussionPage({
         {create.back}
       </Link>
       <div className="mb-7 text-center">
-        <p className="mb-2 text-[10px] font-bold tracking-[0.12em] text-brand-text uppercase">
+        <p className="mb-2 text-xs font-bold tracking-[0.12em] text-brand-text uppercase">
           {create.label}
         </p>
         <h1 className="mb-2.5 font-display text-[clamp(2rem,5vw,3rem)] leading-tight font-bold text-heading">

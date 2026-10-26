@@ -47,7 +47,7 @@ export function SpaceHeader({
   ];
 
   return (
-    <section className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
+    <section className="overflow-hidden rounded-xl border border-line bg-surface">
       <div aria-hidden="true" className={clsx('h-1.5', SPACE_COLORS[color])} />
       <div className="p-5 sm:p-7">
         <Link
@@ -69,7 +69,7 @@ export function SpaceHeader({
               {name}
             </h1>
             {description && (
-              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-2">
+              <p className="mt-2 max-w-2xl text-base leading-relaxed text-ink-2">
                 {description}
               </p>
             )}
@@ -77,7 +77,7 @@ export function SpaceHeader({
               {figures.map((figure) => (
                 <li
                   key={figure}
-                  className="rounded-full bg-surface-2 px-3 py-1 text-xs font-semibold text-ink-2 tabular-nums"
+                  className="rounded-full bg-surface-2 px-3 py-1 text-sm font-semibold text-ink-2 tabular-nums"
                 >
                   {figure}
                 </li>
