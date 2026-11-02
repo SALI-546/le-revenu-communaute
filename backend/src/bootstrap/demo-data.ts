@@ -7,6 +7,11 @@ export const DEMO_CATEGORIES = [
     icon: 'chart',
     color: 'blue',
     position: 1,
+    en: {
+      name: 'Stocks & shares',
+      description:
+        'Shares, ETFs, PEA, securities accounts: strategies and first-hand experience.',
+    },
   },
   {
     slug: 'economie',
@@ -16,6 +21,11 @@ export const DEMO_CATEGORIES = [
     icon: 'globe',
     color: 'slate',
     position: 2,
+    en: {
+      name: 'Economy',
+      description:
+        'Growth, interest rates, inflation, jobs: economic news from France, Europe and the world.',
+    },
   },
   {
     slug: 'epargne',
@@ -24,6 +34,10 @@ export const DEMO_CATEGORIES = [
     icon: 'piggy-bank',
     color: 'green',
     position: 3,
+    en: {
+      name: 'Savings & investments',
+      description: 'Savings accounts, euro funds, bonds, term deposits.',
+    },
   },
   {
     slug: 'assurance-vie',
@@ -32,6 +46,10 @@ export const DEMO_CATEGORIES = [
     icon: 'umbrella',
     color: 'teal',
     position: 4,
+    en: {
+      name: 'Life insurance',
+      description: 'Choosing a policy, switching funds, passing it on.',
+    },
   },
   {
     slug: 'immobilier',
@@ -40,6 +58,10 @@ export const DEMO_CATEGORIES = [
     icon: 'building',
     color: 'orange',
     position: 5,
+    en: {
+      name: 'Real estate & SCPI',
+      description: 'Main home, buy-to-let, SCPI, mortgages.',
+    },
   },
   {
     slug: 'impots',
@@ -48,6 +70,11 @@ export const DEMO_CATEGORIES = [
     icon: 'invoice',
     color: 'indigo',
     position: 6,
+    en: {
+      name: 'Tax',
+      description:
+        'Tax returns, tax breaks, wealth tax: paying the right amount.',
+    },
   },
   {
     slug: 'retraite',
@@ -56,6 +83,10 @@ export const DEMO_CATEGORIES = [
     icon: 'sofa',
     color: 'rose',
     position: 7,
+    en: {
+      name: 'Retirement',
+      description: 'PER, buying back pension quarters, working in retirement.',
+    },
   },
   {
     slug: 'transmission',
@@ -64,6 +95,10 @@ export const DEMO_CATEGORIES = [
     icon: 'family',
     color: 'purple',
     position: 8,
+    en: {
+      name: 'Family & estate',
+      description: 'Gifts, inheritance, protecting your spouse.',
+    },
   },
   {
     slug: 'alternatifs',
@@ -72,6 +107,10 @@ export const DEMO_CATEGORIES = [
     icon: 'diamond',
     color: 'cyan',
     position: 9,
+    en: {
+      name: 'Gold, crypto & alternatives',
+      description: 'Physical gold, crypto-assets, forests, private equity.',
+    },
   },
   {
     slug: 'budget',
@@ -80,6 +119,10 @@ export const DEMO_CATEGORIES = [
     icon: 'wallet',
     color: 'gray',
     position: 10,
+    en: {
+      name: 'Budget & spending',
+      description: 'Banks, loans, insurance, good deals.',
+    },
   },
   {
     slug: 'cafe',
@@ -88,6 +131,10 @@ export const DEMO_CATEGORIES = [
     icon: 'coffee',
     color: 'sand',
     position: 11,
+    en: {
+      name: 'Le Revenu Café',
+      description: 'Introductions, open discussions, ideas for the newsroom.',
+    },
   },
 ] as const;
 

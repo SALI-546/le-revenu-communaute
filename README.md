@@ -122,7 +122,7 @@ L'application est servie sur http://localhost:3000. La racine redirige vers `/fr
 
 ## Comptes de démonstration
 
-Le seed crée 11 catégories (les espaces), 12 discussions, 12 réponses et ces utilisateurs. Leur mot de passe est la valeur de `SEED_USER_PASSWORD` :
+Le seed crée 11 catégories (les espaces, en français et en anglais), 12 discussions, 12 réponses et ces utilisateurs. Leur mot de passe est la valeur de `SEED_USER_PASSWORD` :
 
 | Utilisateur | E-mail                       |
 | ----------- | ---------------------------- |
@@ -144,7 +144,7 @@ cd backend
 npm test
 ```
 
-Les 23 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution** (ils refusent de démarrer si le `.env` pointe vers cette base), puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
+Les 25 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprimée et recréée à chaque exécution** (ils refusent de démarrer si le `.env` pointe vers cette base), puis appellent l'API en HTTP. PostgreSQL doit tourner. Les tests couvrent les exigences du sujet :
 
 | Exigence                          | Tests                                                                                                                                                                                                                                                                  |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -154,6 +154,7 @@ Les 23 tests démarrent un vrai Strapi sur une base `le_revenu_test`, **supprim�
 | Affichage des discussions         | titre, auteur, catégorie, nombre de réponses, date, tri ; filtre par catégorie ; recherche ; aucune adresse e-mail exposée ; espaces triés avec icône, couleur et compteur ; discussions sans réponse ; chiffres de la communauté et d'un espace, slug invalide refusé |
 | Votes et meilleure réponse        | un vote « Utile » compte une fois et se retire ; vote sur sa propre réponse ou sans connexion refusé (403) ; seul l'auteur choisit la meilleure réponse (403 sinon), qui doit appartenir à la discussion (400 sinon) et peut être retirée                              |
 | Profil d'un membre                | chiffres d'activité exacts, aucune adresse e-mail ; 404 pour un membre inconnu, 400 pour un pseudo trop long                                                                                                                                                           |
+| Espaces traduits                  | nom et description en anglais avec le même nombre de discussions qu'en français ; nom de l'espace traduit dans la liste et le détail d'une discussion                                                                                                                  |
 
 ### Parcours end-to-end (frontend)
 
@@ -217,15 +218,15 @@ backend/tests/       tests d'API
 
 ### Modèle de données
 
-| Type       | Champs                                                                                                                                                                                                          |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Category   | `name` (unique), `slug` (UID unique), `description`, `icon` et `color` (énumérations fermées, traduites en icône Hugeicons et en token de couleur côté Next), `position` (ordre d'affichage), `discussions`     |
-| Discussion | `title` (10 à 150 caractères), `content` (requis), `type` (`question` ou `discussion`), `slug` (UID unique), `author` → User, `category` → Category, `replies` → Reply, `bestReply` → Reply (meilleure réponse) |
-| Reply      | `content` (requis), `author` → User, `discussion` → Discussion, `helpfulCount` (nombre de votes « Utile »)                                                                                                      |
-| Vote       | `reply` → Reply, `voter` → User. Type privé, sans route publique : il garantit un seul vote par membre                                                                                                          |
+| Type       | Champs                                                                                                                                                                                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Category   | traduite : `name` (unique par langue), `slug` (UID, le même dans les deux langues), `description`, `icon` et `color` (énumérations fermées, traduites en icône Hugeicons et en token de couleur côté Next), `position` (ordre d'affichage), `discussions` |
+| Discussion | `title` (10 à 150 caractères), `content` (requis), `type` (`question` ou `discussion`), `slug` (UID unique), `author` → User, `category` → Category, `replies` → Reply, `bestReply` → Reply (meilleure réponse)                                           |
+| Reply      | `content` (requis), `author` → User, `discussion` → Discussion, `helpfulCount` (nombre de votes « Utile »)                                                                                                                                                |
+| Vote       | `reply` → Reply, `voter` → User. Type privé, sans route publique : il garantit un seul vote par membre                                                                                                                                                    |
 
 - **`draftAndPublish` est désactivé** : un message de la communauté est publié immédiatement. De plus, Draft & Publish n'applique pas l'unicité aux brouillons.
-- **Index et contraintes.** `name` et les deux `slug` ont un index **UNIQUE en base** grâce à l'option `column: { unique: true }`. L'attribut `unique` seul n'est vérifié que par Strapi. Les relations passent par des tables de liaison que Strapi indexe sur les deux clés étrangères.
+- **Index et contraintes.** Le `slug` des discussions a un index **UNIQUE en base** grâce à l'option `column: { unique: true }`. L'attribut `unique` seul n'est vérifié que par Strapi. Les espaces sont traduits : chaque langue est une ligne qui garde le même slug, donc l'unicité de `name` et de `slug` y est vérifiée par Strapi, langue par langue. Les relations passent par des tables de liaison que Strapi indexe sur les deux clés étrangères.
 - **Pas d'index dédié sur `published_at`.** Strapi l'inclut seulement dans un index composite `(document_id, locale, published_at)`. Ajouter un index par migration n'est pas fiable : les migrations s'exécutent avant la synchronisation du schéma, et cette synchronisation supprime les objets qu'elle ne connaît pas. Au volume d'une démonstration, le tri reste rapide. En production, on l'ajouterait côté base, hors de la synchronisation de Strapi.
 - `author` est une relation **unidirectionnelle** vers l'utilisateur du plugin, ce qui évite de modifier son schéma.
 
@@ -318,7 +319,8 @@ Chaque route a son `loading.tsx` (skeleton). Le groupe `(community)` a un `error
 - Les routes sont sous `app/[lang]`, avec le français par défaut et l'anglais. La langue est lue avec `next/root-params`, sans la passer de composant en composant.
 - `fr.json` et `en.json` ont les mêmes clés. Le type du dictionnaire vient de `fr.json`, donc une clé absente de `en.json` provoque une erreur de compilation.
 - Aucun texte n'est écrit en dur dans les composants, `aria-label` et messages d'erreur compris. Les Server Actions renvoient des codes d'erreur, que l'interface traduit.
-- Le contenu venant de Strapi n'est pas traduit.
+- Les **espaces** (nom et description) sont traduits dans Strapi, avec l'internationalisation intégrée : le français est la langue par défaut, l'anglais est ajouté au démarrage (`src/bootstrap/locales.ts`) et rempli par le seed. Next envoie `locale` à chaque lecture. Il la lit avec `next/root-params` à l'intérieur des fonctions `'use cache'`, ce qui la place dans la clé de cache.
+- Les **discussions et les réponses** ne sont pas traduites : un message reste dans la langue de son auteur. Elles sont liées à la version française de leur espace. Strapi remplace donc le nom de l'espace par sa traduction, en une seule requête pour toute la page (`utils/localize-categories.ts`), et compte les discussions d'un espace sur sa version française.
 
 ### Design system
 

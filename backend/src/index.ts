@@ -1,4 +1,5 @@
 import type { Core } from '@strapi/strapi';
+import { syncLocales } from './bootstrap/locales';
 import { syncRolePermissions } from './bootstrap/permissions';
 import { seedDemoData } from './bootstrap/seed';
 
@@ -6,6 +7,7 @@ export default {
   register() {},
 
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    await syncLocales(strapi);
     await syncRolePermissions(strapi);
 
     if (process.env.SEED_DEMO_DATA !== 'true') {

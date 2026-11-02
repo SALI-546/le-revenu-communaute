@@ -143,6 +143,46 @@ describe('spaces', () => {
     assert.equal(bourse.color, 'blue');
     assert.equal(typeof bourse.discussions.count, 'number');
   });
+
+  it('translates spaces and keeps their discussion count', async () => {
+    type Space = {
+      slug: string;
+      name: string;
+      description: string;
+      discussions: { count: number };
+    };
+    const list = async (locale: string) =>
+      (await request<Space[]>(`/categories?locale=${locale}`)).body.data[0];
+    const [fr, en] = await Promise.all([list('fr'), list('en')]);
+
+    assert.equal(fr.name, 'Bourse & actions');
+    assert.equal(en.name, 'Stocks & shares');
+    assert.match(en.description, /strategies/);
+    assert.equal(en.slug, fr.slug);
+    assert.ok(fr.discussions.count > 0);
+    assert.equal(en.discussions.count, fr.discussions.count);
+  });
+
+  it('names the space of a discussion in the requested language', async () => {
+    const query = new URLSearchParams({
+      locale: 'en',
+      'filters[category][slug][$eq]': 'bourse',
+    });
+    const { body: list } = await request<Discussion[]>(`/discussions?${query}`);
+    const { body: detail } = await request<Discussion>(
+      '/discussions/slug/ouvrir-un-pea-avec-5-000-eur-par-ou-commencer?locale=en',
+    );
+
+    assert.ok(list.data.length > 0);
+    assert.ok(
+      list.data.every(({ category }) => category.name === 'Stocks & shares'),
+    );
+    assert.equal(detail.data.category.name, 'Stocks & shares');
+    assert.equal(
+      detail.data.title,
+      'Ouvrir un PEA avec 5 000 € : par où commencer ?',
+    );
+  });
 });
 
 describe('community stats', () => {

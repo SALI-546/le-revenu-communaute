@@ -25,7 +25,7 @@ type RawDiscussion = {
 };
 
 export type MemberService = {
-  findByUsername(username: string): Promise<unknown>;
+  findByUsername(username: string, locale?: unknown): Promise<unknown>;
 };
 
 const toPublicDiscussion = (discussion: RawDiscussion) => ({
@@ -51,7 +51,7 @@ const toPublicDiscussion = (discussion: RawDiscussion) => ({
 });
 
 export default ({ strapi }: { strapi: Core.Strapi }) => ({
-  async findByUsername(username: string) {
+  async findByUsername(username: string, locale?: unknown) {
     const user = await strapi
       .documents('plugin::users-permissions.user')
       .findFirst({ filters: { username }, fields: ['username', 'createdAt'] });
@@ -77,6 +77,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       strapi.service('api::discussion.discussion').find({
         filters: byMember,
         pagination: { page: 1, pageSize: RECENT },
+        locale,
       }),
       replies.findMany({
         filters: byMember,

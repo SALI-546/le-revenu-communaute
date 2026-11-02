@@ -4,7 +4,7 @@ import { DEMO_CATEGORIES, DEMO_DISCUSSIONS, DEMO_USERS } from './demo-data';
 const seedCategories = async (strapi: Core.Strapi) => {
   const categories = strapi.documents('api::category.category');
   const idsBySlug = new Map<string, string>();
-  for (const data of DEMO_CATEGORIES) {
+  for (const { en, ...data } of DEMO_CATEGORIES) {
     const existing = await categories.findFirst({
       filters: { slug: data.slug },
     });
@@ -12,6 +12,11 @@ const seedCategories = async (strapi: Core.Strapi) => {
       ? ((await categories.update({ documentId: existing.documentId, data })) ??
         existing)
       : await categories.create({ data });
+    await categories.update({
+      documentId: category.documentId,
+      locale: 'en',
+      data: { ...en, slug: data.slug },
+    });
     idsBySlug.set(data.slug, category.documentId);
   }
   return idsBySlug;

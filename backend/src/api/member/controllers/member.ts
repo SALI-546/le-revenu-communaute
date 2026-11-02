@@ -16,7 +16,7 @@ export default ({ strapi }: { strapi: Core.Strapi }): Core.Controller => ({
     }
     const member = await (
       strapi.service('api::member.member') as MemberService
-    ).findByUsername(username);
+    ).findByUsername(username, ctx.query.locale);
     return { data: member };
   },
 });

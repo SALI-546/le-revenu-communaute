@@ -61,7 +61,9 @@ export default factories.createCoreController(UID, ({ strapi }) => {
 
     async findBySlug(this: Controller, ctx) {
       await this.validateQuery(ctx);
-      return present(this, await service().findBySlug(ctx.params.slug), ctx);
+      const { slug } = ctx.params;
+      const discussion = await service().findBySlug(slug, ctx.query.locale);
+      return present(this, discussion, ctx);
     },
 
     async create(this: Controller, ctx) {

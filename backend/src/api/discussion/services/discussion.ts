@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { factories } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
+import { localizeCategories } from '../../../utils/localize-categories';
 
 const UID = 'api::discussion.discussion';
 const SORTS = ['publishedAt:desc', 'publishedAt:asc'];
@@ -33,7 +34,7 @@ export type DiscussionService = {
   find(
     params: object,
   ): Promise<{ results: RawDiscussion[]; pagination: object }>;
-  findBySlug(slug: string): Promise<RawDiscussion>;
+  findBySlug(slug: string, locale?: unknown): Promise<RawDiscussion>;
   createForAuthor(
     input: unknown,
     authorDocumentId: string,
@@ -120,14 +121,17 @@ export default factories.createCoreService(UID, ({ strapi }) => {
       };
     },
 
-    async find(params: { sort?: unknown } = {}) {
+    async find({
+      locale,
+      ...params
+    }: { sort?: unknown; locale?: unknown } = {}) {
       const sort = params.sort ?? SORTS[0];
       if (typeof sort !== 'string' || !SORTS.includes(sort)) {
         throw new errors.ValidationError(
           `sort must be one of ${SORTS.join(', ')}`,
         );
       }
-      return super.find({
+      const { results, pagination } = await super.find({
         ...params,
         sort,
         fields: ['title', 'slug', 'type', 'content', 'publishedAt'],
@@ -138,9 +142,17 @@ export default factories.createCoreService(UID, ({ strapi }) => {
           bestReply: bestReplyFields,
         },
       });
+      return {
+        results: await localizeCategories<(typeof results)[number]>(
+          strapi,
+          results,
+          locale,
+        ),
+        pagination,
+      };
     },
 
-    async findBySlug(slug: string) {
+    async findBySlug(slug: string, locale?: unknown) {
       const discussion = await strapi.documents(UID).findFirst({
         filters: { slug },
         fields: ['title', 'slug', 'type', 'content', 'publishedAt'],
@@ -158,7 +170,12 @@ export default factories.createCoreService(UID, ({ strapi }) => {
       if (!discussion) {
         throw new errors.NotFoundError('Discussion not found');
       }
-      return discussion;
+      const [localized] = await localizeCategories(
+        strapi,
+        [discussion],
+        locale,
+      );
+      return localized;
     },
 
     async createForAuthor(input: unknown, authorDocumentId: string) {
