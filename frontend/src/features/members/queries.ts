@@ -1,5 +1,6 @@
 import 'server-only';
 import { cacheLife, cacheTag } from 'next/cache';
+import { getLocale } from '@/dictionaries';
 import { DISCUSSIONS_TAG } from '@/features/discussions/queries';
 import { StrapiError, strapiFetch } from '@/lib/strapi/client';
 import type { Member } from './types';
@@ -12,6 +13,7 @@ export async function getMember(username: string) {
   try {
     const { data } = await strapiFetch<{ data: Member }>(
       `/members/${encodeURIComponent(username)}`,
+      { query: new URLSearchParams({ locale: await getLocale() }) },
     );
     return data;
   } catch (error) {

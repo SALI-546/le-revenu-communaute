@@ -1,5 +1,6 @@
 import 'server-only';
 import { cacheLife, cacheTag } from 'next/cache';
+import { getLocale } from '@/dictionaries';
 import { StrapiError, strapiFetch } from '@/lib/strapi/client';
 import type { ListFilters } from './schemas';
 import type {
@@ -28,6 +29,7 @@ export async function getDiscussions({
   cacheLife('minutes');
 
   const query = new URLSearchParams({
+    locale: await getLocale(),
     sort: sort === 'oldest' ? 'publishedAt:asc' : 'publishedAt:desc',
     'pagination[page]': String(page),
     'pagination[pageSize]': String(PAGE_SIZE),
@@ -51,6 +53,7 @@ export async function getAwaitingQuestions() {
   cacheLife('minutes');
 
   const query = new URLSearchParams({
+    locale: await getLocale(),
     'filters[type][$eq]': 'question',
     [WITHOUT_REPLY]: 'true',
     sort: 'publishedAt:desc',
@@ -69,6 +72,7 @@ export async function getRelatedDiscussions(slug: string, category?: string) {
   cacheLife('minutes');
 
   const query = new URLSearchParams({
+    locale: await getLocale(),
     'filters[slug][$ne]': slug,
     sort: 'publishedAt:desc',
     'pagination[pageSize]': '3',
@@ -101,7 +105,10 @@ export async function getCategories() {
   cacheTag(CATEGORIES_TAG);
   cacheLife('hours');
 
-  const query = new URLSearchParams({ 'pagination[pageSize]': '50' });
+  const query = new URLSearchParams({
+    locale: await getLocale(),
+    'pagination[pageSize]': '50',
+  });
   const { data } = await strapiFetch<StrapiList<Category>>('/categories', {
     query,
   });
@@ -116,6 +123,7 @@ export async function getDiscussion(slug: string) {
   try {
     const { data } = await strapiFetch<{ data: DiscussionDetail }>(
       `/discussions/slug/${encodeURIComponent(slug)}`,
+      { query: new URLSearchParams({ locale: await getLocale() }) },
     );
     return data;
   } catch (error) {
