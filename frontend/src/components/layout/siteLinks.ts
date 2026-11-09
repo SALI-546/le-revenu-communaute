@@ -1,4 +1,4 @@
-export const SITE_URL = 'https://www.lerevenu.com';
+export const SITE_URL = '#';
 
 export const SUBSCRIBE_URL = `${SITE_URL}/subscription/`;
 

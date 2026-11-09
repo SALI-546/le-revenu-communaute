@@ -126,27 +126,27 @@ export const DEMO_CATEGORIES = [
   },
   {
     slug: 'cafe',
-    name: 'Le Café du Revenu',
+    name: 'Le Café Patrimoine',
     description: 'Présentations, discussions libres, idées pour la rédaction.',
     icon: 'coffee',
     color: 'sand',
     position: 11,
     en: {
-      name: 'Le Revenu Café',
+      name: 'Café Patrimoine',
       description: 'Introductions, open discussions, ideas for the newsroom.',
     },
   },
 ] as const;
 
 export const DEMO_USERS = [
-  { username: 'Thomas', email: 'thomas@demo.lerevenu.test' },
-  { username: 'Hugo', email: 'hugo@demo.lerevenu.test' },
-  { username: 'Vincent', email: 'vincent@demo.lerevenu.test' },
-  { username: 'Camille', email: 'camille@demo.lerevenu.test' },
-  { username: 'Odile', email: 'odile@demo.lerevenu.test' },
-  { username: 'Nadia', email: 'nadia@demo.lerevenu.test' },
-  { username: 'Karim', email: 'karim@demo.lerevenu.test' },
-  { username: 'Sophie', email: 'sophie@demo.lerevenu.test' },
+  { username: 'Thomas', email: 'thomas@demo.patrimoine.test' },
+  { username: 'Hugo', email: 'hugo@demo.patrimoine.test' },
+  { username: 'Vincent', email: 'vincent@demo.patrimoine.test' },
+  { username: 'Camille', email: 'camille@demo.patrimoine.test' },
+  { username: 'Odile', email: 'odile@demo.patrimoine.test' },
+  { username: 'Nadia', email: 'nadia@demo.patrimoine.test' },
+  { username: 'Karim', email: 'karim@demo.patrimoine.test' },
+  { username: 'Sophie', email: 'sophie@demo.patrimoine.test' },
 ];
 
 type DemoReply = {
@@ -211,7 +211,7 @@ export const DEMO_DISCUSSIONS: readonly DemoDiscussion[] = [
     slug: 'fonds-euros-quelle-part-gardez-vous-dans-votre-contrat',
     title: 'Fonds euros : quelle part gardez-vous dans votre contrat ?',
     content:
-      'Suite à l’article du Revenu sur les rendements, je me demande quelle part vous conservez en fonds euros et en unités de compte.',
+      'Suite à l’article du magazine sur les rendements, je me demande quelle part vous conservez en fonds euros et en unités de compte.',
     type: 'discussion',
     category: 'assurance-vie',
     author: 'Vincent',
@@ -346,7 +346,7 @@ export const DEMO_DISCUSSIONS: readonly DemoDiscussion[] = [
       {
         author: 'Thomas',
         content:
-          'Bonjour à tous ! Lecteur du Revenu depuis dix ans, je m’intéresse surtout à la Bourse et à la préparation de la retraite.',
+          'Bonjour à tous ! Lecteur du magazine depuis dix ans, je m’intéresse surtout à la Bourse et à la préparation de la retraite.',
       },
       {
         author: 'Nadia',

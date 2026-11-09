@@ -136,7 +136,7 @@ test.describe('publishing', () => {
   });
 
   test('prefills the form from the quick question field', async ({ page }) => {
-    await login(page, 'thomas@demo.lerevenu.test');
+    await login(page, 'thomas@demo.patrimoine.test');
     await page.goto('/fr?category=bourse');
     const question = 'Faut-il renforcer son PEA maintenant ?';
     await page.getByLabel('Votre question pour la communauté').fill(question);
@@ -155,7 +155,7 @@ test.describe('publishing', () => {
   test('shows validation errors, then publishes a discussion', async ({
     page,
   }) => {
-    await login(page, 'thomas@demo.lerevenu.test');
+    await login(page, 'thomas@demo.patrimoine.test');
     await page.goto('/fr/discussions/new');
 
     await page.getByLabel('Titre de la publication').fill('Trop bref');
@@ -185,7 +185,7 @@ test.describe('publishing', () => {
   test('marks a reply as helpful, then withdraws the vote', async ({
     page,
   }) => {
-    await login(page, 'hugo@demo.lerevenu.test');
+    await login(page, 'hugo@demo.patrimoine.test');
     await page.goto(
       '/fr/discussions/ouvrir-un-pea-avec-5-000-eur-par-ou-commencer',
     );
@@ -217,7 +217,7 @@ test.describe('publishing', () => {
   });
 
   test('posts a reply on a discussion', async ({ page }) => {
-    await login(page, 'hugo@demo.lerevenu.test');
+    await login(page, 'hugo@demo.patrimoine.test');
     await page.goto('/fr?sort=oldest');
     await page.getByRole('link', { name: PEA_TITLE }).click();
 

@@ -41,8 +41,8 @@ const authorEmailOf = async (
 
 before(async () => {
   strapi = await startStrapi();
-  thomasToken = await login('thomas@demo.lerevenu.test');
-  hugoToken = await login('hugo@demo.lerevenu.test');
+  thomasToken = await login('thomas@demo.patrimoine.test');
+  hugoToken = await login('hugo@demo.patrimoine.test');
   hugoId = await currentUserId(hugoToken);
   const { body } = await request<{ documentId: string }[]>(
     `/categories?${new URLSearchParams({ 'filters[slug][$eq]': 'bourse' })}`,
@@ -117,7 +117,7 @@ describe('discussion list', () => {
   it('never exposes author emails', async () => {
     const { body } = await request<Discussion[]>('/discussions');
 
-    assert.doesNotMatch(JSON.stringify(body), /@demo\.lerevenu\.test/);
+    assert.doesNotMatch(JSON.stringify(body), /@demo\.patrimoine\.test/);
   });
 });
 
@@ -291,7 +291,7 @@ describe('author spoofing', () => {
     assert.deepEqual(body.data.author, { username: 'Thomas' });
     assert.equal(
       await authorEmailOf('api::discussion.discussion', body.data.documentId),
-      'thomas@demo.lerevenu.test',
+      'thomas@demo.patrimoine.test',
     );
   });
 
@@ -310,7 +310,7 @@ describe('author spoofing', () => {
     assert.equal(status, 201);
     assert.equal(
       await authorEmailOf('api::reply.reply', body.data.documentId),
-      'thomas@demo.lerevenu.test',
+      'thomas@demo.patrimoine.test',
     );
   });
 
@@ -495,7 +495,7 @@ describe('member profile', () => {
       bestAnswers: 1,
     });
     assert.deepEqual(body.data.discussions[0].author, { username: 'Vincent' });
-    assert.doesNotMatch(JSON.stringify(body), /@demo\.lerevenu\.test/);
+    assert.doesNotMatch(JSON.stringify(body), /@demo\.patrimoine\.test/);
   });
 
   it('answers 404 for an unknown member and 400 for an invalid name', async () => {
